@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
+import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  static String id = 'login_screen';
+
+class RegisterEmailScreen extends StatefulWidget {
+  static String id = 'register_email_screen';
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterEmailScreenState createState() => _RegisterEmailScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
   bool _hidePassword = true;
 
   @override
@@ -27,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           },
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 child: Row(
@@ -35,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: <Widget>[
                     IconButton(
                       iconSize: 20.0,
-                      padding: EdgeInsets.only(top: 60.0),
+                      padding: EdgeInsets.only(top: 60),
                       icon: Icon(Icons.arrow_back_ios),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -70,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       BoxShadow(
                           color: Colors.grey[200],
                           blurRadius: 2.0,
-                          offset: Offset(0, 5.0)),
+                          offset: Offset(0, 5.0))
                     ]),
                     width: MediaQuery.of(context).size.width,
                     margin: EdgeInsets.symmetric(horizontal: 20.0),
@@ -79,12 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          "Hello",
-                          style: TextStyle(
-                              fontSize: 30.0, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "Sign into your Account",
+                          "Register Account Using Email Address",
                           style: TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.bold),
                         ),
@@ -94,9 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: <Widget>[
                               TextField(
                                 decoration: InputDecoration(
-                                    labelText: "Email ID*",
+                                    labelText: "Email*",
                                     labelStyle: TextStyle(fontSize: 14.0),
-                                    suffixIcon: Icon(Icons.mail, size: 17.0)),
+                                    suffixIcon: Icon(
+                                      Icons.mail,
+                                      size: 17.0,
+                                    )),
                               ),
                               TextField(
                                 obscureText: _hidePassword,
@@ -104,29 +104,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                     labelText: "Password*",
                                     labelStyle: TextStyle(fontSize: 14.0),
                                     suffixIcon: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            _hidePassword = !_hidePassword;
-                                          });
-                                        },
-                                        icon: Icon(
-                                            _hidePassword
-                                                ? Icons.visibility_off
-                                                : Icons.visibility,
-                                            size: 17.0))),
+                                      onPressed: () {
+                                        setState(() {
+                                          _hidePassword = !_hidePassword;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _hidePassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        size: 17.0,
+                                      ),
+                                    )),
                               ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Text(
-                                    "Forgot Your Password",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[400],
-                                        fontSize: 14.0),
-                                  ),
-                                ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
                               ),
                             ],
                           ),
@@ -146,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 200.0,
                           child: Center(
                             child: Text(
-                              "Login",
+                              "Register",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
@@ -154,8 +146,36 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 12.0),
-                        ),
+                            padding: EdgeInsets.only(top: 12.0),
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text("Or Register using",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  SizedBox(width: 5.0),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RegisterPhoneScreen()));
+                                    },
+                                    child: Text(
+                                      "Phone Number",
+                                      style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )),
                       ],
                     ),
                   ),
@@ -164,24 +184,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          "Don't have an account?",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        Text("Already have an account?",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         SizedBox(width: 5.0),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        RegisterEmailScreen()));
+                            Navigator.push(context, MaterialPageRoute());
                           },
-                          child: Text("Register Now",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor)),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor),
+                          ),
                         )
                       ],
                     ),
