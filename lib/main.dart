@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/home_screen.dart';
+import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
+import 'package:restaurant_challenge_app/screens/match_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
@@ -22,13 +24,15 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFFFC8C1B),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+
       initialRoute: AuthScreen.id,
       routes: {
         RegisterEmailScreen.id: (context) => RegisterEmailScreen(),
         AuthScreen.id: (context) => AuthScreen(),
         HomeScreen.id: (context) => HomeScreen(),
         RegisterPhoneScreen.id: (context) => RegisterPhoneScreen(),
-
+        LoginChallengeRoom.id: (context) => LoginChallengeRoom(),
+         MatchScreen.id: (context) => MatchScreen(),
       },
     );
   }

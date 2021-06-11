@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/login_screen.dart';
-import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
+import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
+import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   static String id = 'auth_screen';
@@ -28,7 +28,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                        MaterialPageRoute(builder: (context) => RegisterPhoneScreen()));
                   },
                   child: Container(
                     width: 150.0,
@@ -45,7 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ]),
                     child: Center(
                       child: Text(
-                        "Login",
+                        "Create Challenge",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -56,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => RegisterEmailScreen()));
+                            builder: (context) => LoginChallengeRoom()));
                   },
                   child: Container(
                     width: 150.0,
@@ -73,7 +73,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ]),
                     child: Center(
                       child: Text(
-                        "Register",
+                        "Login To Challenge",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),

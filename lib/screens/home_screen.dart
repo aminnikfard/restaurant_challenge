@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/login_screen.dart';
+import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'home_screen';
@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => LoginScreen(),
+              builder: (context) => RegisterPhoneScreen(),
             ),
           );
         },

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_challenge_app/screens/home_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 
+import '../static_methods.dart';
+
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
   SHOW_OTP_FORM_STATE,
@@ -16,7 +18,6 @@ class RegisterPhoneScreen extends StatefulWidget {
 }
 
 class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
-  bool _hidePassword = true;
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
@@ -28,6 +29,8 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
   String verificationId;
 
   bool showLoading = false;
+
+  String phoneNumber;
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -47,13 +50,12 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       setState(() {
         showLoading = false;
       });
 
-      _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text(e.message)));
+      // _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
@@ -84,7 +86,8 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
         Container(
           height: 40.0,
           child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
+            // overflow: Overflow.visible,
             children: <Widget>[
               Positioned(
                 top: -120,
@@ -137,35 +140,38 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      setState(() {
-                        showLoading = true;
-                      });
+                      if (isValid()) {
+                        setState(() {
+                          showLoading = true;
+                        });
 
-                      await _auth.verifyPhoneNumber(
-                        phoneNumber: phoneController.text,
-                        verificationCompleted: (phoneAuthCredential) async {
-                          setState(() {
-                            showLoading = false;
-                          });
-                          //signInWithPhoneAuthCredential(phoneAuthCredential);
-                        },
-                        verificationFailed: (verificationFailed) async {
-                          setState(() {
-                            showLoading = false;
-                          });
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(verificationFailed.message)));
-                        },
-                        codeSent: (verificationId, resendingToken) async {
-                          setState(() {
-                            showLoading = false;
-                            currentState =
-                                MobileVerificationState.SHOW_OTP_FORM_STATE;
-                            this.verificationId = verificationId;
-                          });
-                        },
-                        codeAutoRetrievalTimeout: (verificationId) async {},
-                      );
+                        await _auth.verifyPhoneNumber(
+                          phoneNumber: phoneController.text,
+                          verificationCompleted: (phoneAuthCredential) async {
+                            setState(() {
+                              showLoading = false;
+                            });
+                            //signInWithPhoneAuthCredential(phoneAuthCredential);
+                          },
+                          verificationFailed: (FirebaseAuthException e) async {
+                            setState(() {
+                              showLoading = false;
+                            });
+                            if (e.code == 'invalid-phone-number') {
+                              print('The provided phone number is not valid.');
+                            }
+                          },
+                          codeSent: (verificationId, resendingToken) async {
+                            setState(() {
+                              showLoading = false;
+                              currentState =
+                                  MobileVerificationState.SHOW_OTP_FORM_STATE;
+                              this.verificationId = verificationId;
+                            });
+                          },
+                          codeAutoRetrievalTimeout: (verificationId) async {},
+                        );
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -221,29 +227,6 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Already have an account?",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(width: 5.0),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute());
-                    },
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor),
-                    ),
-                  )
-                ],
-              ),
-            )
           ],
         ))
       ],
@@ -277,7 +260,8 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
         Container(
           height: 40.0,
           child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
+            // overflow: Overflow.visible,
             children: <Widget>[
               Positioned(
                 top: -120,
@@ -369,6 +353,20 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
         ))
       ],
     );
+  }
+
+  bool isValid() {
+    phoneNumber = phoneController.text;
+    if (phoneNumber.length == 0) {
+      StaticMethods.showErrorDialog(context: context, text: 'Fill PhoneNumber');
+      return false;
+    }
+    if (phoneNumber.length < 13) {
+      StaticMethods.showErrorDialog(
+          context: context, text: 'Wrong PhoneNumber');
+      return false;
+    }
+    return true;
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
