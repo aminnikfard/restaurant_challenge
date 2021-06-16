@@ -83,13 +83,13 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 25.0),
-              child: Text(
-                "Now! Quick Login User Touch ID",
-                style: TextStyle(
-                    fontSize: 15.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
+              // child: Text(
+              //   "Now! Quick Login User Touch ID",
+              //   style: TextStyle(
+              //       fontSize: 15.0,
+              //       color: Colors.white,
+              //       fontWeight: FontWeight.bold),
+              // ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
@@ -101,13 +101,13 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
-              child: Text(
-                "User Touch ID",
-                style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
+              // child: Text(
+              //   "User Touch ID",
+              //   style: TextStyle(
+              //       fontStyle: FontStyle.italic,
+              //       color: Colors.white,
+              //       fontWeight: FontWeight.bold),
+              // ),
             )
           ],
         ),

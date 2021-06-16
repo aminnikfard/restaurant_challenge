@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/match_screen.dart';
+
+import 'game_screen.dart';
+
 
 class LoginChallengeRoom extends StatelessWidget {
   static String id = 'login_challenge_room';
@@ -91,7 +93,7 @@ class LoginChallengeRoom extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      MatchScreen()));
+                                      GameScreen()));
                         },
                         child: Container(
                           decoration: BoxDecoration(

@@ -67,8 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     content: Column(
                       children: <Widget>[
                         TextFormField(
-                          decoration:
-                              InputDecoration(labelText: 'Zip Code City Number'),
+                          decoration: InputDecoration(
+                              labelText: 'Zip Code City Number'),
                         ),
                       ],
                     ),
@@ -103,10 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   continued() {
-    _currentStep < 2 ? setState(() => _currentStep += 1) : setState(() => null);
-    if(_currentStep >= 2) {
+    if (_currentStep >= 2) {
       print('Hello');
     }
+    _currentStep < 2 ? setState(() => _currentStep += 1) : setState(() => null);
   }
 
   cancel() {
