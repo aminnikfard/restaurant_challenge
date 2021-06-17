@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/models/notifier.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
+import 'package:restaurant_challenge_app/screens/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/home_screen.dart';
 import 'package:restaurant_challenge_app/screens/info_challenge_screen.dart';
 import 'package:restaurant_challenge_app/screens/list_restaurant_screen.dart';
@@ -37,15 +38,25 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFFFC8C1B),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+<<<<<<< HEAD
       initialRoute: AuthScreen.id,
+=======
+
+      initialRoute: GameScreen.id,
+>>>>>>> 560243ebf1753e61a7b08139dfa8366d0358ffe4
       routes: {
         RegisterEmailScreen.id: (context) => RegisterEmailScreen(),
         AuthScreen.id: (context) => AuthScreen(),
         HomeScreen.id: (context) => HomeScreen(),
         RegisterPhoneScreen.id: (context) => RegisterPhoneScreen(),
         LoginChallengeRoom.id: (context) => LoginChallengeRoom(),
+<<<<<<< HEAD
         InfoChallenge.id: (context) => InfoChallenge(),
         ListRestaurant.id: (context) => ListRestaurant(),
+=======
+        GameScreen.id: (context) => GameScreen(),
+
+>>>>>>> 560243ebf1753e61a7b08139dfa8366d0358ffe4
       },
     );
   }

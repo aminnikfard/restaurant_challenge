@@ -2,11 +2,17 @@ import 'dart:ffi';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/models/notifier.dart';
 import 'package:restaurant_challenge_app/screens/info_challenge_screen.dart';
+=======
+
+import 'game_screen.dart';
+
+>>>>>>> 560243ebf1753e61a7b08139dfa8366d0358ffe4
 
 class LoginChallengeRoom extends StatefulWidget {
   static String id = 'login_challenge_room';
@@ -53,12 +59,43 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+<<<<<<< HEAD
                       IconButton(
                         iconSize: 20.0,
                         padding: EdgeInsets.only(top: 10),
                         icon: Icon(Icons.arrow_back_ios),
                         onPressed: () {
                           Navigator.of(context).pop();
+=======
+                      Text(
+                        "Please Enter Challenge Code",
+                        style:
+                            TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Column(
+                          children: <Widget>[
+                            TextField(
+                              decoration: InputDecoration(
+                                  labelText: "Code*",
+                                  labelStyle: TextStyle(fontSize: 14.0),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      GameScreen()));
+>>>>>>> 560243ebf1753e61a7b08139dfa8366d0358ffe4
                         },
                       ),
                       Image(
