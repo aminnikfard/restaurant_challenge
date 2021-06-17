@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+final String mainUrl = 'https://api.yelp.com/v3/transactions/delivery/';
+
 final kOutLineInputBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10),
 );
