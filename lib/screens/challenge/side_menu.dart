@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
@@ -7,7 +6,6 @@ import 'package:restaurant_challenge_app/screens/challenge/userScore.dart';
 import 'package:restaurant_challenge_app/static_methods.dart';
 
 class NavDrawer extends StatelessWidget {
-  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -79,13 +77,6 @@ class NavDrawer extends StatelessWidget {
                 ),
               ),
 
-            ),
-            ListTile(
-              leading: Icon(Icons.person_outline, color: Colors.black),
-              title: Text(
-                'LogOut',
-              ),
-              onTap: () {_auth.signOut();},
             ),
           ],
         ),

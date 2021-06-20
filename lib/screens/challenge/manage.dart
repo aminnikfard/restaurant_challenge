@@ -20,7 +20,7 @@ class ChallengeManagement extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            '${Provider.of<Notifier>(context, listen: true).challengeName} Challenge'),
+            'Challenge: ${Provider.of<Notifier>(context, listen: true).referral}'),
         centerTitle: true,
       ),
       drawer: NavDrawer(),

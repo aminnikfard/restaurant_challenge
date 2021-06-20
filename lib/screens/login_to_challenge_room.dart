@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
-import 'package:restaurant_challenge_app/screens/info_challenge_screen.dart';
+import 'package:restaurant_challenge_app/screens/auth_screen.dart';
+import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
+import 'package:restaurant_challenge_app/screens/game/info_challenge_screen.dart';
 import 'package:restaurant_challenge_app/static_methods.dart';
 import 'game/game_screen.dart';
 
@@ -18,6 +21,7 @@ class LoginChallengeRoom extends StatefulWidget {
 class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
   TextEditingController codeController;
   String code;
+  FirebaseAuth auth = FirebaseAuth.instance;
   DatabaseReference dbRef =
   FirebaseDatabase.instance.reference().child('challenges');
   bool showLoadingProgress = false;
@@ -36,178 +40,144 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Restaurant App",
-      theme: ThemeData(primaryColor: Theme
-          .of(context)
-          .primaryColor),
-      home: Scaffold(
-        backgroundColor: Color(0xFFF6F5FA),
-        body: ModalProgressHUD(
-          inAsyncCall: showLoadingProgress,
-          progressIndicator: kCustomProgressIndicator,
-          child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      IconButton(
-                        iconSize: 20.0,
-                        padding: EdgeInsets.only(top: 10),
-                        icon: Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }),
-                      //   Text(
-                      //   "Please Enter Challenge Code",
-                      //   style:
-                      //   TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.symmetric(horizontal: 10.0),
-                      //   child: Column(
-                      //     children: <Widget>[
-                      //       // Container(
-                      //       //   child: TextField(
-                      //       //
-                      //       //     decoration: InputDecoration(
-                      //       //       labelText: "Code*",
-                      //       //       labelStyle: TextStyle(fontSize: 14.0),
-                      //       //     ),
-                      //       //   ),
-                      //       //   width: 50,
-                      //       // ),
-                      //       Padding(
-                      //         padding: const EdgeInsets.only(top: 10.0),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (context) =>
-                      //                 GameScreen()));
-                      //   },
-                      // ),
-                      Image(
-                        width: 310,
-                        image: AssetImage("assets/images/shape.png"),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 40.0,
-                  child: Stack(
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: Color(0xFFF6F5FA),
+      body: ModalProgressHUD(
+        inAsyncCall: showLoadingProgress,
+        progressIndicator: kCustomProgressIndicator,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Stack(
                     clipBehavior: Clip.none,
                     children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Image(
+                            width: 310.0,
+                            image: AssetImage("assets/images/shape.png"),
+                          )
+                        ],
+                      ),
                       Positioned(
-                        top: -120,
+                        width: size.width / 1,
+                        height: size.width / 1.2,
                         child: Image(
                           image: AssetImage("assets/images/logo.png"),
                         ),
-                      )
+                      ),
+                      IconButton(
+                        iconSize: 20.0,
+                        icon: Icon(Icons.arrow_back_ios),
+                        onPressed: () {
+                          Navigator.pushNamed(context, AuthScreen.id);
+                        },
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(height: 50,),
-                Expanded(
-                    child: ListView(
+                  SizedBox(
+                    height: size.height * 0.07,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey[400],
+                          blurRadius: 5.0,
+                          offset: Offset(0, 0),
+                        )
+                      ],
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.symmetric(horizontal: 18.0),
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+                    child: Column(
                       children: <Widget>[
+                        Text(
+                          "Please Enter Challenge Code",
+                          style:
+                          TextStyle(fontSize: 18.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: size.height * 0.02,
+                        ),
                         Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white, boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey[200],
-                                blurRadius: 2.0,
-                                offset: Offset(0, 5.0))
-                          ]),
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          margin: EdgeInsets.symmetric(horizontal: 20.0),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 20.0),
+                          margin: EdgeInsets.symmetric(horizontal: 10.0),
                           child: Column(
                             children: <Widget>[
-                              Text(
-                                "Please Enter Challenge Code",
-                                style:
-                                TextStyle(fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    TextField(
-                                      decoration: InputDecoration(
-                                        labelText: "Code*",
-                                        labelStyle: TextStyle(fontSize: 14.0),
+                              TextField(
+                                decoration: InputDecoration(
+                                  labelText: "Code*",
+                                  labelStyle: TextStyle(fontSize: 14.0),
 
-                                      ),
-                                      controller: codeController,
-                                      keyboardType: TextInputType.number,
-                                      maxLength: 7,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  FocusScopeNode currentFocus = FocusScope.of(
-                                      context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                  }
-                                  onLoginToChallenge();
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25.0),
-                                      color: Theme
-                                          .of(context)
-                                          .primaryColor,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey[200],
-                                            blurRadius: 2.0,
-                                            offset: Offset(0, 4.0))
-                                      ]),
-                                  margin: EdgeInsets.only(top: 20.0),
-                                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                                  width: 200.0,
-                                  child: Center(
-                                    child: Text(
-                                      "Enter To Match",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
+                                controller: codeController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 7,
                               ),
                               Padding(
-                                padding: EdgeInsets.only(top: 12.0),
+                                padding: const EdgeInsets.only(top: 10.0),
                               ),
                             ],
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            FocusScopeNode currentFocus = FocusScope.of(
+                                context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            onLoginToChallenge();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                color: Theme
+                                    .of(context)
+                                    .primaryColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey[200],
+                                      blurRadius: 2.0,
+                                      offset: Offset(0, 4.0))
+                                ]),
+                            margin: EdgeInsets.only(top: 20.0),
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                            width: 200.0,
+                            child: Center(
+                              child: Text(
+                                "Enter To Match",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 12.0),
+                        ),
                       ],
-                    ))
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -226,11 +196,17 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
   bool checkCode() {
     code = codeController.text;
     if (code.length == 0) {
-      print('length :${code.length}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Enter the code', MediaQuery.of(context).size),
+      );
       return false;
     }
     if (code.length < 7) {
-      print('length 7:${code.length}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Code length must be 7 digits', MediaQuery.of(context).size),
+      );
       return false;
     }
     return true;
@@ -240,67 +216,108 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
         DataSnapshot snapshot = await dbRef.child(code).once();
     if( snapshot.value == null ){
       return false;
-      print("Item doesn't exist ");
     }else{
       return true;
-      print("Item exists ");
     }
 
   }
 
+  Future<bool> checkIsPlayGame() async{
+    DataSnapshot snapshot = await dbRef.child(code).child('users').child(auth.currentUser.uid).once();
+    if( snapshot.value == null ){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   getCodeChallenge() async {
+    showLoadingProgress = true;
+    setState(() {});
     bool check=await checkReferralCode();
-    // print(code);
     if(check) {
-      showLoadingProgress = true;
-      setState(() {});
       try {
-        String city, date, time,referralCode;
+        String challengeName, city, date, time,referralCode;
         bool isActive;
         await dbRef.child(code)
             .once()
             .then((value) {
+          challengeName = value.value['challengeName'].toString();
           city = value.value['city'].toString();
-
           time = value.value['time'].toString();
-
           date = value.value['date'].toString();
-
           isActive = value.value['isActive'];
-
           referralCode = value.value['referralCode'].toString();
-
         });
         showLoadingProgress = false;
         setState(() {});
-
         if (isActive) {
-
-          Provider.of<Notifier>(context, listen: false).changeLocation(city);
-          Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
-
-          Navigator.popAndPushNamed(
-            context,
-            InfoChallenge.id,
-            arguments: {
-              'city': city,
-              'time': time,
-              'date': date,
-              'referralCode': referralCode,
-            },
-          );
+          bool checkPlay=await checkIsPlayGame();
+          print(checkPlay);
+          if (checkPlay){
+            Provider.of<Notifier>(context, listen: false).changeLocation(city);
+            Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
+            Navigator.popAndPushNamed(
+              context,
+              InfoChallenge.id,
+              arguments: {
+                'challengeName': challengeName,
+                'city': city,
+                'time': time,
+                'date': date,
+                'referralCode': referralCode,
+              },
+            );
+          }else{
+            bool isPlay;
+            await dbRef.child(code).child('users').child(auth.currentUser.uid)
+                .once()
+                .then((value) {
+              isPlay = value.value['isPlay'];
+            });
+            print(isPlay);
+            if(isPlay){
+              Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ResultGama()));
+            }else{
+              Provider.of<Notifier>(context, listen: false).changeLocation(city);
+              Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
+              Navigator.popAndPushNamed(
+                context,
+                InfoChallenge.id,
+                arguments: {
+                  'challengeName': challengeName,
+                  'city': city,
+                  'time': time,
+                  'date': date,
+                  'referralCode': referralCode,
+                },
+              );
+            }
+          }
         } else {
-          print('Game no Active');
+          ScaffoldMessenger.of(context).showSnackBar(
+            StaticMethods.mySnackBar(
+                'Game no Active', MediaQuery.of(context).size),
+          );
         }
       } catch (e) {
         showLoadingProgress = false;
         setState(() {});
-        print('game not fund $e');
-        // print('massege '+e.toString());
+        ScaffoldMessenger.of(context).showSnackBar(
+          StaticMethods.mySnackBar(
+              'Game not fund', MediaQuery.of(context).size),
+        );
       }
     }
     else{
-      StaticMethods.showErrorDialog(context: context, text: "Referral Code is Wrong");
+      showLoadingProgress = false;
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Referral Code is Wrong', MediaQuery.of(context).size),
+      );
     }
   }
 }

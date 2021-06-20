@@ -8,10 +8,10 @@ import 'package:restaurant_challenge_app/model/field_notifier.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
-import '../static_methods.dart';
-import 'challenge/manage.dart';
-import 'date_picker/date_picker_widget.dart';
-import 'date_picker/time_picker_widget.dart';
+import '../../static_methods.dart';
+import 'manage.dart';
+import '../date_picker/date_picker_widget.dart';
+import '../date_picker/time_picker_widget.dart';
 
 class ChallengeScreen extends StatefulWidget {
   static String id = 'ChallengeScreen';

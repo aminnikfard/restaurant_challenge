@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/info_restaurant.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'dart:convert' as convert;
-import '../constants.dart';
+import '../../constants.dart';
 
 
 class ListRestaurant extends StatefulWidget {

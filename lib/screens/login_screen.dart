@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
+import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -78,122 +79,186 @@ class _LoginScreenState extends State<LoginScreen> {
         inAsyncCall: showLoadingProgress,
         progressIndicator: kCustomProgressIndicator,
         child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Image(
-                    image: AssetImage("assets/images/logo.png"),
-                    width: size.width * 0.9,
-                    height: size.width * 0.9,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: kColorWhite,
-                      borderRadius: BorderRadius.circular(13),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Image(
+                          width: 310.0,
+                          image: AssetImage("assets/images/shape.png"),
+                        )
+                      ],
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          labelText: "Email*",
-                          labelStyle: TextStyle(fontSize: 14.0),
-                          suffixIcon: Icon(
-                            Icons.mail,
-                            size: 17.0,
-                          ),
+                    Positioned(
+                      width: size.width / 1,
+                      height: size.width / 1.2,
+                      child: Image(
+                        image: AssetImage("assets/images/logo.png"),
                       ),
-                    ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[400],
+                        blurRadius: 5.0,
+                        offset: Offset(0, 0),
+                      )
+                    ],
                   ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: kColorWhite,
-                      borderRadius: BorderRadius.circular(13),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: TextField(
-                      controller: passwordController,
-                      obscureText: _hidePassword,
-                      decoration: InputDecoration(
-                          labelText: "Password*",
-                          labelStyle: TextStyle(fontSize: 14.0),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _hidePassword = !_hidePassword;
-                              });
-                            },
-                            icon: Icon(
-                              _hidePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              size: 17.0,
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.symmetric(horizontal: 18.0),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Login Account Using Email Address",
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                labelText: "Email*",
+                                labelStyle: TextStyle(fontSize: 14.0),
+                                suffixIcon: Icon(
+                                  Icons.mail,
+                                  size: 17.0,
+                                ),
+                              ),
                             ),
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.02,
-                  ),
-                  GestureDetector(
-                    onTap: () {onLoginPressed();},
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          color: kColorWhite,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey[200],
-                                blurRadius: 2.0,
-                                offset: Offset(0, 4.0))
-                          ]),
-                      margin: EdgeInsets.only(top: 20.0),
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                            TextField(
+                              controller: passwordController,
+                              obscureText: _hidePassword,
+                              decoration: InputDecoration(
+                                  labelText: "Password*",
+                                  labelStyle: TextStyle(fontSize: 14.0),
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _hidePassword = !_hidePassword;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _hidePassword ? Icons.visibility_off : Icons.visibility,
+                                      size: 17.0,
+                                    ),
+                                  )),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {Navigator.pushNamed(context, RegisterEmailScreen.id);},
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          color: Theme.of(context).primaryColor,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey[200],
-                                blurRadius: 5.0,
-                                offset: Offset(0, 0))
-                          ]),
-                      margin: EdgeInsets.only(top: 20.0),
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          "Register",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                          onLoginPressed();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              color: Theme.of(context).primaryColor,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.grey[200],
+                                    blurRadius: 2.0,
+                                    offset: Offset(0, 4.0))
+                              ]),
+                          margin: EdgeInsets.only(top: 20.0),
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Or Login using",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(width: 5.0),
+                          GestureDetector(
+                            onTap: () {
+
+                            },
+                            child: Text(
+                              "Phone Number",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Divider(thickness: 0.8,),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SocialIcon(
+                            iconSrc: Icons.person_add_alt_1_rounded,
+                            press: () {
+                              FocusScopeNode currentFocus = FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus) {
+                                currentFocus.unfocus();
+                              }
+                              Navigator.pushNamed(context, RegisterEmailScreen.id);
+                            },
+                          ),
+                          SocialIcon(
+                            iconSrc: Icons.phone_forwarded_rounded,
+                            press: () {
+                              Navigator.pushNamed(context, RegisterPhoneScreen.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -205,11 +270,17 @@ class _LoginScreenState extends State<LoginScreen> {
     email = emailController.text;
     password = passwordController.text;
     if (email.length == 0) {
-      StaticMethods.showErrorDialog(context: context, text: 'Fill email');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Fill email', MediaQuery.of(context).size),
+      );
       return false;
     }
     if (password.length < 6) {
-      StaticMethods.showErrorDialog(context: context, text: 'Fill password');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Fill password', MediaQuery.of(context).size),
+      );
       return false;
     }
     return true;
@@ -259,8 +330,41 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       showLoadingProgress = false;
       setState(() {});
-      StaticMethods.showErrorDialog(context: context, text: 'sth went wrong');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'sth went wrong', MediaQuery.of(context).size),
+      );
       print(e);
     }
   }
 }
+
+class SocialIcon extends StatelessWidget {
+  final IconData iconSrc;
+  final Function press;
+  const SocialIcon({
+    Key key,
+    this.iconSrc,
+    this.press,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: press,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: Theme.of(context).primaryColor,
+          ),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(iconSrc,color: Theme.of(context).primaryColor,),
+      ),
+    );
+  }
+}
+

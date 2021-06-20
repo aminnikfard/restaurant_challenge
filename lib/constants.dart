@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 
 const kColorWhite = Colors.white;
+const kPrimaryColor = Color(0xFFFF5715);
 const kDialogErrorColor = Color(0xFFF44336);
 const kDialogSuccessColor = Color(0xFF4caf50);
 
@@ -32,15 +33,15 @@ final kCustomAppBarDecoration = BoxDecoration(
 );
 
 final kCustomProgressIndicator = Container(
-  height: 80,
-  width: 80,
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    color: Colors.blueGrey,
-  ),
+  height: 100,
+  width: 100,
+  // decoration: BoxDecoration(
+  //   borderRadius: BorderRadius.circular(10),
+  //   color: Colors.blueGrey,
+  // ),
   child: Center(
     child: CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF5715)),
     ),
   ),
 );

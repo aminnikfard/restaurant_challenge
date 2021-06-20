@@ -164,8 +164,8 @@ class StaticMethods {
       duration: const Duration(milliseconds: 1500),
       width: size.width * 0.9,
       padding: const EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
+        horizontal: 14.0,
+        vertical: 5.0,
       ),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(

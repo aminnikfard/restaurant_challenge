@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class FlutterTicketWidget extends StatefulWidget {
+class FlutterTicketWidget2 extends StatefulWidget {
   final double width;
   final double height;
   final Widget child;
   final Color color;
   final bool isCornerRounded;
 
-  FlutterTicketWidget(
+  FlutterTicketWidget2(
       {@required this.width,
         @required this.height,
         @required this.child,
@@ -15,13 +15,14 @@ class FlutterTicketWidget extends StatefulWidget {
         this.isCornerRounded = false});
 
   @override
-  _FlutterTicketWidgetState createState() => _FlutterTicketWidgetState();
+  _FlutterTicketWidget2State createState() => _FlutterTicketWidget2State();
 }
-class _FlutterTicketWidgetState extends State<FlutterTicketWidget> {
+
+class _FlutterTicketWidget2State extends State<FlutterTicketWidget2> {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: TicketClipper(),
+      clipper: TicketClipper2(),
       child: AnimatedContainer(
         duration: Duration(seconds: 3),
         width: widget.width,
@@ -36,7 +37,8 @@ class _FlutterTicketWidgetState extends State<FlutterTicketWidget> {
     );
   }
 }
-class TicketClipper extends CustomClipper<Path> {
+
+class TicketClipper2 extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
@@ -46,9 +48,9 @@ class TicketClipper extends CustomClipper<Path> {
     path.lineTo(size.width, 0.0);
 
     path.addOval(Rect.fromCircle(
-        center: Offset(0.0, size.height / 1.3), radius: 20.0));
+        center: Offset(0.0, size.height / 1.23), radius: 20.0));
     path.addOval(Rect.fromCircle(
-        center: Offset(size.width, size.height / 1.3), radius: 20.0));
+        center: Offset(size.width, size.height / 1.23), radius: 20.0));
 
     return path;
   }

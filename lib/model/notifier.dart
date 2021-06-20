@@ -47,7 +47,8 @@ class Notifier extends ChangeNotifier {
   changeReferral(String referral) {
     this.referral = referral;
     notifyListeners();
-  }changeRestaurantId(String restaurantId) {
+  }
+  changeRestaurantId(String restaurantId) {
     this.id = restaurantId;
     notifyListeners();
   }
