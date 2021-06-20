@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/componnent/ticket_widget.dart';
-import 'package:restaurant_challenge_app/models/notifier.dart';
+import 'package:restaurant_challenge_app/model/notifier.dart';
+import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
+import 'package:restaurant_challenge_app/screens/game/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/list_restaurant_screen.dart';
+
+import 'game/game.dart';
 
 class InfoChallenge extends StatefulWidget {
   static String id = 'info_challenge_screen';
@@ -14,9 +20,10 @@ class InfoChallenge extends StatefulWidget {
   _InfoChallengeState createState() => _InfoChallengeState();
 }
 
-class _InfoChallengeState extends State<InfoChallenge>{
+class _InfoChallengeState extends State<InfoChallenge> {
   Size size;
   Map args;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -175,9 +182,9 @@ class _InfoChallengeState extends State<InfoChallenge>{
                                       context: context,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
-                                          )),
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      )),
                                       builder: (context) {
                                         return ListRestaurant();
                                       });
@@ -266,12 +273,13 @@ class _InfoChallengeState extends State<InfoChallenge>{
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                if (Provider.of<Notifier>(context, listen: false)
-                                    .isSelected ==
-                                    false) {
-                                  print('false');
-                                }else{
+                                if (Provider.of<Notifier>(context,
+                                        listen: false)
+                                    .isSelected) {
+                                  insertToDb();
                                   print('true');
+                                } else {
+                                  print('false');
                                 }
                               },
                               child: Container(
@@ -314,6 +322,31 @@ class _InfoChallengeState extends State<InfoChallenge>{
         ),
       ),
     );
+  }
+
+  insertToDb() {
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .reference()
+        .child('challenges')
+        .child(args['referralCode'])
+        .child('users')
+        .child(auth.currentUser.uid);
+    dbRef.update({
+      'name': auth.currentUser.displayName,
+      'id': auth.currentUser.uid,
+      'score': 0,
+      'isPlay': false,
+      'restaurant': {
+        'restaurantName': Provider.of<Notifier>(context, listen: false).name,
+        'restaurantImg': Provider.of<Notifier>(context, listen: false).img,
+        'restaurantRate': Provider.of<Notifier>(context, listen: false).rate,
+        'restaurantAddress':
+            Provider.of<Notifier>(context, listen: false).address,
+        'restaurantId': Provider.of<Notifier>(context, listen: false).id,
+      }
+    });
+    Provider.of<Notifier>(context, listen: false).changeRole('user');
+    Navigator.pushNamed(context, GameScreen.id);
   }
 
   Widget ticketDetailsWidget(String firstTitle, String firstDesc,

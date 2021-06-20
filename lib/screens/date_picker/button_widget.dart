@@ -34,11 +34,11 @@ class ButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.symmetric(horizontal: 110),
+    padding: EdgeInsets.symmetric(horizontal: 10),
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: Size.fromHeight(43),
-        primary: Colors.deepOrangeAccent,
+        minimumSize: Size.fromHeight(45),
+        primary: Color(0xFFFF5715),
       ),
       child: FittedBox(
         child: Text(

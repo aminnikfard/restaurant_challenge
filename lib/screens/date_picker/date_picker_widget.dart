@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_challenge_app/model/field_notifier.dart';
 import 'button_widget.dart';
 
 class DatePickerWidget extends StatefulWidget {
@@ -31,13 +33,14 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     final newDate = await showDatePicker(
       context: context,
       initialDate: date ?? initialDate,
-      firstDate: DateTime(DateTime.now().year - 5),
-      lastDate: DateTime(DateTime.now().year + 5),
+      firstDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 1),
     );
 
     if (newDate == null) return;
-
-    setState(() => date = newDate);
+    setState(() {
+      date = newDate;
+    });
+    Provider.of<FieldNotifier>(context,listen: false).changeDate(date);
   }
 }
-

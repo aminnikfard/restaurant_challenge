@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
 import '../constants.dart';
 import '../static_methods.dart';
-import 'home_screen.dart';
+import 'challenge/manage.dart';
+import 'create_challenge.dart';
 
 class RegisterEmailScreen extends StatefulWidget {
   static String id = 'register_email_screen';
@@ -20,7 +22,8 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
   bool _hidePassword = true;
   TextEditingController emailController,
       passwordController,
-      rePasswordController;
+      rePasswordController,
+      nameController;
 
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
@@ -35,9 +38,15 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
 
   @override
   void initState() {
+    if (auth.currentUser != null) {
+      Future.delayed(Duration.zero, () async {
+        Navigator.pushNamed(context, AuthScreen.id);
+      });
+    }
     emailController = TextEditingController();
     passwordController = TextEditingController();
     rePasswordController = TextEditingController();
+    nameController = TextEditingController();
     super.initState();
   }
 
@@ -46,20 +55,19 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
     emailController.dispose();
     passwordController.dispose();
     rePasswordController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Restaurant App",
-      theme: ThemeData(primaryColor: Theme.of(context).primaryColor),
-      home: Scaffold(
-        backgroundColor: Color(0xFFF6F5FA),
-        body: ModalProgressHUD(
-          inAsyncCall: showLoadingProgress,
-          progressIndicator: kCustomProgressIndicator,
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: kColorWhite,
+      body: ModalProgressHUD(
+        inAsyncCall: showLoadingProgress,
+        progressIndicator: kCustomProgressIndicator,
+        child: SafeArea(
           child: GestureDetector(
             onTap: () {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -77,7 +85,6 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                     children: <Widget>[
                       IconButton(
                         iconSize: 20.0,
-                        padding: EdgeInsets.only(top: 60),
                         icon: Icon(Icons.arrow_back_ios),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -96,7 +103,8 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                     clipBehavior: Clip.none,
                     children: <Widget>[
                       Positioned(
-                        top: -120,
+                        width: size.width * 0.9,
+                        height: size.width * 0.9,
                         child: Image(
                           image: AssetImage("assets/images/logo.png"),
                         ),
@@ -108,18 +116,16 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                     child: ListView(
                   children: <Widget>[
                     Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey[200],
-                                blurRadius: 2.0,
-                                offset: Offset(0, 5.0))
-                          ]),
+                      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey[200],
+                            blurRadius: 2.0,
+                            offset: Offset(0, 5.0))
+                      ]),
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.symmetric(horizontal: 20.0),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 20.0),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
                       child: Column(
                         children: <Widget>[
                           Text(
@@ -131,6 +137,16 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                             margin: EdgeInsets.symmetric(horizontal: 10.0),
                             child: Column(
                               children: <Widget>[
+                                TextField(
+                                  controller: nameController,
+                                  decoration: InputDecoration(
+                                      labelText: "Name*",
+                                      labelStyle: TextStyle(fontSize: 14.0),
+                                      suffixIcon: Icon(
+                                        Icons.person,
+                                        size: 17.0,
+                                      )),
+                                ),
                                 TextField(
                                   controller: emailController,
                                   decoration: InputDecoration(
@@ -236,8 +252,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                                       child: Text(
                                         "Phone Number",
                                         style: TextStyle(
-                                            decoration:
-                                                TextDecoration.underline,
+                                            decoration: TextDecoration.underline,
                                             fontWeight: FontWeight.bold,
                                             color:
                                                 Theme.of(context).primaryColor),
@@ -290,6 +305,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      auth.currentUser.updateDisplayName(nameController.text);
       if (userCredential != null) {
         print('user is: ${userCredential.user}');
         uploadToDatabase(userCredential.user);
@@ -316,11 +332,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
       setState(() {});
       Navigator.popAndPushNamed(
         context,
-        HomeScreen.id,
-        arguments: {
-          'email': email,
-          'uid': user.uid,
-        },
+        AuthScreen.id,
       );
       showLoadingProgress = false;
       return fireStore.collection('UsersEmail').add({

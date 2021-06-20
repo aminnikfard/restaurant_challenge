@@ -1,7 +1,10 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_challenge_app/model/notifier.dart';
 
 class GameScreen extends StatefulWidget {
   static String id = 'game_screen';
@@ -11,9 +14,10 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  FirebaseAuth auth=FirebaseAuth.instance;
 
   final DatabaseReference dbRef =
-  FirebaseDatabase.instance.reference().child('challenges').child('uid').child('users').child('uid');
+  FirebaseDatabase.instance.reference().child('challenges');
   Size size;
   int dSum = 0;
   bool end = false;
@@ -39,7 +43,7 @@ class _GameScreenState extends State<GameScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Container(
                   // height: 100,
                   child: Row(
@@ -50,8 +54,8 @@ class _GameScreenState extends State<GameScreen> {
                         duration: 30,
                         initialDuration: 0,
                         controller: CountDownController(),
-                        width: MediaQuery.of(context).size.width / 6,
-                        height: MediaQuery.of(context).size.height / 5,
+                        width: MediaQuery.of(context).size.width / 7,
+                        height: MediaQuery.of(context).size.height /7,
                         ringColor: Colors.grey[300],
                         ringGradient: null,
                         fillColor: Color.fromRGBO(252,58,81, 1),
@@ -84,14 +88,14 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                           // child: Image.asset('assets/images/ball.jpg',height: 150
                           child: Lottie.asset('assets/4414-bouncy-basketball.json',
-                              height: 250, width: 250)),
+                              height: 180, width: 180)),
                       Expanded(child: SizedBox()),
                       Container(
                         margin: EdgeInsets.only(
-                          top: 60,
+                          top: 25,
                         ),
                         child: CircleAvatar(
-                          radius: 60.0,
+                          radius: 30.0,
                           backgroundColor: Color.fromRGBO(244,93,76, 1),
                           child: Text(
                             dSum.toString(),
@@ -107,22 +111,28 @@ class _GameScreenState extends State<GameScreen> {
                 ),
               ),
               Expanded(child: SizedBox()),
-              InkWell(
-                onTap: () {
-                  if (!end) {
-                    dSum += 2;
-                    sum += f;
-                    setState(() {});
-                    print(sum);
-                  }
-                  else{
-                    insertScore();
-                  }
-                },
-                child: CircleAvatar(
-                  radius: 53,
-                  backgroundImage: AssetImage(
-                    'assets/images/restaurant.jpg',
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    if (!end) {
+                      dSum += 2;
+                      sum += f;
+                      setState(() {});
+                      print(sum);
+                    }
+                    else{
+                      insertScore();
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 52,
+                    backgroundColor: Colors.deepOrange,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                        Provider.of<Notifier>(context, listen: false).img,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -134,18 +144,18 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   insertScore()async{
+    print('kkkk');
     try {
+      DatabaseReference databaseRef=dbRef.child(Provider.of<Notifier>(context,listen: false).referral).child('users').child(auth.currentUser.uid);
       // DatabaseReference databaseRef = dbRef.push();
-      await dbRef.set({
+      await databaseRef.update({
         'isPlay':true,
-        'name': 'name',
-        'uid': 'uid',
-        'restaurant': 'restaurant',
         'score':dSum,
       });
     } catch (e) {
       print(e);
     }
+    Navigator.pop(context);
   }
 
 

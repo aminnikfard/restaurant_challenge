@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/home_screen.dart';
+import 'package:restaurant_challenge_app/screens/create_challenge.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 
 import '../static_methods.dart';
+import 'challenge/manage.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -18,19 +19,30 @@ class RegisterPhoneScreen extends StatefulWidget {
 }
 
 class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
+  final _auth = FirebaseAuth.instance;
+
+
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
 
   String verificationId;
 
   bool showLoading = false;
 
   String phoneNumber;
+
+  @override
+  void initState() {
+    if(_auth.currentUser!=null){
+      Future.delayed(Duration.zero, () async {      Navigator.pushNamed(context, ChallengeManagement.id);
+      });
+    }
+    super.initState();
+  }
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -48,7 +60,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
 
       if (authCredential?.user != null) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            context, MaterialPageRoute(builder: (context) => ChallengeScreen()));
       }
     } on FirebaseAuthException {
       setState(() {

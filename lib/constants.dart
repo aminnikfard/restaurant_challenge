@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+
+const kColorWhite = Colors.white;
+const kDialogErrorColor = Color(0xFFF44336);
+const kDialogSuccessColor = Color(0xFF4caf50);
+
 final String mainUrl = 'https://api.yelp.com/v3/transactions/delivery/';
 
 final kOutLineInputBorder = OutlineInputBorder(

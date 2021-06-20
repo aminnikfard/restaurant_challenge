@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:restaurant_challenge_app/models/info_restaurant.dart';
-import 'package:restaurant_challenge_app/models/notifier.dart';
+import 'package:restaurant_challenge_app/model/info_restaurant.dart';
+import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'dart:convert' as convert;
 import '../constants.dart';
 
@@ -29,11 +29,11 @@ class _ListRestaurantState extends State<ListRestaurant> {
           )),
       child: Column(
         children: [
-          locationRestaurantWidget(Provider.of<Notifier>(context, listen: true).location),
+          locationRestaurantWidget(Provider.of<Notifier>(context, listen: false).location),
           Expanded(
             child: FutureBuilder(
               future: http.get(
-                Uri.parse('$mainUrl' + 'search?location='+'${Provider.of<Notifier>(context, listen: true).location}'),
+                Uri.parse('$mainUrl' + 'search?location='+'${Provider.of<Notifier>(context, listen: false).location}'),
                 headers: {
                   "Authorization":
                       "Bearer Z9D7xTUxtz5u3gMnzLQ-5BjgyQF0dJVQ_jz3kYQkwqjH3DnmcvtRDycgDJ19IUKnvQF3Dy7ZNBnuNgXuTWvXkFaHFNaK8-vPGN3PcKzrIXgDKGrYyJ4gRTdl8jTFYHYx",
@@ -64,7 +64,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
                                 businesses[index].location.state +
                                 " | " +
                                 businesses[index].location.zipCode,
-                            businesses[index].reviewCount);
+                            businesses[index].reviewCount,businesses[index].id);
                       },
                     );
                     // }
@@ -132,7 +132,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
   }
 
   InkWell cardListRestaurantWidget(
-      String img, String name, int rate, String address, int review) {
+      String img, String name, int rate, String address, int review,String id) {
     return InkWell(
       onTap: () {
         Provider.of<Notifier>(context, listen: false).changeIsSelected(true);
@@ -140,6 +140,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
         Provider.of<Notifier>(context, listen: false).changeName(name);
         Provider.of<Notifier>(context, listen: false).changeRate(rate);
         Provider.of<Notifier>(context, listen: false).changeAddress(address);
+        Provider.of<Notifier>(context, listen: false).changeRestaurantId(id);
         Navigator.pop(context);
       },
       child: Card(

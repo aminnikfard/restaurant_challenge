@@ -151,5 +151,27 @@ class StaticMethods {
     );
   }
 
+  static mySnackBar(String title,Size size) {
+    return SnackBar(
+      content: Text(
+        title.toString(),
+        style: TextStyle(
+            color: kColorWhite,
+            fontSize: 16,
+            fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: kDialogErrorColor,
+      duration: const Duration(milliseconds: 1500),
+      width: size.width * 0.9,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 8.0,
+      ),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+    );
+  }
 
 }

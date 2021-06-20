@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_challenge_app/model/field_notifier.dart';
 
 import 'button_widget.dart';
 
@@ -37,5 +39,8 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
     if (newTime == null) return;
 
     setState(() => time = newTime);
+    Provider.of<FieldNotifier>(context,listen: false).changeTime(time);
+
+
   }
 }

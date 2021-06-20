@@ -1,31 +1,38 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_challenge_app/models/notifier.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
-import 'package:restaurant_challenge_app/screens/game_screen.dart';
-import 'package:restaurant_challenge_app/screens/home_screen.dart';
+import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
+import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
+import 'package:restaurant_challenge_app/screens/game/game.dart';
+import 'package:restaurant_challenge_app/screens/create_challenge.dart';
+import 'package:restaurant_challenge_app/screens/game/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/info_challenge_screen.dart';
-import 'package:restaurant_challenge_app/screens/list_restaurant_screen.dart';
+import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
+import 'package:restaurant_challenge_app/screens/match_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
-
+import 'model/field_notifier.dart';
+import 'model/notifier.dart';
+import 'screens/challenge/userScore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => FieldNotifier()),
         ChangeNotifierProvider(create: (context) => Notifier()),
       ],
       child: MyApp(),
     ),
   );
+
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -35,28 +42,23 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Restaurant App',
       theme: ThemeData(
-        primaryColor: Color(0xFFFC8C1B),
+        primaryColor: Color(0xFFFF5715),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-<<<<<<< HEAD
-      initialRoute: AuthScreen.id,
-=======
-
-      initialRoute: GameScreen.id,
->>>>>>> 560243ebf1753e61a7b08139dfa8366d0358ffe4
+      initialRoute: LoginScreen.id,
       routes: {
         RegisterEmailScreen.id: (context) => RegisterEmailScreen(),
         AuthScreen.id: (context) => AuthScreen(),
-        HomeScreen.id: (context) => HomeScreen(),
+        ChallengeScreen.id: (context) => ChallengeScreen(),
         RegisterPhoneScreen.id: (context) => RegisterPhoneScreen(),
         LoginChallengeRoom.id: (context) => LoginChallengeRoom(),
-<<<<<<< HEAD
-        InfoChallenge.id: (context) => InfoChallenge(),
-        ListRestaurant.id: (context) => ListRestaurant(),
-=======
+        MatchScreen.id: (context) => MatchScreen(),
         GameScreen.id: (context) => GameScreen(),
-
->>>>>>> 560243ebf1753e61a7b08139dfa8366d0358ffe4
+        ChallengeManagement.id: (context) => ChallengeManagement(),
+        InfoChallenge.id: (context) => InfoChallenge(),
+        UserScore.id: (context) => UserScore(),
+        LoginScreen.id: (context) => LoginScreen(),
+        RestaurantList.id: (context) => RestaurantList(),
       },
     );
   }
