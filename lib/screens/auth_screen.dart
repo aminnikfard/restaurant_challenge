@@ -90,6 +90,35 @@ class _AuthScreenState extends State<AuthScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
+                            builder: (context) => ChallengeScreen()));
+                  },
+                  child: Container(
+                    width: 150.0,
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25.0),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 1,
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 5.0,
+                              offset: Offset(0, 2.0))
+                        ]),
+                    child: Center(
+                      child: Text(
+                        "Create Game",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.0,),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
                             builder: (context) => LoginChallengeRoom()));
                   },
                   child: Container(
@@ -141,39 +170,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ),
                 ),
-                // Column(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: <Widget>[
-                //     GestureDetector(
-                //       onTap: () {
-                //         Navigator.push(
-                //             context,
-                //             MaterialPageRoute(
-                //                 builder: (context) => ChallengeScreen()));
-                //       },
-                //       child: Container(
-                //         width: 150.0,
-                //         padding: EdgeInsets.symmetric(vertical: 16.0),
-                //         decoration: BoxDecoration(
-                //             color: Colors.white,
-                //             borderRadius: BorderRadius.circular(25.0),
-                //             boxShadow: [
-                //               BoxShadow(
-                //                   spreadRadius: 1,
-                //                   color: Colors.black.withOpacity(0.2),
-                //                   blurRadius: 5.0,
-                //                   offset: Offset(0, 2.0))
-                //             ]),
-                //         child: Center(
-                //           child: Text(
-                //             "Create Challenge",
-                //             style: TextStyle(fontWeight: FontWeight.bold),
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,

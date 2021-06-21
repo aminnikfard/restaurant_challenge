@@ -6,12 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/componnent/ticket_widget.dart';
 import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
-import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
 import 'package:restaurant_challenge_app/screens/game/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/list_restaurant_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
-
-import 'game.dart';
 
 class InfoChallenge extends StatefulWidget {
   static String id = 'info_challenge_screen';

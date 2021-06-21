@@ -4,8 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_challenge_app/componnent/base_ticket_widget.dart';
+import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/field_notifier.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
+import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
 import '../../static_methods.dart';
@@ -43,99 +46,154 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size= MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Create Game'),
         centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          iconSize: 20.0,
+          icon: Icon(Icons.arrow_back_ios),
+          color: kColorWhite,
+          onPressed: () {
+            Navigator.pushNamed(context, AuthScreen.id);
+          },
+        ),
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Stepper(
-                type: stepperType,
-                physics: ScrollPhysics(),
-                currentStep: _currentStep,
-                onStepTapped: (step) => tapped(step),
-                onStepContinue: continued,
-                onStepCancel: cancel,
-                steps: <Step>[
-                  Step(
-                    title: Text('Game Name'),
-                    content: Column(
-                      children: <Widget>[
+      backgroundColor: kPrimaryColor,
+      body: SafeArea(
+        child: Center(
+          child: BaseTicketWidget(
+            width: size.width / 1.15,
+            height: size.height / 1.28,
+            isCornerRounded: true,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        children: [
+                          Container(
+                            width: 140.0,
+                            height: 25.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30.0),
+                              border:
+                              Border.all(width: 1.0, color: Colors.green),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Recreational Class',
+                                style: TextStyle(color: Colors.green),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Text(
+                              'Invitation Ticket',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: 44,
+                          minHeight: 44,
+                          maxWidth: 64,
+                          maxHeight: 64,
+                        ),
+                        child: Image.asset("assets/icons/fastfood.png",
+                            fit: BoxFit.cover),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Stepper(
+                      type: stepperType,
+                      physics: ScrollPhysics(),
+                      currentStep: _currentStep,
+                      onStepTapped: (step) => tapped(step),
+                      onStepContinue: continued,
+                      onStepCancel: cancel,
+                      steps: <Step>[
+                        Step(
+                          title: Text('Game Name'),
+                          content: Column(
+                            children: <Widget>[
 
-                        TextFormField(
-                          decoration: InputDecoration(
-                              labelText: 'Game Name'),
-                          controller: challengeNameController,
+                              TextFormField(
+                                decoration: InputDecoration(
+                                    labelText: 'Game Name'),
+                                controller: challengeNameController,
+                                maxLines: 3,
+                              ),
+                            ],
+                          ),
+                          isActive: _currentStep >= 0,
+                          state: _currentStep >= 0
+                              ? StepState.complete
+                              : StepState.disabled,
+                        ),
+                        Step(
+                          title: Text('Date You Want To Go To The Restaurant'),
+                          content: Column(
+                            children: <Widget>[
+                              DatePickerWidget(),
+                            ],
+                          ),
+                          isActive: _currentStep >= 0,
+                          state: _currentStep >= 1
+                              ? StepState.complete
+                              : StepState.disabled,
+                        ),
+                        Step(
+                          title: Text('Time You Want To Go To The Restaurant'),
+                          content: Column(
+                            children: <Widget>[
+                              TimePickerWidget(),
+                            ],
+                          ),
+                          isActive: _currentStep >= 0,
+                          state: _currentStep >= 2
+                              ? StepState.complete
+                              : StepState.disabled,
+                        ),
+                        Step(
+                          title: Text('City Name'),
+                          content: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                decoration: InputDecoration(
+                                    labelText: 'City Name'),
+                                controller: textEditingController,
+                              ),
+                            ],
+                          ),
+                          isActive: _currentStep >= 0,
+                          state: _currentStep >= 3
+                              ? StepState.complete
+                              : StepState.disabled,
                         ),
                       ],
                     ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 0
-                        ? StepState.complete
-                        : StepState.disabled,
-                  ),
-                  Step(
-                    title: Text('Date You Want To Go To The Restaurant'),
-                    content: Column(
-                      children: <Widget>[
-                        DatePickerWidget(),
-                      ],
-                    ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 1
-                        ? StepState.complete
-                        : StepState.disabled,
-                  ),
-                  Step(
-                    title: Text('Time You Want To Go To The Restaurant'),
-                    content: Column(
-                      children: <Widget>[
-                        TimePickerWidget(),
-                      ],
-                    ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 2
-                        ? StepState.complete
-                        : StepState.disabled,
-                  ),
-                  Step(
-                    title: Text('City Name'),
-                    content: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: InputDecoration(
-                              labelText: 'City Name'),
-                          controller: textEditingController,
-                        ),
-                      ],
-                    ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 3
-                        ? StepState.complete
-                        : StepState.disabled,
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   child: Icon(Icons.logout),
-      //   onPressed: () async {
-      //     await _auth.signOut();
-      //     Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => RegisterPhoneScreen(),
-      //       ),
-      //     );
-      //   },
-      // ),
     );
   }
 
@@ -230,15 +288,6 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       check=false;
     });
     return check;
-
-    // final DatabaseReference dbRef1 = FirebaseDatabase.instance
-    //     .reference()
-    //     .child('challenges').child(_auth.currentUser.uid).child('-McEdv-epEg_4KlMkwIT').child('users').push();
-    //
-    // // dbRef1.onValue.first.then((value) => print(value.snapshot.value));
-    // dbRef1.update({
-    //   'name':'nn'
-    // });
   }
 
 }

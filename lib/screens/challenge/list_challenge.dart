@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
+import 'package:restaurant_challenge_app/screens/challenge/create_challenge.dart';
 import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
 
 class ListChallenge extends StatefulWidget {
@@ -38,47 +39,95 @@ class _ListChallengeState extends State<ListChallenge> {
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           )),
-      child: FutureBuilder(
-        future: getDataAdminGame(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.done) {
-            Map data = snapshot.data;
-            if (data.length > 0) {
-              List challengeItems = [];
-              data.forEach((key, value) {
-                challengeItems.add(value);
-              });
-              return ListView.builder(
-                itemCount: challengeItems.length,
-                itemBuilder: (context, index) {
-                  return cardListRestaurantWidget(
-                    challengeItems[index]['challengeName'],
-                    challengeItems[index]['city'],
-                    challengeItems[index]['date'],
-                    challengeItems[index]['time'],
-                    challengeItems[index]['isActive'],
-                    challengeItems[index]['referralCode'],
-                  );
-                },
-              );
-            }else{
-              return Center(child: Text('No challenge found for you',style: TextStyle(color: kColorWhite,fontSize: 18),),);
-            }
-          } else {
-            return Center(child: CircularProgressIndicator(),);
-          }
-        },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChallengeScreen()));
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 25.0),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(25.0),
+                    boxShadow: [
+                      BoxShadow(
+                          spreadRadius: 5,
+                          color: Colors.white,
+                          blurRadius: 20.0,
+                          offset: Offset(0, 0))
+                    ]),
+                child: Center(
+                  child: Text(
+                    "Create Challenge",
+                    style: TextStyle(fontWeight: FontWeight.bold,color: kColorWhite),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: getDataAdminGame(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
+                  Map data = snapshot.data;
+                  if (data.length > 0) {
+                    List challengeItems = [];
+                    data.forEach((key, value) {
+                      challengeItems.add(value);
+                    });
+                    return ListView.builder(
+                      itemCount: challengeItems.length,
+                      itemBuilder: (context, index) {
+                        return cardListRestaurantWidget(
+                          challengeItems[index]['challengeName'],
+                          challengeItems[index]['city'],
+                          challengeItems[index]['date'],
+                          challengeItems[index]['time'],
+                          challengeItems[index]['isActive'],
+                          challengeItems[index]['referralCode'],
+                        );
+                      },
+                    );
+                  }else{
+                    return Center(child: Text('No challenge found for you',style: TextStyle(color: kColorWhite,fontSize: 18),),);
+                  }
+                } else {
+                  return Center(child: CircularProgressIndicator(),);
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
+
   InkWell cardListRestaurantWidget(
       String name, String city, String date, String time, bool active,int id) {
     return InkWell(
       onTap: () {
         Provider.of<Notifier>(context, listen: false).changeReferral(id.toString());
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ChallengeManagement()));
+        Navigator.popAndPushNamed(
+          context,
+          ChallengeManagement.id,
+          arguments: {
+            'challengeName': name,
+            'city': city,
+            'time': time,
+            'date': date,
+          },
+        );
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => ChallengeManagement()));
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -119,6 +168,7 @@ class _ListChallengeState extends State<ListChallenge> {
                             ),
                           ],
                         ),
+                        SizedBox(width: 7,),
                         Column(
                           children: [
                             Text(
@@ -131,6 +181,7 @@ class _ListChallengeState extends State<ListChallenge> {
                             ),
                           ],
                         ),
+                        SizedBox(width: 7,),
                         Column(
                           children: [
                             Text(
