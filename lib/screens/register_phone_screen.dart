@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/challenge/create_challenge.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 
 import '../static_methods.dart';
-import 'challenge/manage.dart';
+import 'auth_screen.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -22,13 +21,11 @@ class RegisterPhoneScreen extends StatefulWidget {
 class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
   final _auth = FirebaseAuth.instance;
 
-
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
-
 
   String verificationId;
 
@@ -36,12 +33,24 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
 
   String phoneNumber;
 
+  getUser() {
+    User user = _auth.currentUser;
+    if (user != null) {
+      StaticMethods.simplePopAndPushNavigation(
+          context: context, routeName: AuthScreen.id);
+    } else {
+      //pass
+    }
+  }
+
   @override
   void initState() {
-    if(_auth.currentUser!=null){
-      Future.delayed(Duration.zero, () async {      Navigator.pushNamed(context, ChallengeManagement.id);
-      });
-    }
+    Future.delayed(
+      Duration(microseconds: 300),
+      () {
+        getUser();
+      },
+    );
     super.initState();
   }
 
@@ -60,8 +69,8 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
       });
 
       if (authCredential?.user != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ChallengeScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AuthScreen()));
       }
     } on FirebaseAuthException {
       setState(() {
@@ -121,14 +130,12 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
           ),
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 18.0),
-          padding:
-          EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
           child: Column(
             children: <Widget>[
               Text(
                 "Register Account Using Phone Number",
-                style:
-                    TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
@@ -299,14 +306,12 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
           ),
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 18.0),
-          padding:
-          EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
           child: Column(
             children: <Widget>[
               Text(
                 "Create Account",
-                style:
-                    TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -398,10 +403,16 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
           child: SingleChildScrollView(
             child: Container(
               child: showLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                  ? SizedBox(
+                height: MediaQuery.of(context).size.height / 1.2,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFFF5715)),
+                        ),
+                      ),
+                  )
+                  : currentState ==
+                          MobileVerificationState.SHOW_MOBILE_FORM_STATE
                       ? getMobileFormWidget(context)
                       : getOtpFormWidget(context),
             ),
