@@ -29,7 +29,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   TextEditingController textEditingController,challengeNameController;
   StepperType stepperType = StepperType.vertical;
   Random random = Random();
-
+  String name,date,time,referral,city;
   @override
   void initState() {
     textEditingController = TextEditingController();
@@ -240,8 +240,19 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }else{
         bool check=await createChallenge();
         if(check){
-          Provider.of<Notifier>(context,listen: false).changeRole('Admin');
-          Navigator.pushNamed(context,ChallengeManagement.id );
+          Provider.of<Notifier>(context, listen: false).changeReferral(referral);
+          Provider.of<Notifier>(context, listen: false).changeIsStartPlay(false);
+          Provider.of<Notifier>(context, listen: false).changeIsEndPlay(false);
+          Navigator.popAndPushNamed(
+            context,
+            ChallengeManagement.id,
+            arguments: {
+              'challengeName': challengeNameController.text,
+              'city': textEditingController.text,
+              'time': time,
+              'date': date,
+            },
+          );
         }
       }
     }
@@ -259,34 +270,32 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   Future<bool>createChallenge() async {
     bool check=true;
     int id=random.nextInt(9000000) + 1000000;
+    date=Provider.of<FieldNotifier>(context, listen: false).date.toString();
+    String hour=Provider.of<FieldNotifier>(context, listen: false).time.hour.toString();
+    String minute=Provider.of<FieldNotifier>(context, listen: false).time.minute.toString();
+    hour.length == 1 ? hour="0"+hour : hour=hour ;
+    minute.length == 1 ? minute="0"+minute : minute=minute ;
+    time="$hour:$minute";
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .reference()
         .child('challenges').child(id.toString());
     await dbRef.set(
         {
           'challengeName': challengeNameController.text,
-          'date': Provider
-              .of<FieldNotifier>(context, listen: false)
-              .date
-              .toString(),
-          'time': '${Provider
-              .of<FieldNotifier>(context, listen: false)
-              .time
-              .hour}:${Provider
-              .of<FieldNotifier>(context, listen: false)
-              .time
-              .minute}',
+          'date': date,
+          'time': time,
           'isActive': true,
           'isStartPlay': false,
           'isEndPlay': false,
           'city': textEditingController.text,
-          'referralCode':id ,
-          'creatorId':_auth.currentUser.uid ,
-          'filter':'${_auth.currentUser.uid}_true',
+          'referralCode': id,
+          'creatorId': _auth.currentUser.uid,
+          'filter': '${_auth.currentUser.uid}_true',
         }
     ).onError((error, stackTrace) {
       check=false;
     });
+    referral=id.toString();
     return check;
   }
 

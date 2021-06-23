@@ -296,8 +296,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {});
     try {
       print('signing in');
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential =
+      await auth.signInWithEmailAndPassword(
+          email: email, password: password).onError((error, stackTrace) => error);
       print('after singing in');
       showLoadingProgress = false;
       setState(() {});
@@ -305,9 +306,16 @@ class _LoginScreenState extends State<LoginScreen> {
         print('user is: ${userCredential.user}');
         getUserInfoFromDatabase(userCredential.user);
       } else {
-        print('user is null');
+        ScaffoldMessenger.of(context).showSnackBar(
+          StaticMethods.mySnackBar(
+              'This User does not exist', MediaQuery.of(context).size),
+        );
       }
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'There was a problem logging in.', MediaQuery.of(context).size),
+      );
       print('myError: $e');
       showLoadingProgress = false;
       setState(() {});

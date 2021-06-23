@@ -5,10 +5,10 @@ import 'package:restaurant_challenge_app/model/info_restaurant.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 
 class UserScore extends StatelessWidget {
-  static String id='UserScore';
+  static String id = 'UserScore';
+
   @override
   Widget build(BuildContext context) {
-    print(Provider.of<Notifier>(context,listen:  false).users.length);
 
     return Container(
       decoration: BoxDecoration(
@@ -27,7 +27,7 @@ class UserScore extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25.0),
-                  border: Border.all(color: Color(0xFFFF5715),width: 2),
+                  border: Border.all(color: Color(0xFFFF5715), width: 2),
                   boxShadow: [
                     BoxShadow(
                         spreadRadius: 1,
@@ -38,76 +38,105 @@ class UserScore extends StatelessWidget {
               child: Center(
                 child: Text(
                   "Participating Users",
-                  style: TextStyle(fontWeight: FontWeight.bold,color: kPrimaryColor,fontSize: 20),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: kPrimaryColor,
+                      fontSize: 20),
                 ),
               ),
             ),
           ),
-          ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: Provider.of<Notifier>(context,listen:  false).users.length,
-              itemBuilder: (context, index) {
-                print(Provider.of<Notifier>(context,listen:  false).users.length);
-                return Container(
-                  margin: EdgeInsets.only(top: 5),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                                topLeft: Radius.circular(10),
-                                bottomLeft: Radius.circular(10)),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.orange[300],
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
+          Provider.of<Notifier>(context, listen: false).users.length == 0
+          ? Expanded(child: Center(child: Text('No user found',style: TextStyle(fontSize: 20,color: kColorWhite),)))
+          : ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount:
+                Provider.of<Notifier>(context, listen: false).users.length,
+            itemBuilder: (context, index) {
+              print(Provider.of<Notifier>(context, listen: false).users.length);
+              return Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            CircleAvatar(
+                              radius: 23,
+                              backgroundColor: kColorWhite,
+                              child: Text(
+                                (index + 1).toString(),
+                                style:
+                                TextStyle(color: Colors.black87, fontSize: 20),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Text(
-                                    ' score : ${Provider.of<Notifier>(context,listen:false).users.elementAt(index).score}',
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Expanded(child: SizedBox()),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(Provider.of<Notifier>(context,listen:false).users.elementAt(index).userName,
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              SizedBox(
-                                width: 30,
-                              ),
-                            ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: kColorWhite,
+                                borderRadius: BorderRadius.circular(50)),
+                            padding: EdgeInsets.only(right: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                CircleAvatar(
+                                  radius: 23,
+                                  backgroundImage:
+                                      AssetImage('assets/icons/profile.png'),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Users: ',
+                                        style: TextStyle(
+                                            color: Colors.black87, fontSize: 13),
+                                      ),
+                                      Text(
+                                        '${Provider.of<Notifier>(context,
+                                            listen: false)
+                                            .users
+                                            .elementAt(index)
+                                            .userName}',
+                                        style: TextStyle(
+                                            color: Colors.black87, fontSize: 16,fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  "${Provider.of<Notifier>(context, listen: false).users.elementAt(index).score}",
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      CircleAvatar(
-                        backgroundColor: kColorWhite,
-                        child: Text(
-                            (index + 1).toString(),
-                          style: TextStyle(color: kPrimaryColor),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                );
-              }),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );

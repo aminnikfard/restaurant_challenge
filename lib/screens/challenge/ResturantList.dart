@@ -10,7 +10,6 @@ class RestaurantList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(Provider.of<Notifier>(context, listen: false).restaurantList.length);
 
     List<Restaurant> uniqueRestaurant = [];
     for (int i = 0;
@@ -29,7 +28,7 @@ class RestaurantList extends StatelessWidget {
         }
       }
       if (check) {
-        print('jfdkf');
+        print('ok');
       } else {
         uniqueRestaurant.add(Provider.of<Notifier>(context, listen: false)
             .restaurantList
@@ -73,20 +72,22 @@ class RestaurantList extends StatelessWidget {
               ),
             ),
           ),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: uniqueRestaurant.length,
-            itemBuilder: (context, index) {
-              print(uniqueRestaurant.length);
-              return cardListRestaurantWidget(
-                uniqueRestaurant.elementAt(index).restaurantImg,
-                uniqueRestaurant.elementAt(index).restaurantName,
-                uniqueRestaurant.elementAt(index).restaurantRate,
-                uniqueRestaurant.elementAt(index).restaurantAddress,
-              );
-            },
-          ),
+          uniqueRestaurant.length == 0
+          ? Expanded(child: Center(child: Text('No restaurant found',style: TextStyle(fontSize: 20,color: kColorWhite),)))
+          : ListView.builder(
+    scrollDirection: Axis.vertical,
+    shrinkWrap: true,
+    itemCount: uniqueRestaurant.length,
+    itemBuilder: (context, index) {
+    print(uniqueRestaurant.length);
+    return cardListRestaurantWidget(
+    uniqueRestaurant.elementAt(index).restaurantImg,
+    uniqueRestaurant.elementAt(index).restaurantName,
+    uniqueRestaurant.elementAt(index).restaurantRate,
+    uniqueRestaurant.elementAt(index).restaurantAddress,
+    );
+    },
+    ),
         ],
       ),
     );

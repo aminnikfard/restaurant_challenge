@@ -16,7 +16,7 @@ class ListChallenge extends StatefulWidget {
 
 class _ListChallengeState extends State<ListChallenge> {
   DatabaseReference dbRef =
-  FirebaseDatabase.instance.reference().child('challenges');
+      FirebaseDatabase.instance.reference().child('challenges');
   FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<Map<dynamic, dynamic>> getDataAdminGame() async {
@@ -45,10 +45,8 @@ class _ListChallengeState extends State<ListChallenge> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChallengeScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChallengeScreen()));
               },
               child: Container(
                 width: double.infinity,
@@ -66,7 +64,8 @@ class _ListChallengeState extends State<ListChallenge> {
                 child: Center(
                   child: Text(
                     "Create Challenge",
-                    style: TextStyle(fontWeight: FontWeight.bold,color: kColorWhite),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kColorWhite),
                   ),
                 ),
               ),
@@ -76,33 +75,53 @@ class _ListChallengeState extends State<ListChallenge> {
             child: FutureBuilder(
               future: getDataAdminGame(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData &&
-                    snapshot.connectionState == ConnectionState.done) {
-                  Map data = snapshot.data;
-                  if (data.length > 0) {
-                    List challengeItems = [];
-                    data.forEach((key, value) {
-                      challengeItems.add(value);
-                    });
-                    return ListView.builder(
-                      itemCount: challengeItems.length,
-                      itemBuilder: (context, index) {
-                        return cardListRestaurantWidget(
-                          challengeItems[index]['challengeName'],
-                          challengeItems[index]['city'],
-                          challengeItems[index]['date'],
-                          challengeItems[index]['time'],
-                          challengeItems[index]['isActive'],
-                          challengeItems[index]['referralCode'],
-                        );
-                      },
+
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if ( snapshot.data == null ) {
+                    return Center(
+                      child: Text(
+                        'No challenge found for you',
+                        style: TextStyle(color: kColorWhite, fontSize: 18),
+                      ),
                     );
-                  }else{
-                    return Center(child: Text('No challenge found for you',style: TextStyle(color: kColorWhite,fontSize: 18),),);
                   }
-                } else {
-                  return Center(child: CircularProgressIndicator(),);
+                  Map data = snapshot.data;
+                  if (data.length < 0 ) {
+                    return Center(
+                      child: Text(
+                        'No challenge found for you',
+                        style: TextStyle(color: kColorWhite, fontSize: 18),
+                      ),
+                    );
+                  }
+                  List challengeItems = [];
+                  data.forEach((key, value) {
+                    challengeItems.add(value);
+                  });
+                  return ListView.builder(
+                    itemCount: challengeItems.length,
+                    itemBuilder: (context, index) {
+                      return cardListRestaurantWidget(
+                        challengeItems[index]['challengeName'],
+                        challengeItems[index]['city'],
+                        challengeItems[index]['date'],
+                        challengeItems[index]['time'],
+                        challengeItems[index]['isActive'],
+                        challengeItems[index]['isStartPlay'],
+                        challengeItems[index]['isEndPlay'],
+                        challengeItems[index]['referralCode'],
+                      );
+                    },
+                  );
                 }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('can not connected'),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               },
             ),
           ),
@@ -111,11 +130,15 @@ class _ListChallengeState extends State<ListChallenge> {
     );
   }
 
-  InkWell cardListRestaurantWidget(
-      String name, String city, String date, String time, bool active,int id) {
+  InkWell cardListRestaurantWidget(String name, String city, String date,
+      String time, bool active, bool startPlay, bool endPlay, int id) {
     return InkWell(
       onTap: () {
-        Provider.of<Notifier>(context, listen: false).changeReferral(id.toString());
+        Provider.of<Notifier>(context, listen: false)
+            .changeReferral(id.toString());
+        Provider.of<Notifier>(context, listen: false)
+            .changeIsStartPlay(startPlay);
+        Provider.of<Notifier>(context, listen: false).changeIsEndPlay(endPlay);
         Navigator.popAndPushNamed(
           context,
           ChallengeManagement.id,
@@ -148,7 +171,7 @@ class _ListChallengeState extends State<ListChallenge> {
                     Text(
                       "$name",
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
                       height: 12,
@@ -164,11 +187,14 @@ class _ListChallengeState extends State<ListChallenge> {
                             ),
                             Text(
                               city,
-                              style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        SizedBox(width: 7,),
+                        SizedBox(
+                          width: 7,
+                        ),
                         Column(
                           children: [
                             Text(
@@ -177,11 +203,14 @@ class _ListChallengeState extends State<ListChallenge> {
                             ),
                             Text(
                               date.substring(0, 10),
-                              style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        SizedBox(width: 7,),
+                        SizedBox(
+                          width: 7,
+                        ),
                         Column(
                           children: [
                             Text(
@@ -190,7 +219,8 @@ class _ListChallengeState extends State<ListChallenge> {
                             ),
                             Text(
                               time,
-                              style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -208,7 +238,9 @@ class _ListChallengeState extends State<ListChallenge> {
               Container(
                 child: Column(
                   children: [
-                    active == true ? Icon(Icons.timelapse_rounded) : Icon(Icons.check_circle),
+                    active == true
+                        ? Icon(Icons.timelapse_rounded)
+                        : Icon(Icons.check_circle),
                   ],
                 ),
               ),

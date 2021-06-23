@@ -49,19 +49,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            )),
-                        builder: (context) {
-                          return ListChallenge();
-                        });
-                    // onAdminPress();
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => ChallengeScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginChallengeRoom()));
                   },
                   child: Container(
                     width: 150.0,
@@ -78,7 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ]),
                     child: Center(
                       child: Text(
-                        "Dashboard Game",
+                        "Login To Game",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -116,10 +107,19 @@ class _AuthScreenState extends State<AuthScreen> {
                 SizedBox(height: 10.0,),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LoginChallengeRoom()));
+                    showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            )),
+                        builder: (context) {
+                          return ListChallenge();
+                        });
+                    // onAdminPress();
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) => ChallengeScreen()));
                   },
                   child: Container(
                     width: 150.0,
@@ -136,7 +136,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ]),
                     child: Center(
                       child: Text(
-                        "Login To Game",
+                        "Dashboard Game",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),

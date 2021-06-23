@@ -278,8 +278,17 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
             print(isPlay);
             if(isPlay){
               Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ResultGama()));
+              Navigator.popAndPushNamed(
+                context,
+                ResultGama.id,
+                arguments: {
+                  'challengeName': challengeName,
+                  'city': city,
+                  'time': time,
+                  'date': date,
+                  'referralCode': referralCode,
+                },
+              );
             }else{
               Provider.of<Notifier>(context, listen: false).changeLocation(city);
               Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
