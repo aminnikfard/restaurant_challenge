@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/model/users.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
 import 'package:restaurant_challenge_app/screens/challenge/userScore.dart';
-
+import 'package:flutter/services.dart';
+import 'package:social_share/social_share.dart';
 import '../../constants.dart';
 
 class ChallengeManagement extends StatelessWidget {
@@ -16,13 +18,16 @@ class ChallengeManagement extends StatelessWidget {
       FirebaseDatabase.instance.reference().child('challenges');
   final _auth = FirebaseAuth.instance;
   final double rate = 5;
-
+  String referral;
+  Map args;
+  String date;
   @override
   Widget build(BuildContext context) {
+    referral=Provider.of<Notifier>(context, listen: true).referral;
     bool isPlay=Provider.of<Notifier>(context, listen: true).isStartPlay;
     Size size = MediaQuery.of(context).size;
-    Map args = ModalRoute.of(context).settings.arguments;
-    String date = args['date'].substring(0, 10);
+    args = ModalRoute.of(context).settings.arguments;
+    date = args['date'].substring(0, 10);
     String isStartPlay=Provider.of<Notifier>(context, listen: true).isStartPlay==true ? 'Yes' : 'No';
     String isEndPlay=Provider.of<Notifier>(context, listen: true).isEndPlay==true ? 'Yes' : 'No';
     return Scaffold(
@@ -42,7 +47,7 @@ class ChallengeManagement extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text(
-            'Challenge: ${Provider.of<Notifier>(context, listen: true).referral}'),
+            'Challenge'),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -85,7 +90,7 @@ class ChallengeManagement extends StatelessWidget {
                   horizontal: 5.0,
                   vertical: 5.0 / 2,
                 ),
-                height: size.height / 2.4,
+                height: size.height / 2.05,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(22),
                 ),
@@ -179,7 +184,7 @@ class ChallengeManagement extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Restaurant name",
+                                      "Restaurant name unknown",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600),
@@ -191,12 +196,6 @@ class ChallengeManagement extends StatelessWidget {
                                       children: [
                                         for (var i = 0; i < rate; i++)
                                           Icon(
-                                            Icons.star_rate_rounded,
-                                            size: 18,
-                                            color: Colors.orange,
-                                          ),
-                                        for (var i = 5; i > rate; i--)
-                                          Icon(
                                             Icons.star_border_rounded,
                                             size: 18,
                                             color: Colors.orange,
@@ -207,7 +206,7 @@ class ChallengeManagement extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Restaurant address",
+                                      "Restaurant address unknown",
                                       style: TextStyle(fontSize: 10),
                                     ),
                                     SizedBox(
@@ -230,6 +229,25 @@ class ChallengeManagement extends StatelessWidget {
                             ],
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Text('Referral Code:',style: TextStyle(fontSize: 12),),
+                              Text(Provider.of<Notifier>(context, listen: true).referral.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                            ],
+                          ),
+                          socialIcon(context,Icons.copy,Colors.black45,"copy"),
+                          socialIcon(context,FontAwesomeIcons.sms,Colors.black87,"sms"),
+                          socialIcon(context,FontAwesomeIcons.telegram,Colors.blueAccent,"telegram"),
+                          socialIcon(context,FontAwesomeIcons.whatsapp,Colors.green,"whatsapp"),
+                          socialIcon(context,FontAwesomeIcons.twitter,Colors.blueAccent,"twitter"),
+                        ],
                       ),
                     ],
                   ),
@@ -297,7 +315,56 @@ class ChallengeManagement extends StatelessWidget {
       print(e);
     }
   }
-
+  GestureDetector socialIcon(BuildContext context,IconData iconSrc,Color color,String nameIcon){
+    return GestureDetector(
+      onTap: () async{
+        String massage="You have been invited to the challenge ${args['challengeName']} this is a challenge between my friends during the day $date and at the hour ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
+        if(nameIcon == "copy"){
+          SocialShare.copyToClipboard(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        }else if(nameIcon == "sms"){
+          SocialShare.shareSms(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        }else if(nameIcon == "telegram"){
+          SocialShare.shareTelegram(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        }else if(nameIcon == "whatsapp"){
+          SocialShare.shareWhatsapp(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        }else if(nameIcon == "twitter"){
+          SocialShare.shareTwitter(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          iconSrc,
+          color: color,
+          size: 25,
+        ),
+      ),
+    );
+  }
   Container list(BuildContext context, String img, String title) {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -377,7 +444,6 @@ class ChallengeManagement extends StatelessWidget {
       ),
     );
   }
-
   Widget ticketDetailsWidget(String firstTitle, String firstDesc,
       String secondTitle, String secondDesc) {
     return Row(
@@ -432,7 +498,6 @@ class ChallengeManagement extends StatelessWidget {
       ],
     );
   }
-
   Widget stream(BuildContext context) {
     return StreamBuilder(
       stream: dbRef.child(Provider.of<Notifier>(context, listen: true).referral).onValue,
