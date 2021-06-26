@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,19 +7,30 @@ import 'package:restaurant_challenge_app/model/users.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
 import 'package:restaurant_challenge_app/screens/challenge/userScore.dart';
-import 'package:flutter/services.dart';
 import 'package:social_share/social_share.dart';
 import '../../constants.dart';
 
-class ChallengeManagement extends StatelessWidget {
+class ChallengeManagement extends StatefulWidget {
   static String id = 'ChallengeManagement';
+
+  @override
+  _ChallengeManagementState createState() => _ChallengeManagementState();
+}
+
+class _ChallengeManagementState extends State<ChallengeManagement> {
   final DatabaseReference dbRef =
       FirebaseDatabase.instance.reference().child('challenges');
-  final _auth = FirebaseAuth.instance;
+
+  // final _auth = FirebaseAuth.instance;
+
   final double rate = 5;
+
   String referral;
+
   Map args;
+
   String date;
+
   @override
   Widget build(BuildContext context) {
     referral=Provider.of<Notifier>(context, listen: true).referral;
@@ -315,6 +325,7 @@ class ChallengeManagement extends StatelessWidget {
       print(e);
     }
   }
+
   GestureDetector socialIcon(BuildContext context,IconData iconSrc,Color color,String nameIcon){
     return GestureDetector(
       onTap: () async{
@@ -365,6 +376,7 @@ class ChallengeManagement extends StatelessWidget {
       ),
     );
   }
+
   Container list(BuildContext context, String img, String title) {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -444,6 +456,7 @@ class ChallengeManagement extends StatelessWidget {
       ),
     );
   }
+
   Widget ticketDetailsWidget(String firstTitle, String firstDesc,
       String secondTitle, String secondDesc) {
     return Row(
@@ -498,6 +511,7 @@ class ChallengeManagement extends StatelessWidget {
       ],
     );
   }
+
   Widget stream(BuildContext context) {
     return StreamBuilder(
       stream: dbRef.child(Provider.of<Notifier>(context, listen: true).referral).onValue,

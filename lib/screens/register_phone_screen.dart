@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_challenge_app/screens/get_username_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 
+import '../constants.dart';
 import '../static_methods.dart';
 import 'auth_screen.dart';
+
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -33,6 +36,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
 
   String phoneNumber;
 
+
   getUser() {
     User user = _auth.currentUser;
     if (user != null) {
@@ -47,34 +51,38 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
   void initState() {
     Future.delayed(
       Duration(microseconds: 300),
-      () {
+          () {
         getUser();
       },
     );
     super.initState();
   }
 
+
+
+
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
     setState(() {
       showLoading = true;
     });
-
     try {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
-
       setState(() {
         showLoading = false;
       });
 
       if (authCredential?.user != null) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AuthScreen()));
+        Navigator.popAndPushNamed(context, GetUsernameScreen.id);
       }
     } on FirebaseAuthException {
       setState(() {
         showLoading = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          StaticMethods.mySnackBar('Wrong OTP',
+              MediaQuery.of(context).size, kDialogErrorColor),
+        );
       });
 
       // _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(e.message)));
@@ -310,7 +318,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
           child: Column(
             children: <Widget>[
               Text(
-                "Create Account",
+                "Please Enter your OTP",
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               Container(
@@ -339,7 +347,6 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                       PhoneAuthProvider.credential(
                           verificationId: verificationId,
                           smsCode: otpController.text);
-
                   signInWithPhoneAuthCredential(phoneAuthCredential);
                 },
                 child: Container(
@@ -379,14 +386,14 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
     if (phoneNumber.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'Fill PhoneNumber', MediaQuery.of(context).size),
+            'Fill PhoneNumber', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
     if (phoneNumber.length < 13) {
       ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Wrong PhoneNumber', MediaQuery.of(context).size),
+        StaticMethods.mySnackBar('Wrong PhoneNumber',
+            MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
@@ -404,13 +411,14 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
             child: Container(
               child: showLoading
                   ? SizedBox(
-                height: MediaQuery.of(context).size.height / 1.2,
-                    child: Center(
+                      height: MediaQuery.of(context).size.height / 1.2,
+                      child: Center(
                         child: CircularProgressIndicator(
-                          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFFF5715)),
+                          valueColor: new AlwaysStoppedAnimation<Color>(
+                              Color(0xFFFF5715)),
                         ),
                       ),
-                  )
+                    )
                   : currentState ==
                           MobileVerificationState.SHOW_MOBILE_FORM_STATE
                       ? getMobileFormWidget(context)

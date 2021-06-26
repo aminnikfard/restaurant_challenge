@@ -9,7 +9,6 @@ import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/field_notifier.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
-import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 
 import '../../static_methods.dart';
 import 'manage.dart';
@@ -206,35 +205,35 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       if(challengeNameController.text.length < 0){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'Enter your Game Name', MediaQuery.of(context).size),
+              'Enter your Game Name', MediaQuery.of(context).size,kDialogErrorColor),
         );
         return false;
       }
       if(challengeNameController.text.length < 6){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'The Game name must be at least 6 characters long', MediaQuery.of(context).size),
+              'The Game name must be at least 6 characters long', MediaQuery.of(context).size,kDialogErrorColor),
         );
         return false;
       }
       if(Provider.of<FieldNotifier>(context,listen: false).date == null){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'Specify the date of the game', MediaQuery.of(context).size),
+              'Specify the date of the game', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
       }
       if(Provider.of<FieldNotifier>(context,listen: false).time == null){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'Specify the game time', MediaQuery.of(context).size),
+              'Specify the game time', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
       }
       if(textEditingController.text.length < 2){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'Enter the name of the city', MediaQuery.of(context).size),
+              'Enter the name of the city', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
       }else{

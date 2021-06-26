@@ -9,7 +9,7 @@ import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/info_challenge_screen.dart';
 import 'package:restaurant_challenge_app/static_methods.dart';
-import 'game/game_screen.dart';
+
 
 class LoginChallengeRoom extends StatefulWidget {
   static String id = 'login_challenge_room';
@@ -198,14 +198,14 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
     if (code.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'Enter the code', MediaQuery.of(context).size),
+            'Enter the code', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
     if (code.length < 7) {
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'Code length must be 7 digits', MediaQuery.of(context).size),
+            'Code length must be 7 digits', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
@@ -308,7 +308,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             StaticMethods.mySnackBar(
-                'Game no Active', MediaQuery.of(context).size),
+                'Game no Active', MediaQuery.of(context).size, kDialogErrorColor),
           );
         }
       } catch (e) {
@@ -316,7 +316,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'Game not fund', MediaQuery.of(context).size),
+              'Game not fund', MediaQuery.of(context).size, kDialogErrorColor),
         );
       }
     }
@@ -325,7 +325,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'Referral Code is Wrong', MediaQuery.of(context).size),
+            'Referral Code is Wrong', MediaQuery.of(context).size, kDialogErrorColor),
       );
     }
   }

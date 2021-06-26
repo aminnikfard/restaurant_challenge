@@ -151,7 +151,7 @@ class StaticMethods {
     );
   }
 
-  static mySnackBar(String title,Size size) {
+  static mySnackBar(String title,Size size, Color color) {
     return SnackBar(
       content: Text(
         title.toString(),
@@ -160,8 +160,8 @@ class StaticMethods {
             fontSize: 16,
             fontWeight: FontWeight.bold),
       ),
-      backgroundColor: kDialogErrorColor,
-      duration: const Duration(milliseconds: 1500),
+      backgroundColor: color,
+      duration: const Duration(milliseconds: 2500),
       width: size.width * 0.9,
       padding: const EdgeInsets.symmetric(
         horizontal: 14.0,

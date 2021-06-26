@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
+import 'package:restaurant_challenge_app/screens/get_username_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 import '../constants.dart';
 import '../static_methods.dart';
+
 
 class RegisterEmailScreen extends StatefulWidget {
   static String id = 'register_email_screen';
@@ -17,44 +19,77 @@ class RegisterEmailScreen extends StatefulWidget {
 }
 
 class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
-  bool _hidePassword = true;
-  TextEditingController emailController,
-      passwordController,
-      rePasswordController,
-      nameController;
+
+  TextEditingController emailController, otpController;
 
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
-  DatabaseReference dbRef =
-      FirebaseDatabase.instance.reference().child('Users');
-
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  String name, email, password, rePassword;
+  String name, email, otp, rePassword;
 
   bool showLoadingProgress = false;
 
+  getUser() {
+    User user = auth.currentUser;
+    if (user != null) {
+      StaticMethods.simplePopAndPushNavigation(
+          context: context, routeName: AuthScreen.id);
+    } else {
+      //pass
+    }
+  }
+
   @override
   void initState() {
-    if (auth.currentUser != null) {
-      Future.delayed(Duration.zero, () async {
-        Navigator.pushNamed(context, AuthScreen.id);
-      });
-    }
+    Future.delayed(
+      Duration(microseconds: 300),
+          () {
+        getUser();
+      },
+    );
     emailController = TextEditingController();
-    passwordController = TextEditingController();
-    rePasswordController = TextEditingController();
-    nameController = TextEditingController();
+    otpController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
-    rePasswordController.dispose();
-    nameController.dispose();
+    otpController.dispose();
     super.dispose();
+  }
+
+  void sendOtp() async {
+    EmailAuth.sessionName = "Test Session";
+    var res = await EmailAuth.sendOtp(receiverMail: emailController.text);
+    if (res) {
+      print('send');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Send Email For you', MediaQuery.of(context).size,kDialogSuccessColor),
+      );
+    } else {
+      print('problem');
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'There is a problem, try again', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+    }
+  }
+
+  void verifyOtp() async {
+    var res = EmailAuth.validate(
+        receiverMail: emailController.text, userOTP: otpController.text);
+    if (res) {
+      print('otp');
+      Navigator.popAndPushNamed(context, GetUsernameScreen.id);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Wrong OTP', MediaQuery.of(context).size,kDialogErrorColor),
+      );
+      print('invalid');
+    }
   }
 
   @override
@@ -123,7 +158,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                     width: MediaQuery.of(context).size.width,
                     margin: EdgeInsets.symmetric(horizontal: 18.0),
                     padding:
-                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+                    EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
                     child: Column(
                       children: <Widget>[
                         Text(
@@ -139,65 +174,22 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                           child: Column(
                             children: <Widget>[
                               TextField(
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                    labelText: "Name*",
-                                    labelStyle: TextStyle(fontSize: 14.0),
-                                    suffixIcon: Icon(
-                                      Icons.person,
-                                      size: 17.0,
-                                    )),
-                              ),
-                              TextField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                     labelText: "Email*",
                                     labelStyle: TextStyle(fontSize: 14.0),
-                                    suffixIcon: Icon(
-                                      Icons.mail,
-                                      size: 17.0,
+                                    suffixIcon: TextButton(
+                                      child: Text('Send OTP'),
+                                      onPressed: () => sendOtp(),
                                     )),
                               ),
                               TextField(
-                                controller: passwordController,
-                                obscureText: _hidePassword,
+                                controller: otpController,
                                 decoration: InputDecoration(
-                                    labelText: "Password*",
-                                    labelStyle: TextStyle(fontSize: 14.0),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _hidePassword = !_hidePassword;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        _hidePassword
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                        size: 17.0,
-                                      ),
-                                    )),
-                              ),
-                              TextField(
-                                controller: rePasswordController,
-                                obscureText: _hidePassword,
-                                decoration: InputDecoration(
-                                    labelText: "RePassword*",
-                                    labelStyle: TextStyle(fontSize: 14.0),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _hidePassword = !_hidePassword;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        _hidePassword
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                        size: 17.0,
-                                      ),
-                                    )),
+                                  labelText: "OTP*",
+                                  labelStyle: TextStyle(fontSize: 14.0),
+                                ),
                               ),
                             ],
                           ),
@@ -207,11 +199,12 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                              FocusScopeNode currentFocus = FocusScope.of(context);
-                              if (!currentFocus.hasPrimaryFocus) {
-                                currentFocus.unfocus();
-                              }
-                              onRegisterPressed();
+                            FocusScopeNode currentFocus =
+                            FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            verifyOtp();
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -228,7 +221,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                             width: double.infinity,
                             child: Center(
                               child: Text(
-                                "Register",
+                                "Verify OTP",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
@@ -243,8 +236,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text("Or Register using",
-                                style:
-                                    TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(width: 5.0),
                             GestureDetector(
                               onTap: () {
@@ -276,116 +268,4 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
     );
   }
 
-  bool isValid() {
-    name = nameController.text;
-    email = emailController.text;
-    password = passwordController.text;
-    rePassword = rePasswordController.text;
-    if (name.length == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Fill name', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-
-    if (email.length == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Fill email', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-
-    if (password.length == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Fill password', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-
-    if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Minimum Password length 6 digits', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-
-    if (rePassword.length == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Fill re-password', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-
-    if (rePassword.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Minimum rePassword length 6 digits', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-
-    if (password != rePassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Password and rePassword do not match', MediaQuery.of(context).size),
-      );
-      return false;
-    }
-    return true;
-  }
-
-  uploadInfo() async {
-    showLoadingProgress = true;
-    setState(() {});
-    try {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      auth.currentUser.updateDisplayName(nameController.text);
-      if (userCredential != null) {
-        print('user is: ${userCredential.user}');
-        uploadToDatabase(userCredential.user);
-      } else {
-        print('user is null');
-      }
-    } catch (e) {
-      print('myError: $e');
-      showLoadingProgress = false;
-      setState(() {});
-    }
-  }
-
-  onRegisterPressed() {
-    if (isValid()) {
-      uploadInfo();
-    } else {
-      // pass
-    }
-  }
-
-  Future<void> uploadToDatabase(User user) async {
-    try {
-      setState(() {});
-      Navigator.popAndPushNamed(
-        context,
-        AuthScreen.id,
-      );
-      showLoadingProgress = false;
-      return fireStore.collection('UsersEmail').add({
-        'uid': user.uid,
-        'email': user.email,
-      });
-    } catch (e) {
-      setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'sth went wrong', MediaQuery.of(context).size),
-      );
-      print(e);
-    }
-  }
 }

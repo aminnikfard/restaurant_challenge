@@ -3,16 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-// import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
 import '../static_methods.dart';
 import 'auth_screen.dart';
-// import 'login_to_challenge_room.dart';
+
 
 class LoginScreen extends StatefulWidget {
   static String id = 'login_screen';
@@ -30,14 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
   FocusNode node;
 
   DatabaseReference dbRef =
-      FirebaseDatabase.instance.reference().child('Users');
+  FirebaseDatabase.instance.reference().child('Users');
 
   String email, password;
 
   bool showLoadingProgress = false;
 
   getUser() {
-    print('fff');
     User user = auth.currentUser;
     if (user != null) {
       getUserInfoFromDatabase(user);
@@ -48,13 +45,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    print('dddd');
     emailController = TextEditingController();
     passwordController = TextEditingController();
 
     Future.delayed(
       Duration(microseconds: 200),
-      () {
+          () {
         getUser();
       },
     );
@@ -121,11 +117,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.symmetric(horizontal: 18.0),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+                  EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
                   child: Column(
                     children: [
                       Text(
-                        "Login Account Using Email Address",
+                        "Login Account",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
@@ -140,10 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                labelText: "Email*",
+                                labelText: "UserName*",
                                 labelStyle: TextStyle(fontSize: 14.0),
                                 suffixIcon: Icon(
-                                  Icons.mail,
+                                  Icons.person,
                                   size: 17.0,
                                 ),
                               ),
@@ -208,27 +204,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         height: size.height * 0.02,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        // children: <Widget>[
-                        //   Text("Or Login using",
-                        //       style:
-                        //       TextStyle(fontWeight: FontWeight.bold)),
-                        //   SizedBox(width: 5.0),
-                        //   GestureDetector(
-                        //     onTap: () {
-                        //
-                        //     },
-                        //     child: Text(
-                        //       "Phone Number",
-                        //       style: TextStyle(
-                        //           decoration: TextDecoration.underline,
-                        //           fontWeight: FontWeight.bold,
-                        //           color: Theme.of(context).primaryColor),
-                        //     ),
-                        //   )
-                        // ],
-                      ),
                       SizedBox(
                         height: size.height * 0.02,
                       ),
@@ -241,11 +216,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
+                          Text("Register Now : ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor)),
                           SocialIcon(
-                            iconSrc: Icons.person_add_alt_1_rounded,
+                            iconSrc: Icons.email_rounded,
                             press: () {
                               FocusScopeNode currentFocus =
-                                  FocusScope.of(context);
+                              FocusScope.of(context);
                               if (!currentFocus.hasPrimaryFocus) {
                                 currentFocus.unfocus();
                               }
@@ -254,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                           SocialIcon(
-                            iconSrc: Icons.phone_forwarded_rounded,
+                            iconSrc: Icons.phone,
                             press: () {
                               Navigator.pushNamed(
                                   context, RegisterPhoneScreen.id);
@@ -278,16 +257,23 @@ class _LoginScreenState extends State<LoginScreen> {
     password = passwordController.text;
     if (email.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar('Fill email', MediaQuery.of(context).size),
+        StaticMethods.mySnackBar('Fill email', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    if (password.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Fill password', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
     if (password.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar('Fill password', MediaQuery.of(context).size),
+        StaticMethods.mySnackBar('Wrong Password', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
+
     return true;
   }
 
@@ -295,10 +281,9 @@ class _LoginScreenState extends State<LoginScreen> {
     showLoadingProgress = true;
     setState(() {});
     try {
-      print('signing in');
       UserCredential userCredential =
       await auth.signInWithEmailAndPassword(
-          email: email, password: password).onError((error, stackTrace) => error);
+          email: email + '@test.com', password: password).onError((error, stackTrace) => error);
       print('after singing in');
       showLoadingProgress = false;
       setState(() {});
@@ -308,13 +293,13 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'This User does not exist', MediaQuery.of(context).size),
+              'This User does not exist', MediaQuery.of(context).size, kDialogErrorColor),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'There was a problem logging in.', MediaQuery.of(context).size),
+            'There was a problem logging in.', MediaQuery.of(context).size, kDialogErrorColor),
       );
       print('myError: $e');
       showLoadingProgress = false;
@@ -326,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (isValid()) {
       uploadInfo();
     } else {
-      // pass
+
     }
   }
 
@@ -343,9 +328,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       showLoadingProgress = false;
       setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar('sth went wrong', MediaQuery.of(context).size),
-      );
       print(e);
     }
   }
