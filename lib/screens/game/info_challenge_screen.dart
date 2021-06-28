@@ -293,9 +293,6 @@ class _InfoChallengeState extends State<InfoChallenge> {
                                       listen: false)
                                       .isSelected) {
                                     insertToDb();
-                                    print('true');
-                                  } else {
-                                    print('false');
                                   }
                                 },
                                 child: Container(
@@ -363,6 +360,33 @@ class _InfoChallengeState extends State<InfoChallenge> {
         'restaurantId': Provider.of<Notifier>(context, listen: false).id,
       }
     });
+
+    // final DatabaseReference dbRef2 = FirebaseDatabase.instance
+    //     .reference()
+    //     .child('challenges')
+    //     .child(args['referralCode'])
+    //     .child('restaurant');
+    // db
+    final DatabaseReference dbRef1 = FirebaseDatabase.instance
+        .reference()
+        .child('restaurant')
+        .child( Provider.of<Notifier>(context, listen: false).id);
+    dbRef1.update({
+      'restaurantName': Provider.of<Notifier>(context, listen: false).name,
+      'restaurantImg': Provider.of<Notifier>(context, listen: false).img,
+      'restaurantRate': Provider.of<Notifier>(context, listen: false).rate,
+      'restaurantAddress':
+      Provider.of<Notifier>(context, listen: false).address,
+      'restaurantId': Provider.of<Notifier>(context, listen: false).id,
+      'restaurantReview': Provider.of<Notifier>(context, listen: false).review+1,
+
+    });
+
+
+
+
+
+
     Provider.of<Notifier>(context, listen: false).changeRole('user');
     Navigator.pushNamed(context, GameScreen.id);
   }

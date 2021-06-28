@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -134,13 +135,26 @@ class _ListRestaurantState extends State<ListRestaurant> {
   InkWell cardListRestaurantWidget(
       String img, String name, int rate, String address, int review,String id) {
     return InkWell(
-      onTap: () {
+      onTap: () async{
         Provider.of<Notifier>(context, listen: false).changeIsSelected(true);
         Provider.of<Notifier>(context, listen: false).changeImg(img);
         Provider.of<Notifier>(context, listen: false).changeName(name);
         Provider.of<Notifier>(context, listen: false).changeRate(rate);
         Provider.of<Notifier>(context, listen: false).changeAddress(address);
         Provider.of<Notifier>(context, listen: false).changeRestaurantId(id);
+
+        final DatabaseReference dbRef1 = FirebaseDatabase.instance
+            .reference()
+            .child('restaurant')
+            .child( Provider.of<Notifier>(context, listen: false).id);
+        await dbRef1.once().then(( value) {
+          print(value.value['restaurantReview']);
+
+          Provider.of<Notifier>(context, listen: false).changeRestaurantReview(value.value['restaurantReview']);
+          print('true');
+
+
+        });
         Navigator.pop(context);
       },
       child: Card(

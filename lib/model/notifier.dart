@@ -5,32 +5,40 @@ class Notifier extends ChangeNotifier {
   bool isSelected = false;
   bool isStartPlay = false;
   bool isEndPlay = false;
-  int indexUser=0;
+  int indexUser = 0;
   String location;
   String img;
-  String name='';
-  String id='';
+  String name = '';
+  String id = '';
   int rate;
+  int review = 0;
   String address;
   String role;
   String referral;
-  String challengeName='';
-  List<Restaurant> restaurantList=[];
-  List<Users> users=[];
-
+  String challengeName = '';
+  List<Restaurant> restaurantList = [];
+  List<Users> users = [];
 
   changeIsSelected(bool isSelected) {
     this.isSelected = isSelected;
     notifyListeners();
   }
+
+  changeRestaurantReview(int review) {
+    this.review = review;
+    notifyListeners();
+  }
+
   changeIndexUser(int indexUser) {
     this.indexUser = indexUser;
     notifyListeners();
   }
+
   changeIsStartPlay(bool isStartPlay) {
     this.isStartPlay = isStartPlay;
     notifyListeners();
   }
+
   changeIsEndPlay(bool isEndPlay) {
     this.isEndPlay = isEndPlay;
     notifyListeners();
@@ -40,18 +48,22 @@ class Notifier extends ChangeNotifier {
     this.restaurantList = restaurantList;
     notifyListeners();
   }
+
   changeUsersList(List<Users> users) {
     this.users = users;
     notifyListeners();
   }
+
   changeReferral(String referral) {
     this.referral = referral;
     notifyListeners();
   }
+
   changeRestaurantId(String restaurantId) {
     this.id = restaurantId;
     notifyListeners();
   }
+
   changeChallengeName(String challengeName) {
     this.challengeName = challengeName;
     notifyListeners();
