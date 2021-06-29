@@ -11,31 +11,6 @@ class RestaurantList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    List<Restaurant> uniqueRestaurant = [];
-    for (int i = 0;
-        i < Provider.of<Notifier>(context, listen: false).restaurantList.length;
-        i++) {
-      bool check = false;
-
-      for (int j = 0; j < uniqueRestaurant.length; j++) {
-        if (uniqueRestaurant.elementAt(j).restaurantId ==
-            Provider.of<Notifier>(context, listen: false)
-                .restaurantList
-                .elementAt(i)
-                .restaurantId) {
-          check = true;
-          break;
-        }
-      }
-      if (check) {
-        print('ok');
-      } else {
-        uniqueRestaurant.add(Provider.of<Notifier>(context, listen: false)
-            .restaurantList
-            .elementAt(i));
-      }
-    }
-
     return Container(
       decoration: BoxDecoration(
           color: Color(0xFFFF5715),
@@ -72,22 +47,27 @@ class RestaurantList extends StatelessWidget {
               ),
             ),
           ),
-          uniqueRestaurant.length == 0
-          ? Expanded(child: Center(child: Text('No restaurant found',style: TextStyle(fontSize: 20,color: kColorWhite),)))
-          : ListView.builder(
-    scrollDirection: Axis.vertical,
-    shrinkWrap: true,
-    itemCount: uniqueRestaurant.length,
-    itemBuilder: (context, index) {
-    print(uniqueRestaurant.length);
-    return cardListRestaurantWidget(
-    uniqueRestaurant.elementAt(index).restaurantImg,
-    uniqueRestaurant.elementAt(index).restaurantName,
-    uniqueRestaurant.elementAt(index).restaurantRate,
-    uniqueRestaurant.elementAt(index).restaurantAddress,
-    );
-    },
-    ),
+          Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.length == 0
+              ? Expanded(
+                  child: Center(
+                      child: Text(
+                  'No restaurant found',
+                  style: TextStyle(fontSize: 20, color: kColorWhite),
+                )))
+              : ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount:  Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.length,
+                  itemBuilder: (context, index) {
+                    print( Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.length);
+                    return cardListRestaurantWidget(
+                      Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.elementAt(index).restaurantImg,
+                      Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.elementAt(index).restaurantName,
+                      Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.elementAt(index).restaurantRate,
+                      Provider.of<Notifier>(context, listen: false).uniqueRestaurantList.elementAt(index).restaurantAddress,
+                    );
+                  },
+                ),
         ],
       ),
     );

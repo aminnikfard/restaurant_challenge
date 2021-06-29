@@ -5,6 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
+import 'package:restaurant_challenge_app/model/users.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/info_challenge_screen.dart';
@@ -238,7 +239,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
     if(check) {
       try {
         String challengeName, city, date, time,referralCode;
-        bool isActive;
+        bool isActive=true;
         await dbRef.child(code)
             .once()
             .then((value) {
@@ -246,8 +247,20 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
           city = value.value['city'].toString();
           time = value.value['time'].toString();
           date = value.value['date'].toString();
-          isActive = value.value['isActive'];
+          // isActive = value.value['isActive'];
           referralCode = value.value['referralCode'].toString();
+          if(value.value['winner']!=null){
+            Restaurant restaurant = Restaurant(
+                restaurantAddress: value.value['winner']['restaurantAddress'],
+                restaurantImg: value.value['winner']['restaurantImg'],
+                restaurantName: value.value['winner']['restaurantName'],
+                restaurantRate: value.value['winner']['restaurantRate'],
+                restaurantId: value.value['winner']['restaurantId']);
+            Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(restaurant);
+            Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(value.value['winner']['restaurantScore']);
+            Provider.of<Notifier>(context, listen: false).changeWinnerReview(value.value['winner']['restaurantReview']);
+            Provider.of<Notifier>(context, listen: false).changeIsActive(value.value['isActive']);
+          }
         });
         showLoadingProgress = false;
         setState(() {});

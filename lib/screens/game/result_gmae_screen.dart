@@ -83,7 +83,7 @@ class _ResultGamaState extends State<ResultGama> {
                       return Center(
                         child: FlutterTicketWidget2(
                           width: size.width / 1.15,
-                          height: size.height / 1.45,
+                          height: size.height / 1.3,
                           isCornerRounded: true,
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
@@ -260,18 +260,130 @@ class _ResultGamaState extends State<ResultGama> {
                                     MySeparator(color: Colors.grey),
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 30.0),
-                                  child: Center(
-                                    child: Text(
-                                      'The result of the game: The game is not over yet',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
+                                if(Provider.of<Notifier>(context, listen: false).isActive)...{
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 30.0),
+                                    child: Center(
+                                      child: Text(
+                                        'The result of the game: The game is not over yet',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+
+                                },
+
+                                if(!Provider.of<Notifier>(context, listen: false).isActive)...{
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        color: Color(0xFFFF5715),
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0, vertical: 5.0),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: 50,
+                                            width: 50,
+                                            child: CircleAvatar(
+                                              backgroundImage: NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
+                                            ),
+                                            // decoration: BoxDecoration(
+                                            //     image: DecorationImage(
+                                            //         image: NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg))),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantName,
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    for (var i = 1; i < 6; i++)...{
+                                                      if(i <= Provider
+                                                          .of<Notifier>(
+                                                          context, listen: true)
+                                                          .winnerRestaurant
+                                                          .restaurantRate)...{
+
+                                                        Icon(
+                                                          Icons.star_rate_sharp,
+                                                          size: 18,
+                                                          color: Colors.orange,
+                                                        ),
+                                                      },
+                                                      if(i > Provider
+                                                          .of<Notifier>(
+                                                          context, listen: true)
+                                                          .winnerRestaurant
+                                                          .restaurantRate)...{
+
+                                                        Icon(
+                                                          Icons.star_border_rounded,
+                                                          size: 18,
+                                                          color: Colors.orange,
+                                                        ),
+                                                      }
+                                                    }
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantAddress,
+                                                  style: TextStyle(fontSize: 10),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Container(
+                                            child: Column(
+                                              children: [
+                                                Icon(Icons.visibility),
+                                                Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+
+                                },
+
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 10.0, left: 75.0, right: 75.0),

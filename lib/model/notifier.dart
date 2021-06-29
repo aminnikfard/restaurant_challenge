@@ -5,6 +5,7 @@ class Notifier extends ChangeNotifier {
   bool isSelected = false;
   bool isStartPlay = false;
   bool isEndPlay = false;
+  bool isActive = false;
   int indexUser = 0;
   String location;
   String img;
@@ -17,7 +18,18 @@ class Notifier extends ChangeNotifier {
   String referral;
   String challengeName = '';
   List<Restaurant> restaurantList = [];
+  List<Restaurant> uniqueRestaurantList = [];
+  List<int> countRestaurantList = [];
   List<Users> users = [];
+
+  Restaurant winnerRestaurant=Restaurant(restaurantName: 'Restaurant name unknown',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address');
+  int winnerRestaurantScore;
+  int winnerReview;
+
+  changeWinnerRestaurant(Restaurant winnerRestaurant) {
+    this.winnerRestaurant = winnerRestaurant;
+    notifyListeners();
+  }
 
   changeIsSelected(bool isSelected) {
     this.isSelected = isSelected;
@@ -26,6 +38,16 @@ class Notifier extends ChangeNotifier {
 
   changeRestaurantReview(int review) {
     this.review = review;
+    notifyListeners();
+  }
+
+  changeWinnerRestaurantScore(int winnerRestaurantScore) {
+    this.winnerRestaurantScore = winnerRestaurantScore;
+    notifyListeners();
+  }
+
+  changeWinnerReview(int winnerReview) {
+    this.winnerReview = winnerReview;
     notifyListeners();
   }
 
@@ -39,6 +61,11 @@ class Notifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  changeIsActive(bool isActive) {
+    this.isActive = isActive;
+    notifyListeners();
+  }
+
   changeIsEndPlay(bool isEndPlay) {
     this.isEndPlay = isEndPlay;
     notifyListeners();
@@ -46,6 +73,16 @@ class Notifier extends ChangeNotifier {
 
   changeRestaurantList(List<Restaurant> restaurantList) {
     this.restaurantList = restaurantList;
+    notifyListeners();
+  }
+
+  changeUniqueRestaurantList(List<Restaurant> uniqueRestaurantList) {
+    this.uniqueRestaurantList = uniqueRestaurantList;
+    notifyListeners();
+  }
+
+  changeCountRestaurantList(List<int> countRestaurantList) {
+    this.countRestaurantList = countRestaurantList;
     notifyListeners();
   }
 

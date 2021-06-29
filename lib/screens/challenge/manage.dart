@@ -23,7 +23,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
 
   // final _auth = FirebaseAuth.instance;
 
-  final double rate = 5;
+  final double rate = 6;
 
   String referral;
 
@@ -32,48 +32,60 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
   String date;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    stream(context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    referral=Provider.of<Notifier>(context, listen: true).referral;
-    bool isPlay=Provider.of<Notifier>(context, listen: true).isStartPlay;
+    referral = Provider.of<Notifier>(context, listen: false).referral;
     Size size = MediaQuery.of(context).size;
     args = ModalRoute.of(context).settings.arguments;
     date = args['date'].substring(0, 10);
-    String isStartPlay=Provider.of<Notifier>(context, listen: true).isStartPlay==true ? 'Yes' : 'No';
-    String isEndPlay=Provider.of<Notifier>(context, listen: true).isEndPlay==true ? 'Yes' : 'No';
+    String isStartPlay =
+        Provider.of<Notifier>(context, listen: true).isStartPlay == true
+            ? 'Yes'
+            : 'No';
+    String isEndPlay =
+        Provider.of<Notifier>(context, listen: true).isEndPlay == true
+            ? 'Yes'
+            : 'No';
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          isPlay
-              ? Icons.play_circle_outline_rounded
-              : Icons.pause_circle_outline_sharp ,
-          color: kPrimaryColor,
-          size: 45,
-        ),
-        backgroundColor: kColorWhite,
-        onPressed: () {
-          isPlay = !isPlay;
-          changeStatus(context,isPlay);
-        },
-      ),
+      floatingActionButton: Provider.of<Notifier>(context, listen: true)
+              .isActive
+          ? FloatingActionButton(
+              child: Icon(
+                Icons.stop_circle_outlined,
+                color: kPrimaryColor,
+                size: 45,
+              ),
+              backgroundColor: kColorWhite,
+              onPressed: () {
+                changeStatus(context,
+                    !Provider.of<Notifier>(context, listen: false).isActive);
+              },
+            )
+          : SizedBox(),
       appBar: AppBar(
-        title: Text(
-            'Challenge'),
+        title: Text('Challenge'),
         centerTitle: true,
         elevation: 0,
         actions: [
-          IconButton(
-            iconSize: 20.0,
-            icon: Icon(
-              isPlay
-                  ? Icons.play_circle_outline_rounded
-                  : Icons.pause_circle_outline_sharp ,
+          if (Provider.of<Notifier>(context, listen: true).isActive) ...{
+            IconButton(
+              iconSize: 20.0,
+              icon: Icon(
+                Icons.stop_circle_outlined,
+              ),
+              onPressed: () {
+                changeStatus(context,
+                    !Provider.of<Notifier>(context, listen: false).isActive);
+                // Navigator.pushNamed(context, LoginScreen.id);
+              },
             ),
-            onPressed: () {
-              isPlay = !isPlay;
-              changeStatus(context,isPlay);
-              // Navigator.pushNamed(context, LoginScreen.id);
-            },
-          ),
+          },
           IconButton(
             iconSize: 20.0,
             icon: Icon(Icons.add_alert),
@@ -138,21 +150,27 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 12.0, right: 40.0),
-                                  child: ticketDetailsWidget(
-                                      'Date', '$date', 'Time', '${args['time']}'),
+                                  child: ticketDetailsWidget('Date', '$date',
+                                      'Time', '${args['time']}'),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 12.0, right: 40.0),
                                   child: ticketDetailsWidget(
-                                      'City', '${args['city']}', 'Users', '0'),
+                                      'City',
+                                      '${args['city']}',
+                                      'Users',
+                                      Provider.of<Notifier>(context,
+                                              listen: true)
+                                          .users
+                                          .length
+                                          .toString()),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 12.0, right: 40.0),
-                                  child: ticketDetailsWidget(
-                                      'Play Game', '$isStartPlay',
-                                      'End Game', '$isEndPlay'),
+                                  child: ticketDetailsWidget('Play Game',
+                                      '$isStartPlay', 'End Game', '$isEndPlay'),
                                 ),
                               ],
                             ),
@@ -178,10 +196,12 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                               Container(
                                 height: 50,
                                 width: 50,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/icons/pizza1.png"))),
+                                child: CircleAvatar(
+                                  backgroundImage: NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
+                                ),
+                                // decoration: BoxDecoration(
+                                //     image: DecorationImage(
+                                //         image: NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg))),
                               ),
                               SizedBox(
                                 width: 10,
@@ -194,7 +214,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Restaurant name unknown",
+                                      Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantName,
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600),
@@ -204,19 +224,39 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                     ),
                                     Row(
                                       children: [
-                                        for (var i = 0; i < rate; i++)
-                                          Icon(
-                                            Icons.star_border_rounded,
-                                            size: 18,
-                                            color: Colors.orange,
-                                          ),
+                                        for (var i = 1; i < rate; i++)...{
+                                          if(i <= Provider
+                                              .of<Notifier>(
+                                              context, listen: true)
+                                              .winnerRestaurant
+                                              .restaurantRate)...{
+
+                                            Icon(
+                                              Icons.star_rate_sharp,
+                                              size: 18,
+                                              color: Colors.orange,
+                                            ),
+                                          },
+                                          if(i > Provider
+                                              .of<Notifier>(
+                                              context, listen: true)
+                                              .winnerRestaurant
+                                              .restaurantRate)...{
+
+                                            Icon(
+                                              Icons.star_border_rounded,
+                                              size: 18,
+                                              color: Colors.orange,
+                                            ),
+                                          }
+                                        }
                                       ],
                                     ),
                                     SizedBox(
                                       height: 5,
                                     ),
                                     Text(
-                                      "Restaurant address unknown",
+                                      Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantAddress,
                                       style: TextStyle(fontSize: 10),
                                     ),
                                     SizedBox(
@@ -232,7 +272,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 child: Column(
                                   children: [
                                     Icon(Icons.visibility),
-                                    Text('review'),
+                                    Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
                                   ],
                                 ),
                               ),
@@ -248,15 +288,29 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                         children: [
                           Column(
                             children: [
-                              Text('Referral Code:',style: TextStyle(fontSize: 12),),
-                              Text(Provider.of<Notifier>(context, listen: true).referral.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                              Text(
+                                'Referral Code:',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              Text(
+                                Provider.of<Notifier>(context, listen: true)
+                                    .referral
+                                    .toString(),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
-                          socialIcon(context,Icons.copy,Colors.black45,"copy"),
-                          socialIcon(context,FontAwesomeIcons.sms,Colors.black87,"sms"),
-                          socialIcon(context,FontAwesomeIcons.telegram,Colors.blueAccent,"telegram"),
-                          socialIcon(context,FontAwesomeIcons.whatsapp,Colors.green,"whatsapp"),
-                          socialIcon(context,FontAwesomeIcons.twitter,Colors.blueAccent,"twitter"),
+                          socialIcon(
+                              context, Icons.copy, Colors.black45, "copy"),
+                          socialIcon(context, FontAwesomeIcons.sms,
+                              Colors.black87, "sms"),
+                          socialIcon(context, FontAwesomeIcons.telegram,
+                              Colors.blueAccent, "telegram"),
+                          socialIcon(context, FontAwesomeIcons.whatsapp,
+                              Colors.green, "whatsapp"),
+                          socialIcon(context, FontAwesomeIcons.twitter,
+                              Colors.blueAccent, "twitter"),
                         ],
                       ),
                     ],
@@ -291,7 +345,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                         });
                   },
                   child: list(context, "restaurant", "Restaurant")),
-              stream(context),
+              // stream(context),
             ],
           ),
         ),
@@ -299,62 +353,153 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
     );
   }
 
-  changeStatus(BuildContext context, bool isStart) async {
+  changeStatus(BuildContext context, bool isActive) async {
     print('kkkk');
     try {
       DatabaseReference databaseRef =
           dbRef.child(Provider.of<Notifier>(context, listen: false).referral);
-      // DatabaseReference databaseRef = dbRef.push();
-      // if (isStart) {
-      //   await databaseRef.update({
-      //     'isStartPlay': true,
-      //   });
-      //   Provider.of<Notifier>(context, listen: false)
-      //       .changeIsStartPlay(isStart);
-      // } else {
-      //   await databaseRef.update({
-      //     'isEndPlay': true,
-      //   });
-      //   Provider.of<Notifier>(context, listen: false).changeIsEndPlay(true);
-      // }
+
       await databaseRef.update({
-        'isStartPlay': isStart,
+        'isActive': isActive,
+        'isEndPlay': true,
       });
-      Provider.of<Notifier>(context, listen: false).changeIsStartPlay(isStart);
+      Provider.of<Notifier>(context, listen: false).changeIsActive(isActive);
+      List<int> scoreRestaurant = [];
+      for (int i = 0;
+          i <
+              Provider.of<Notifier>(context, listen: false)
+                  .uniqueRestaurantList
+                  .length;
+          i++) {
+        scoreRestaurant.add(1);
+        for (int j = 0;
+            j <
+                Provider.of<Notifier>(context, listen: false)
+                    .restaurantList
+                    .length;
+            j++) {
+          if (Provider.of<Notifier>(context, listen: false)
+                  .uniqueRestaurantList
+                  .elementAt(i)
+                  .restaurantId ==
+              Provider.of<Notifier>(context, listen: false)
+                  .users
+                  .elementAt(j)
+                  .restaurant
+                  .restaurantId) {
+            scoreRestaurant[i] += Provider.of<Notifier>(context, listen: false)
+                    .users
+                    .elementAt(j)
+                    .score *
+                (Provider.of<Notifier>(context, listen: false)
+                        .countRestaurantList
+                        .elementAt(i) *
+                    Provider.of<Notifier>(context, listen: false)
+                        .countRestaurantList
+                        .elementAt(i));
+          }
+        }
+      }
+      for (int j = 0; j < scoreRestaurant.length; j++) {
+        if (scoreRestaurant.elementAt(0) < scoreRestaurant.elementAt(j)) {
+          int a = scoreRestaurant.elementAt(j);
+          scoreRestaurant.remove(j);
+          scoreRestaurant.insert(0, a);
+
+          Restaurant b = Provider.of<Notifier>(context, listen: false)
+              .uniqueRestaurantList
+              .elementAt(j);
+          Provider.of<Notifier>(context, listen: false)
+              .uniqueRestaurantList
+              .remove(j);
+          Provider.of<Notifier>(context, listen: false)
+              .uniqueRestaurantList
+              .insert(0, b);
+          int c = Provider.of<Notifier>(context, listen: false)
+              .countRestaurantList
+              .elementAt(j);
+          Provider.of<Notifier>(context, listen: false)
+              .countRestaurantList
+              .remove(j);
+          Provider.of<Notifier>(context, listen: false)
+              .countRestaurantList
+              .insert(0, c);
+        }
+      }
+      print(Provider.of<Notifier>(context, listen: false).uniqueRestaurantList);
+      print(scoreRestaurant);
+
+      Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(
+          Provider.of<Notifier>(context, listen: false)
+              .uniqueRestaurantList
+              .elementAt(0));
+      Provider.of<Notifier>(context, listen: false).changeWinnerReview(
+          Provider.of<Notifier>(context, listen: false)
+              .countRestaurantList
+              .elementAt(0));
+      Provider.of<Notifier>(context, listen: false)
+          .changeWinnerRestaurantScore(scoreRestaurant.elementAt(0));
+      // scoreRestaurant.sort();
+      databaseRef.child('winner').update({
+        'restaurantName': Provider.of<Notifier>(context, listen: false)
+            .winnerRestaurant
+            .restaurantName,
+        'restaurantImg': Provider.of<Notifier>(context, listen: false)
+            .winnerRestaurant
+            .restaurantImg,
+        'restaurantRate': Provider.of<Notifier>(context, listen: false)
+            .winnerRestaurant
+            .restaurantRate,
+        'restaurantAddress': Provider.of<Notifier>(context, listen: false)
+            .winnerRestaurant
+            .restaurantAddress,
+        'restaurantId': Provider.of<Notifier>(context, listen: false)
+            .winnerRestaurant
+            .restaurantId,
+        'restaurantScore':
+            Provider.of<Notifier>(context, listen: false).winnerRestaurantScore,
+        'restaurantReview':
+            Provider.of<Notifier>(context, listen: false).winnerReview
+      });
+      print('eeeeeeeeee');
     } catch (e) {
+      print('aaaaaa');
+
       print(e);
     }
   }
 
-  GestureDetector socialIcon(BuildContext context,IconData iconSrc,Color color,String nameIcon){
+  GestureDetector socialIcon(
+      BuildContext context, IconData iconSrc, Color color, String nameIcon) {
     return GestureDetector(
-      onTap: () async{
-        String massage="You have been invited to the challenge ${args['challengeName']} this is a challenge between my friends during the day $date and at the hour ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
-        if(nameIcon == "copy"){
+      onTap: () async {
+        String massage =
+            "You have been invited to the challenge ${args['challengeName']} this is a challenge between my friends during the day $date and at the hour ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
+        if (nameIcon == "copy") {
           SocialShare.copyToClipboard(
             massage,
           ).then((data) {
             print(data);
           });
-        }else if(nameIcon == "sms"){
+        } else if (nameIcon == "sms") {
           SocialShare.shareSms(
             massage,
           ).then((data) {
             print(data);
           });
-        }else if(nameIcon == "telegram"){
+        } else if (nameIcon == "telegram") {
           SocialShare.shareTelegram(
             massage,
           ).then((data) {
             print(data);
           });
-        }else if(nameIcon == "whatsapp"){
+        } else if (nameIcon == "whatsapp") {
           SocialShare.shareWhatsapp(
             massage,
           ).then((data) {
             print(data);
           });
-        }else if(nameIcon == "twitter"){
+        } else if (nameIcon == "twitter") {
           SocialShare.shareTwitter(
             massage,
           ).then((data) {
@@ -512,50 +657,107 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
     );
   }
 
-  Widget stream(BuildContext context) {
-    return StreamBuilder(
-      stream: dbRef.child(Provider.of<Notifier>(context, listen: true).referral).onValue,
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.hasData && snapshot.data.snapshot.value != null) {
-          List<Users> users = [];
-          List<Restaurant> restaurants = [];
-          Map map = snapshot.data.snapshot.value;
+  stream(BuildContext context) {
+    dbRef
+        .child(Provider.of<Notifier>(context, listen: false).referral)
+        .once()
+        .then((value) {
+      List<Users> users = [];
+      List<Restaurant> restaurants = [];
+      Map map = value.value;
 
-          Provider.of<Notifier>(context, listen: false)
-              .changeIsStartPlay(map['isStartPlay']);
+      Provider.of<Notifier>(context, listen: false)
+          .changeIsStartPlay(map['isStartPlay']);
+      Provider.of<Notifier>(context, listen: false)
+          .changeIsActive(map['isActive']);
 
-          Provider.of<Notifier>(context, listen: false)
-              .changeIsEndPlay(map['isEndPlay']);
+      Provider.of<Notifier>(context, listen: false)
+          .changeIsEndPlay(map['isEndPlay']);
+      if(map['winner']!=null){
+        Restaurant restaurant = Restaurant(
+            restaurantAddress: map['winner']['restaurantAddress'],
+            restaurantImg: map['winner']['restaurantImg'],
+            restaurantName: map['winner']['restaurantName'],
+            restaurantRate: map['winner']['restaurantRate'],
+            restaurantId: map['winner']['restaurantId']);
+        Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(restaurant);
+        Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(map['winner']['restaurantScore']);
+        Provider.of<Notifier>(context, listen: false).changeWinnerReview(map['winner']['restaurantReview']);
 
-          if (map['users'] != null) {
-            for (Map each in map['users'].values) {
-              Restaurant restaurant = Restaurant(
-                  restaurantAddress: each['restaurant']
-                      ['restaurantAddress'],
-                  restaurantImg: each['restaurant']['restaurantImg'],
-                  restaurantName: each['restaurant']['restaurantName'],
-                  restaurantRate: each['restaurant']['restaurantRate'],
-                  restaurantId: each['restaurant']['restaurantId']);
-              restaurants.add(restaurant);
 
-              Users user = Users(
-                  isPlay: each['isPlay'],
-                  restaurant: restaurant,
-                  score: each['score'],
-                  userName: each['name'],
-                  id: each['id']);
-              users.add(user);
-            }
-          }
-          print('users');
-          print(users);
-          Provider.of<Notifier>(context, listen: false)
-              .changeUsersList(users);
-          Provider.of<Notifier>(context, listen: false)
-              .changeRestaurantList(restaurants);
+      }
+      if (map['users'] != null) {
+        for (Map each in map['users'].values) {
+          Restaurant restaurant = Restaurant(
+              restaurantAddress: each['restaurant']['restaurantAddress'],
+              restaurantImg: each['restaurant']['restaurantImg'],
+              restaurantName: each['restaurant']['restaurantName'],
+              restaurantRate: each['restaurant']['restaurantRate'],
+              restaurantId: each['restaurant']['restaurantId']);
+          restaurants.add(restaurant);
+
+          Users user = Users(
+              isPlay: each['isPlay'],
+              restaurant: restaurant,
+              score: each['score'],
+              userName: each['name'],
+              id: each['id']);
+          users.add(user);
         }
-        return Text('');
-      },
-    );
+      }
+      Provider.of<Notifier>(context, listen: false).changeUsersList(users);
+      Provider.of<Notifier>(context, listen: false)
+          .changeRestaurantList(restaurants);
+      List<Restaurant> uniqueRestaurant = [];
+      List<int> countRestaurant = [];
+      for (int i = 0;
+          i <
+              Provider.of<Notifier>(context, listen: false)
+                  .restaurantList
+                  .length;
+          i++) {
+        bool check = false;
+
+        for (int j = 0; j < uniqueRestaurant.length; j++) {
+          if (uniqueRestaurant.elementAt(j).restaurantId ==
+              Provider.of<Notifier>(context, listen: false)
+                  .restaurantList
+                  .elementAt(i)
+                  .restaurantId) {
+            check = true;
+            break;
+          }
+        }
+        if (check) {
+          print('ok');
+        } else {
+          uniqueRestaurant.add(Provider.of<Notifier>(context, listen: false)
+              .restaurantList
+              .elementAt(i));
+        }
+      }
+      for (int i = 0; i < uniqueRestaurant.length; i++) {
+        countRestaurant.add(0);
+        for (int j = 0;
+            j <
+                Provider.of<Notifier>(context, listen: false)
+                    .restaurantList
+                    .length;
+            j++) {
+          if (uniqueRestaurant.elementAt(i).restaurantId ==
+              Provider.of<Notifier>(context, listen: false)
+                  .restaurantList
+                  .elementAt(j)
+                  .restaurantId) {
+            countRestaurant[i]++;
+          }
+        }
+      }
+
+      Provider.of<Notifier>(context, listen: false)
+          .changeUniqueRestaurantList(uniqueRestaurant);
+      Provider.of<Notifier>(context, listen: false)
+          .changeCountRestaurantList(countRestaurant);
+    });
   }
 }
