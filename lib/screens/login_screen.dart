@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                labelText: "UserName*",
+                                labelText: "Email*",
                                 labelStyle: TextStyle(fontSize: 14.0),
                                 suffixIcon: Icon(
                                   Icons.person,
@@ -257,13 +257,13 @@ class _LoginScreenState extends State<LoginScreen> {
     password = passwordController.text;
     if (email.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar('Fill email', MediaQuery.of(context).size, kDialogErrorColor),
+        StaticMethods.mySnackBar('Please Fill email', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
     if (password.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar('Fill password', MediaQuery.of(context).size, kDialogErrorColor),
+        StaticMethods.mySnackBar('Please Fill password', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
@@ -283,8 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       UserCredential userCredential =
       await auth.signInWithEmailAndPassword(
-          email: email + '@test.com', password: password).onError((error, stackTrace) => error);
-      print('after singing in');
+          email: email, password: password).onError((error, stackTrace) => error);
       showLoadingProgress = false;
       setState(() {});
       if (userCredential != null) {
@@ -299,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'There was a problem logging in.', MediaQuery.of(context).size, kDialogErrorColor),
+            'Wrong Email or Password', MediaQuery.of(context).size, kDialogErrorColor),
       );
       print('myError: $e');
       showLoadingProgress = false;

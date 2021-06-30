@@ -41,8 +41,10 @@ dependencies:
   lottie: ^1.0.1
   provider: ^5.0.0
   circular_countdown_timer: ^0.2.0
-  social_share: ^2.1.1
+#  social_share: ^2.1.1
   email_auth: ^0.0.1+4
+
+
 
 
 dev_dependencies:

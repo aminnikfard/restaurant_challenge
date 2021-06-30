@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_challenge_app/screens/get_username_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 
@@ -23,18 +23,18 @@ class RegisterPhoneScreen extends StatefulWidget {
 
 class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
   final _auth = FirebaseAuth.instance;
-
+  FirebaseFirestore fireStore = FirebaseFirestore.instance;
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
-
+  final fullNameController = TextEditingController();
   String verificationId;
 
   bool showLoading = false;
 
-  String phoneNumber;
+  String phoneNumber, fullName;
 
 
   getUser() {
@@ -68,13 +68,14 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
     });
     try {
       final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
+      await _auth.signInWithCredential(phoneAuthCredential);
       setState(() {
         showLoading = false;
       });
 
       if (authCredential?.user != null) {
-        Navigator.popAndPushNamed(context, GetUsernameScreen.id);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            AuthScreen.id, (Route<dynamic> route) => false);
       }
     } on FirebaseAuthException {
       setState(() {
@@ -153,13 +154,23 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                 child: Column(
                   children: <Widget>[
                     TextField(
+                      controller: fullNameController,
+                      decoration: InputDecoration(
+                          labelText: "Full Name*",
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          suffixIcon: Icon(
+                            Icons.person,
+                            size: 20.0,
+                          )),
+                    ),
+                    TextField(
                       controller: phoneController,
                       decoration: InputDecoration(
                           labelText: "Phone Number*",
                           labelStyle: TextStyle(fontSize: 14.0),
                           suffixIcon: Icon(
                             Icons.phone,
-                            size: 17.0,
+                            size: 20.0,
                           )),
                     ),
                     Padding(
@@ -186,6 +197,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                           showLoading = false;
                         });
                         //signInWithPhoneAuthCredential(phoneAuthCredential);
+
                       },
                       verificationFailed: (FirebaseAuthException e) async {
                         setState(() {
@@ -344,10 +356,12 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
               GestureDetector(
                 onTap: () async {
                   PhoneAuthCredential phoneAuthCredential =
-                      PhoneAuthProvider.credential(
-                          verificationId: verificationId,
-                          smsCode: otpController.text);
+                  PhoneAuthProvider.credential(
+                      verificationId: verificationId,
+                      smsCode: otpController.text);
                   signInWithPhoneAuthCredential(phoneAuthCredential);
+                  uploadToDatabase(phoneController.text, fullNameController.text);
+
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -383,10 +397,19 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
 
   bool isValid() {
     phoneNumber = phoneController.text;
+    fullName = fullNameController.text;
+
     if (phoneNumber.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         StaticMethods.mySnackBar(
-            'Fill PhoneNumber', MediaQuery.of(context).size, kDialogErrorColor),
+            'Please Fill PhoneNumber', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    if (fullName.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar(
+            'Please Fill Full Name', MediaQuery.of(context).size, kDialogErrorColor),
       );
       return false;
     }
@@ -400,7 +423,29 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
     return true;
   }
 
+
+  uploadToDatabase(String phoneNumber, String fullName) async {
+    try{
+      setState(() {});
+      showLoading = false;
+      return fireStore.collection('Users Phone Register').add({
+        'full-name' : fullName,
+        'phone-number': phoneNumber,
+
+      });
+    }
+    catch(e){
+      showLoading = false;
+      setState(() {});
+      StaticMethods.showErrorDialog(context: context, text: 'sth went wrong');
+      print(e);
+    }
+  }
+
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -411,20 +456,28 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
             child: Container(
               child: showLoading
                   ? SizedBox(
-                      height: MediaQuery.of(context).size.height / 1.2,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                              Color(0xFFFF5715)),
-                        ),
-                      ),
-                    )
+                height: MediaQuery.of(context).size.height / 1.2,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                        Color(0xFFFF5715)),
+                  ),
+                ),
+              )
                   : currentState ==
-                          MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                      ? getMobileFormWidget(context)
-                      : getOtpFormWidget(context),
+                  MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                  ? getMobileFormWidget(context)
+                  : getOtpFormWidget(context),
             ),
           ),
         ));
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    phoneController.dispose();
+    otpController.dispose();
+    super.dispose();
   }
 }

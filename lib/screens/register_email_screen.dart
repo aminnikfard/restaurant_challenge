@@ -1,10 +1,9 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
-import 'package:restaurant_challenge_app/screens/get_username_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 import '../constants.dart';
@@ -18,17 +17,21 @@ class RegisterEmailScreen extends StatefulWidget {
   _RegisterEmailScreenState createState() => _RegisterEmailScreenState();
 }
 
+
+
 class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
 
-  TextEditingController emailController, otpController;
-
+  TextEditingController emailController,fullNameController, passwordController, rePasswordController;
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
-
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-  String name, email, otp, rePassword;
-
+  String fullName, email, password, rePassword;
   bool showLoadingProgress = false;
+  bool _hidePassword = true;
+
+
+  final auth = FirebaseAuth.instance;
+  // User user;
+
+
 
   getUser() {
     User user = auth.currentUser;
@@ -48,48 +51,20 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
         getUser();
       },
     );
+    fullNameController = TextEditingController();
     emailController = TextEditingController();
-    otpController = TextEditingController();
+    passwordController = TextEditingController();
+    rePasswordController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
+    fullNameController.dispose();
     emailController.dispose();
-    otpController.dispose();
+    passwordController.dispose();
+    rePasswordController.dispose();
     super.dispose();
-  }
-
-  void sendOtp() async {
-    EmailAuth.sessionName = "Test Session";
-    var res = await EmailAuth.sendOtp(receiverMail: emailController.text);
-    if (res) {
-      print('send');
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'Send Email For you', MediaQuery.of(context).size,kDialogSuccessColor),
-      );
-    } else {
-      print('problem');
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar(
-            'There is a problem, try again', MediaQuery.of(context).size, kDialogErrorColor),
-      );
-    }
-  }
-
-  void verifyOtp() async {
-    var res = EmailAuth.validate(
-        receiverMail: emailController.text, userOTP: otpController.text);
-    if (res) {
-      print('otp');
-      Navigator.popAndPushNamed(context, GetUsernameScreen.id);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        StaticMethods.mySnackBar('Wrong OTP', MediaQuery.of(context).size,kDialogErrorColor),
-      );
-      print('invalid');
-    }
   }
 
   @override
@@ -174,22 +149,66 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                           child: Column(
                             children: <Widget>[
                               TextField(
+                                controller: fullNameController,
+                                decoration: InputDecoration(
+                                    labelText: "Full Name*",
+                                    labelStyle: TextStyle(fontSize: 14.0),
+                                    suffixIcon: Icon(
+                                      Icons.person,
+                                      size: 20.0,
+                                    )),
+                              ),
+                              TextField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                     labelText: "Email*",
                                     labelStyle: TextStyle(fontSize: 14.0),
-                                    suffixIcon: TextButton(
-                                      child: Text('Send OTP'),
-                                      onPressed: () => sendOtp(),
+                                    suffixIcon: Icon(
+                                      Icons.email,
+                                      size: 20.0,
+                                    )
+                                ),
+                              ),
+                              TextField(
+                                controller: passwordController,
+                                obscureText: _hidePassword,
+                                decoration: InputDecoration(
+                                    labelText: "Password*",
+                                    labelStyle: TextStyle(fontSize: 14.0),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _hidePassword = !_hidePassword;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _hidePassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        size: 17.0,
+                                      ),
                                     )),
                               ),
                               TextField(
-                                controller: otpController,
+                                controller: rePasswordController,
+                                obscureText: _hidePassword,
                                 decoration: InputDecoration(
-                                  labelText: "OTP*",
-                                  labelStyle: TextStyle(fontSize: 14.0),
-                                ),
+                                    labelText: "confirm password*",
+                                    labelStyle: TextStyle(fontSize: 14.0),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _hidePassword = !_hidePassword;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _hidePassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        size: 17.0,
+                                      ),
+                                    )),
                               ),
                             ],
                           ),
@@ -204,7 +223,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                             if (!currentFocus.hasPrimaryFocus) {
                               currentFocus.unfocus();
                             }
-                            verifyOtp();
+                            onSignUpPressed();
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -221,7 +240,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                             width: double.infinity,
                             child: Center(
                               child: Text(
-                                "Verify OTP",
+                                "Sign Up",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
@@ -266,6 +285,93 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
         ),
       ),
     );
+  }
+  bool isValid() {
+    email = emailController.text;
+    password = passwordController.text;
+    rePassword = rePasswordController.text;
+    fullName = fullNameController.text;
+    if (email.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Please Fill Email', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    if (fullName.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Please Fill FullName', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    if (password.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Please Fill password', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Please Enter a Password of More Than 6 Digits', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    if (password != rePassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('Password and confirm password does not match', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      return false;
+    }
+    return true;
+  }
+
+  uploadInfo() async {
+    showLoadingProgress = true;
+    setState(() {});
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      if (userCredential != null) {
+        print('user is: ${userCredential.user}');
+        uploadToDatabase(userCredential.user, fullNameController.text);
+      } else {
+        print('user is null');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        StaticMethods.mySnackBar('There is a Problem', MediaQuery.of(context).size, kDialogErrorColor),
+      );
+      print('myError: $e');
+      showLoadingProgress = false;
+      setState(() {});
+    }
+  }
+
+  onSignUpPressed() {
+    if (isValid()) {
+      uploadInfo();
+    } else {
+      // pass
+    }
+  }
+
+  uploadToDatabase(User user, String fullName) async {
+    try{
+      setState(() {});
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          AuthScreen.id, (Route<dynamic> route) => false);
+      showLoadingProgress = false;
+      return fireStore.collection('Users Email Register').add({
+        'full-name' : fullName,
+        'email': user.email,
+        'uid': user.uid,
+      });
+    }
+    catch(e){
+      showLoadingProgress = false;
+      setState(() {});
+      StaticMethods.showErrorDialog(context: context, text: 'sth went wrong');
+      print(e);
+    }
   }
 
 }

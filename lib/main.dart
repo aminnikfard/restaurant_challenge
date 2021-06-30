@@ -9,7 +9,6 @@ import 'package:restaurant_challenge_app/screens/challenge/create_challenge.dart
 import 'package:restaurant_challenge_app/screens/game/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/info_challenge_screen.dart';
-import 'package:restaurant_challenge_app/screens/get_username_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
@@ -59,7 +58,6 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         RestaurantList.id: (context) => RestaurantList(),
         ResultGama.id: (context) => ResultGama(),
-        GetUsernameScreen.id: (context) => GetUsernameScreen(),
       },
     );
   }
