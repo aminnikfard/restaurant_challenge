@@ -7,7 +7,7 @@ import 'package:restaurant_challenge_app/model/users.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
 import 'package:restaurant_challenge_app/screens/challenge/userScore.dart';
-// import 'package:social_share/social_share.dart';
+import 'package:social_share/social_share.dart';
 import '../../constants.dart';
 
 class ChallengeManagement extends StatefulWidget {
@@ -473,39 +473,39 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       BuildContext context, IconData iconSrc, Color color, String nameIcon) {
     return GestureDetector(
       onTap: () async {
-        // String massage =
-        //     "You have been invited to the challenge ${args['challengeName']} this is a challenge between my friends during the day $date and at the hour ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
-        // if (nameIcon == "copy") {
-        //   SocialShare.copyToClipboard(
-        //     massage,
-        //   ).then((data) {
-        //     print(data);
-        //   });
-        // } else if (nameIcon == "sms") {
-        //   SocialShare.shareSms(
-        //     massage,
-        //   ).then((data) {
-        //     print(data);
-        //   });
-        // } else if (nameIcon == "telegram") {
-        //   SocialShare.shareTelegram(
-        //     massage,
-        //   ).then((data) {
-        //     print(data);
-        //   });
-        // } else if (nameIcon == "whatsapp") {
-        //   SocialShare.shareWhatsapp(
-        //     massage,
-        //   ).then((data) {
-        //     print(data);
-        //   });
-        // } else if (nameIcon == "twitter") {
-        //   SocialShare.shareTwitter(
-        //     massage,
-        //   ).then((data) {
-        //     print(data);
-        //   });
-        // }
+        String massage =
+            "You have been invited to the challenge ${args['challengeName']} this is a challenge between my friends during the day $date and at the hour ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
+        if (nameIcon == "copy") {
+          SocialShare.copyToClipboard(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        } else if (nameIcon == "sms") {
+          SocialShare.shareSms(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        } else if (nameIcon == "telegram") {
+          SocialShare.shareTelegram(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        } else if (nameIcon == "whatsapp") {
+          SocialShare.shareWhatsapp(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        } else if (nameIcon == "twitter") {
+          SocialShare.shareTwitter(
+            massage,
+          ).then((data) {
+            print(data);
+          });
+        }
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8),
