@@ -27,7 +27,6 @@ dependencies:
   provider: ^5.0.0
   circular_countdown_timer: ^0.2.0
   social_share: ^2.1.1
-  email_auth: ^0.0.1+4
   responsive_framework: ^0.1.2
 
 dev_dependencies:

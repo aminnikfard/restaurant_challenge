@@ -15,6 +15,7 @@ import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
+import 'package:restaurant_challenge_app/screens/reset_password_screen.dart';
 
 import 'model/field_notifier.dart';
 import 'model/notifier.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         RestaurantList.id: (context) => RestaurantList(),
         ResultGama.id: (context) => ResultGama(),
+        ResetPasswordScreen.id: (context) => ResetPasswordScreen(),
       },
     );
   }
