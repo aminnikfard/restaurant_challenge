@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -143,19 +145,20 @@ class _ListRestaurantState extends State<ListRestaurant> {
         Provider.of<Notifier>(context, listen: false).changeAddress(address);
         Provider.of<Notifier>(context, listen: false).changeRestaurantId(id);
 
-        final DatabaseReference dbRef1 = FirebaseDatabase.instance
-            .reference()
-            .child('restaurant')
-            .child( Provider.of<Notifier>(context, listen: false).id);
-        await dbRef1.once().then(( value) {
-          print(value.value['restaurantReview']);
-
-          Provider.of<Notifier>(context, listen: false).changeRestaurantReview(value.value['restaurantReview']);
-          print('true');
-
-
-        });
-        Navigator.pop(context);
+        try{
+          final DatabaseReference dbRef1 = FirebaseDatabase.instance
+              .reference()
+              .child('restaurant')
+              .child(id);
+          await dbRef1.once().then(( value) {
+            print(value.value['restaurantReview']);
+            Provider.of<Notifier>(context, listen: false).changeRestaurantReview(value.value['restaurantReview']);
+            print('true');
+          });
+          Navigator.pop(context);
+        }catch (e){
+          Navigator.pop(context);
+        }
       },
       child: Card(
         shape: RoundedRectangleBorder(

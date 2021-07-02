@@ -22,7 +22,7 @@ class Notifier extends ChangeNotifier {
   List<int> countRestaurantList = [];
   List<Users> users = [];
 
-  Restaurant winnerRestaurant=Restaurant(restaurantName: 'Restaurant name unknown',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address');
+  Restaurant winnerRestaurant=Restaurant(restaurantName: 'Restaurant name unknown',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address unknown');
   int winnerRestaurantScore;
   int winnerReview;
 

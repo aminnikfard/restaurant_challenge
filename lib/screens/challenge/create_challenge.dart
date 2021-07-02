@@ -135,7 +135,6 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                                 decoration: InputDecoration(
                                     labelText: 'Game Name'),
                                 controller: challengeNameController,
-                                maxLines: 3,
                               ),
                             ],
                           ),

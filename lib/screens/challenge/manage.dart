@@ -24,6 +24,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
   // final _auth = FirebaseAuth.instance;
 
   final double rate = 6;
+  int winnerRestaurant;
 
   String referral;
 
@@ -41,6 +42,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
   @override
   Widget build(BuildContext context) {
     referral = Provider.of<Notifier>(context, listen: false).referral;
+    winnerRestaurant=Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantRate;
     Size size = MediaQuery.of(context).size;
     args = ModalRoute.of(context).settings.arguments;
     date = args['date'].substring(0, 10);
@@ -128,34 +130,34 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                       Row(
                         children: [
                           Container(
-                            height: 65,
-                            width: 65,
+                            height: 70,
+                            width: 70,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: AssetImage(
                                         "assets/icons/cheat-day.png"))),
                           ),
                           SizedBox(
-                            width: 5.0,
+                            width: 10.0,
                           ),
                           Expanded(
                             child: Column(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 12.0, right: 40.0),
+                                      top: 14.0, right: 40.0),
                                   child: ticketDetailsWidget('Game Name',
                                       '${args['challengeName']}', '', ''),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 12.0, right: 40.0),
+                                      top: 18.0, right: 40.0),
                                   child: ticketDetailsWidget('Date', '$date',
                                       'Time', '${args['time']}'),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 12.0, right: 40.0),
+                                      top: 18.0, right: 40.0),
                                   child: ticketDetailsWidget(
                                       'City',
                                       '${args['city']}',
@@ -168,7 +170,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 12.0, right: 40.0),
+                                      top: 18.0, right: 40.0),
                                   child: ticketDetailsWidget('Play Game',
                                       '$isStartPlay', 'End Game', '$isEndPlay'),
                                 ),
@@ -197,11 +199,12 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 height: 50,
                                 width: 50,
                                 child: CircleAvatar(
-                                  backgroundImage: NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
+                                  backgroundColor: kColorWhite,
+                                  backgroundImage:
+                                  Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg == ''
+                                  ? AssetImage('assets/icons/pizza1.png')
+                                  : NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
                                 ),
-                                // decoration: BoxDecoration(
-                                //     image: DecorationImage(
-                                //         image: NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg))),
                               ),
                               SizedBox(
                                 width: 10,
@@ -225,24 +228,14 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                     Row(
                                       children: [
                                         for (var i = 1; i < rate; i++)...{
-                                          if(i <= Provider
-                                              .of<Notifier>(
-                                              context, listen: true)
-                                              .winnerRestaurant
-                                              .restaurantRate)...{
-
+                                          if (i <= winnerRestaurant) ...{
                                             Icon(
                                               Icons.star_rate_sharp,
                                               size: 18,
                                               color: Colors.orange,
                                             ),
                                           },
-                                          if(i > Provider
-                                              .of<Notifier>(
-                                              context, listen: true)
-                                              .winnerRestaurant
-                                              .restaurantRate)...{
-
+                                          if (i > winnerRestaurant) ...{
                                             Icon(
                                               Icons.star_border_rounded,
                                               size: 18,
@@ -272,7 +265,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 child: Column(
                                   children: [
                                     Icon(Icons.visibility),
-                                    Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
+                                    Provider.of<Notifier>(context, listen: true).winnerReview == null
+                                    ? Text('unknown')
+                                    : Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
                                   ],
                                 ),
                               ),
@@ -508,7 +503,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
         }
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -516,7 +511,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
         child: Icon(
           iconSrc,
           color: color,
-          size: 25,
+          size: 30,
         ),
       ),
     );
@@ -616,6 +611,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                 firstTitle,
                 style: TextStyle(
                   color: Colors.grey,
+                  fontSize: 16
                 ),
               ),
               Padding(
@@ -624,6 +620,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                   firstDesc,
                   style: TextStyle(
                     color: Colors.black,
+                    fontSize: 18
                   ),
                 ),
               )
@@ -631,7 +628,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 20.0),
+          padding: const EdgeInsets.only(right: 25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -639,6 +636,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                 secondTitle,
                 style: TextStyle(
                   color: Colors.grey,
+                  fontSize: 16
                 ),
               ),
               Padding(
@@ -647,6 +645,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                   secondDesc,
                   style: TextStyle(
                     color: Colors.black,
+                    fontSize: 18
                   ),
                 ),
               )
@@ -683,8 +682,10 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
         Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(restaurant);
         Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(map['winner']['restaurantScore']);
         Provider.of<Notifier>(context, listen: false).changeWinnerReview(map['winner']['restaurantReview']);
-
-
+      }else{
+        Restaurant winnerRestaurant=Restaurant(restaurantName: 'Restaurant name unknown',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address unknown');
+        Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(winnerRestaurant);
+        Provider.of<Notifier>(context, listen: false).changeWinnerReview(null);
       }
       if (map['users'] != null) {
         for (Map each in map['users'].values) {

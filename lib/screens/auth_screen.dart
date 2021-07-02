@@ -1,17 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/challenge/list_challenge.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
-import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
-import 'package:restaurant_challenge_app/static_methods.dart';
-
-import 'challenge/manage.dart';
 import 'challenge/create_challenge.dart';
-import 'game/game.dart';
 
 class AuthScreen extends StatefulWidget {
   static String id = 'auth_screen';
@@ -23,14 +16,6 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
 
-  // @override
-  // void initState() {
-  //   if(_auth.currentUser!=null){
-  //     Future.delayed(Duration.zero, () async {      Navigator.pushNamed(context, ChallengeManagement.id);
-  //     });
-  //   }
-  //   super.initState();
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,163 +30,115 @@ class _AuthScreenState extends State<AuthScreen> {
               children: <Widget>[
                 Image(
                   image: AssetImage("assets/images/intro.png"),
-                  height: 320.0,
+                  height: 340.0,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LoginChallengeRoom()));
-                  },
-                  child: Container(
-                    width: 150.0,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25.0),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 1,
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 5.0,
-                              offset: Offset(0, 2.0))
-                        ]),
-                    child: Center(
-                      child: Text(
-                        "Login To Game",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.0,),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChallengeScreen()));
-                  },
-                  child: Container(
-                    width: 150.0,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25.0),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 1,
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 5.0,
-                              offset: Offset(0, 2.0))
-                        ]),
-                    child: Center(
-                      child: Text(
-                        "Create Game",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.0,),
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            )),
-                        builder: (context) {
-                          return ListChallenge();
-                        });
-                    // onAdminPress();
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => ChallengeScreen()));
-                  },
-                  child: Container(
-                    width: 150.0,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25.0),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 1,
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 5.0,
-                              offset: Offset(0, 2.0))
-                        ]),
-                    child: Center(
-                      child: Text(
-                        "Dashboard Game",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.0,),
-                GestureDetector(
-                  onTap: () {
-                    _auth.signOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        LoginScreen.id, (Route<dynamic> route) => false);
-                  },
-                  child: Container(
-                    width: 150.0,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25.0),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 1,
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 5.0,
-                              offset: Offset(0, 2.0))
-                        ]),
-                    child: Center(
-                      child: Text(
-                        "Logout",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25.0),
-                      child: Text(
-                        "Now! Quick Login User Touch ID",
-                        style: TextStyle(
-                            fontSize: 15.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginChallengeRoom()));
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(26.0),
+                          child: Column(
+                            children: [
+                              Icon(Icons.psychology,size: 50,),
+                              SizedBox(height: 20,),
+                              Text('Login To Game',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Icon(
-                        Icons.fingerprint,
-                        color: Colors.white,
-                        size: 70.0,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChallengeScreen()));
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Column(
+                            children: [
+                              Icon(Icons.add_business_rounded,size: 50,),
+                              SizedBox(height: 20,),
+                              Text(
+                                "Create Game",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: Text(
-                        "User Touch ID",
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                ],),
+                SizedBox(height: 10.0,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                )),
+                            builder: (context) {
+                              return ListChallenge();
+                            });
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Column(
+                            children: [
+                              Icon(Icons.emoji_events,size: 50,),
+                              SizedBox(height: 20,),
+                              Text('Dashboard Game',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    )
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        _auth.signOut();
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            LoginScreen.id, (Route<dynamic> route) => false);
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(27.0),
+                          child: Column(
+                            children: [
+                              Icon(Icons.logout,size: 50,),
+                              SizedBox(height: 20,),
+                              Text(
+                                "Logout",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],),
               ],
             ),
@@ -210,35 +147,4 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
     );
   }
-
-  Future<bool> checkChallenge() async {
-    DatabaseReference dbRef =
-        FirebaseDatabase.instance.reference().child('challenges');
-    DataSnapshot snapshot = await dbRef
-        .orderByChild('filter')
-        .startAt('${_auth.currentUser.uid}_true')
-        .endAt('${_auth.currentUser.uid}_true\uf8ff')
-        .once();
-    if (snapshot.value == null) {
-      print("Item doesn't exist ");
-      return false;
-    } else {
-      print("Item exists ");
-      return true;
-    }
-  }
-
-  onAdminPress()async{
-    bool check=await checkChallenge();
-    if(check){
-      Provider.of<Notifier>(context, listen: false).changeRole('Admin');
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ChallengeManagement()));
-    }
-    else{
-      StaticMethods.showErrorDialog(context: context, text: 'you dont have active challenge ');
-    }
-  }
-
-
 }

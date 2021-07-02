@@ -48,9 +48,9 @@ class TicketClipper2 extends CustomClipper<Path> {
     path.lineTo(size.width, 0.0);
 
     path.addOval(Rect.fromCircle(
-        center: Offset(0.0, size.height / 1.23), radius: 20.0));
+        center: Offset(0.0, size.height / 1.36), radius: 20.0));
     path.addOval(Rect.fromCircle(
-        center: Offset(size.width, size.height / 1.23), radius: 20.0));
+        center: Offset(size.width, size.height / 1.36), radius: 20.0));
 
     return path;
   }

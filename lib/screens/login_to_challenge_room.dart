@@ -235,6 +235,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
   getCodeChallenge() async {
     showLoadingProgress = true;
     setState(() {});
+
     bool check=await checkReferralCode();
     if(check) {
       try {
@@ -260,6 +261,9 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
             Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(value.value['winner']['restaurantScore']);
             Provider.of<Notifier>(context, listen: false).changeWinnerReview(value.value['winner']['restaurantReview']);
             Provider.of<Notifier>(context, listen: false).changeIsActive(value.value['isActive']);
+            // isActive=value.value['isActive'];
+          }else{
+            Provider.of<Notifier>(context, listen: false).changeIsSelected (false);
           }
         });
         showLoadingProgress = false;
