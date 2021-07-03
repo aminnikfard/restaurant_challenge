@@ -6,7 +6,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 import 'package:intl/intl.dart';
-import 'package:restaurant_challenge_app/screens/reset_password_screen.dart';
+import 'package:restaurant_challenge_app/screens/reset_password_email_screen.dart';
 
 import '../constants.dart';
 import '../static_methods.dart';
@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   FocusNode node;
 
   DatabaseReference dbRef =
-  FirebaseDatabase.instance.reference().child('Users');
+      FirebaseDatabase.instance.reference().child('Users');
 
   String email, password;
 
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Future.delayed(
       Duration(microseconds: 200),
-          () {
+      () {
         getUser();
       },
     );
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.symmetric(horizontal: 18.0),
                   padding:
-                  EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
+                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
                   child: Column(
                     children: [
                       Text(
@@ -211,10 +211,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextButton(
                             onPressed: () => Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => ResetPasswordScreen(),
+                                builder: (context) =>
+                                    ResetPasswordEmailScreen(),
                               ),
                             ),
-                            child: Text('Forgot Password?'),
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                               fontSize: 14.0,
+                              ),
+                            ),
                           )
                         ],
                       ),
@@ -238,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             iconSrc: Icons.email_rounded,
                             press: () {
                               FocusScopeNode currentFocus =
-                              FocusScope.of(context);
+                                  FocusScope.of(context);
                               if (!currentFocus.hasPrimaryFocus) {
                                 currentFocus.unfocus();
                               }

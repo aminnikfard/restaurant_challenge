@@ -2,17 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:restaurant_challenge_app/screens/reset_password_phone_screen.dart';
 import '../constants.dart';
 import '../static_methods.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  static String id = 'reset_password_screen';
+class ResetPasswordEmailScreen extends StatefulWidget {
+  static String id = 'reset_password_email_screen';
 
   @override
-  _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
+  _ResetPasswordEmailScreenState createState() => _ResetPasswordEmailScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _ResetPasswordEmailScreenState extends State<ResetPasswordEmailScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController emailController;
 
@@ -91,7 +92,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   child: Column(
                     children: [
                       Text(
-                        "Reset Password",
+                        "Reset Password Using Email",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
@@ -158,6 +159,35 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       SizedBox(
                         height: size.height * 0.02,
                       ),
+                      Padding(
+                          padding: EdgeInsets.only(top: 12.0),
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text("Or Reset Password using",
+                                    style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,)),
+                                SizedBox(width: 5.0),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ResetPasswordPhoneScreen()));
+                                  },
+                                  child: Text(
+                                    "Phone Number",
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )),
                       SizedBox(
                         height: size.height * 0.02,
                       ),
