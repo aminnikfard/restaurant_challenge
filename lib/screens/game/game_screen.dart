@@ -56,9 +56,9 @@ class _GameScreenState extends State<GameScreen> {
                           height: MediaQuery.of(context).size.height /7,
                           ringColor: Colors.grey[300],
                           ringGradient: null,
-                          fillColor: Color.fromRGBO(252,58,81, 1),
+                          fillColor: Color.fromRGBO(245,179,73, 1),
                           fillGradient: null,
-                          backgroundColor: Color.fromRGBO(245,179,73, 1),
+                          backgroundColor: Color.fromRGBO(252,58,81, 1),
                           backgroundGradient: null,
                           strokeWidth: 8.0,
                           strokeCap: StrokeCap.round,
@@ -85,17 +85,16 @@ class _GameScreenState extends State<GameScreen> {
                             margin: EdgeInsets.only(
                               top: (size.height / 2) - sum,
                             ),
-                            // child: Image.asset('assets/images/ball.jpg',height: 150
-                            child: Lottie.asset('assets/4414-bouncy-basketball.json',
-                                height: 180, width: 180)),
+                            child: Lottie.asset('assets/53947-sushi.json',
+                                height: 170, width: 170)),
                         Expanded(child: SizedBox()),
                         Container(
                           margin: EdgeInsets.only(
                             top: 25,
                           ),
                           child: CircleAvatar(
-                            radius: 30.0,
-                            backgroundColor: Color.fromRGBO(244,93,76, 1),
+                            radius: 40.0,
+                            backgroundColor: Color.fromRGBO(252,58,81, 1),
                             child: Text(
                               dSum.toString(),
                               style: TextStyle(fontSize: 20,
@@ -123,16 +122,12 @@ class _GameScreenState extends State<GameScreen> {
                         insertScore();
                       }
                     },
-                    child: CircleAvatar(
-                      radius: 52,
-                      backgroundColor: Colors.deepOrange,
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(
-                          Provider.of<Notifier>(context, listen: false).img,
-                        ),
+                        child: Container(
+                            child: Lottie.asset('assets/19611-ration-food-transition.json',
+                                height: 200, width: 200)),
                       ),
-                    ),
                   ),
                 ),
               ],
@@ -156,6 +151,4 @@ class _GameScreenState extends State<GameScreen> {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => ResultGama()));
   }
-
-
 }

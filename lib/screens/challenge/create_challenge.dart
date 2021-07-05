@@ -78,25 +78,10 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                     children: <Widget>[
                       Column(
                         children: [
-                          Container(
-                            width: 140.0,
-                            height: 25.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30.0),
-                              border:
-                              Border.all(width: 1.0, color: Colors.green),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Recreational Class',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            ),
-                          ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
+                            padding: const EdgeInsets.only(top: 10.0),
                             child: Text(
-                              'Invitation Ticket',
+                              'Create Invitation',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.0,
