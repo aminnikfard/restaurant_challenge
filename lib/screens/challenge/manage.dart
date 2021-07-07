@@ -179,9 +179,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                           )
                         ],
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      Expanded(child: SizedBox(height: size.height / 1,)),
                       Card(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
@@ -275,9 +273,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      Expanded(child: SizedBox(height: size.height / 1,)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -308,6 +304,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                               Colors.blueAccent, "twitter"),
                         ],
                       ),
+                      Expanded(child: SizedBox(height: size.height / 1,)),
                     ],
                   ),
                 ),
