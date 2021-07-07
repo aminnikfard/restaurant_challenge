@@ -82,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                     ),
-                ],),
+                  ],),
                 SizedBox(height: 10.0,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -100,18 +100,21 @@ class _AuthScreenState extends State<AuthScreen> {
                               return ListChallenge();
                             });
                       },
-                      child: Card(
-                        elevation: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Column(
-                            children: [
-                              Icon(Icons.emoji_events,size: 50,),
-                              SizedBox(height: 20,),
-                              Text('Dashboard Game',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 30.0),
+                        child: Card(
+                          elevation: 10,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                Icon(Icons.emoji_events,size: 50,),
+                                SizedBox(height: 20,),
+                                Text('Dashboard Game',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

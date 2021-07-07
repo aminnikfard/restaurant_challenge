@@ -114,7 +114,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                   horizontal: 5.0,
                   vertical: 5.0 / 2,
                 ),
-                height: size.height / 2.05,
+                height: size.height / 1.98,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(22),
                 ),
