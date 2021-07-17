@@ -1,13 +1,12 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 class GameScreen extends StatefulWidget {
   static String id = 'game_screen';
@@ -20,22 +19,9 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ShowCaseWidget(
-        onStart: (index, key) {
-          print('onStart: $index, $key');
-        },
-        onComplete: (index, key) {
-          print('onComplete: $index, $key');
-          if (index == 4)
-            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
-                .copyWith(
-                statusBarIconBrightness: Brightness.dark,
-                statusBarColor: Colors.white));
-        },
-        builder: Builder(builder: (context) => Game()),
-        autoPlay: false,
-        autoPlayDelay: Duration(seconds: 3),
-        autoPlayLockEnable: false,
+      body: FeatureDiscovery.withProvider(
+        persistenceProvider: NoPersistenceProvider(),
+        child: Game(),
       ),
     );
   }
@@ -62,9 +48,13 @@ class _GameState extends State<Game> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context)
-            .startShowCase([_one,]));
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      FeatureDiscovery.discoverFeatures(context,
+          <String>[
+            'feature1',
+          ]
+      );
+    });
   }
 
   @override
@@ -159,16 +149,29 @@ class _GameState extends State<Game> {
                     ),
                   ),
                   Expanded(child: SizedBox()),
-                  CircleAvatar(
-                    radius: 50,
-                    child: Showcase(
-                      key: _one,
-                      title: 'On Tap Here',
-                      description: 'Earn Points With Each Tap',
-                      contentPadding: EdgeInsets.all(10.0),
-                      showcaseBackgroundColor: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      shapeBorder: CircleBorder(),
+                  DescribedFeatureOverlay(
+                    featureId: 'feature1',
+                    targetColor: Colors.white,
+                    textColor: Colors.white,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    contentLocation: ContentLocation.trivial,
+                    title: Text(
+                      'On Tap Here',
+                      style: TextStyle(fontSize: 30.0),
+                    ),
+                    pulseDuration: Duration(seconds: 2),
+                    enablePulsingAnimation: true,
+                    overflowMode: OverflowMode.extendBackground,
+                    openDuration: Duration(seconds: 2),
+                    description: Text('Earn Points With Each Tap'),
+                    tapTarget: Container(
+                      child: Lottie.asset(
+                          'assets/19611-ration-food-transition.json',
+                          height: 200,
+                          width: 200),
+                    ),
+                    child: CircleAvatar(
+                      radius: 50,
                       child: InkWell(
                         onTap: () {
                           startTimer = true;

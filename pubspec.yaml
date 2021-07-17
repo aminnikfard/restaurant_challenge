@@ -28,7 +28,7 @@ dependencies:
   circular_countdown_timer: ^0.2.0
   social_share: ^2.1.1
   responsive_framework: ^0.1.2
-  showcaseview: ^1.1.0
+  feature_discovery: ^0.14.0
 
 dev_dependencies:
   flutter_test:

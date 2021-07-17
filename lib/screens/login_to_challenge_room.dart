@@ -223,6 +223,16 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
 
   }
 
+  Future<bool> checkIsActiveReferralCode() async{
+    DataSnapshot snapshot = await dbRef.child(code).once();
+    if( snapshot.value == null ){
+      return false;
+    }else{
+      return true;
+    }
+
+  }
+
   Future<bool> checkIsPlayGame() async{
     DataSnapshot snapshot = await dbRef.child(code).child('users').child(auth.currentUser.uid).once();
     if( snapshot.value == null ){
@@ -240,7 +250,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
     if(check) {
       try {
         String challengeName, city, date, time,referralCode;
-        bool isActive=true;
+        bool isActive=false;
         await dbRef.child(code)
             .once()
             .then((value) {
@@ -248,7 +258,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
           city = value.value['city'].toString();
           time = value.value['time'].toString();
           date = value.value['date'].toString();
-          // isActive = value.value['isActive'];
+          isActive = value.value['isActive'];
           referralCode = value.value['referralCode'].toString();
           if(value.value['winner']!=null){
             Restaurant restaurant = Restaurant(
@@ -260,17 +270,14 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
             Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(restaurant);
             Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(value.value['winner']['restaurantScore']);
             Provider.of<Notifier>(context, listen: false).changeWinnerReview(value.value['winner']['restaurantReview']);
-            Provider.of<Notifier>(context, listen: false).changeIsActive(value.value['isActive']);
-            // isActive=value.value['isActive'];
           }else{
             Provider.of<Notifier>(context, listen: false).changeIsSelected (false);
           }
         });
         showLoadingProgress = false;
         setState(() {});
+        bool checkPlay=await checkIsPlayGame();
         if (isActive) {
-          bool checkPlay=await checkIsPlayGame();
-          print(checkPlay);
           if (checkPlay){
             Provider.of<Notifier>(context, listen: false).changeLocation(city);
             Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
@@ -292,7 +299,6 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
                 .then((value) {
               isPlay = value.value['isPlay'];
             });
-            print(isPlay);
             if(isPlay){
               Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
               Navigator.popAndPushNamed(
@@ -323,10 +329,25 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
             }
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            StaticMethods.mySnackBar(
-                'Game no Active', MediaQuery.of(context).size, kDialogErrorColor),
-          );
+          if (checkPlay){
+            ScaffoldMessenger.of(context).showSnackBar(
+              StaticMethods.mySnackBar(
+                  'Game no Active', MediaQuery.of(context).size, kDialogErrorColor),
+            );
+          } else{
+            Provider.of<Notifier>(context, listen: false).changeReferral(referralCode);
+            Navigator.popAndPushNamed(
+              context,
+              ResultGama.id,
+              arguments: {
+                'challengeName': challengeName,
+                'city': city,
+                'time': time,
+                'date': date,
+                'referralCode': referralCode,
+              },
+            );
+          }
         }
       } catch (e) {
         showLoadingProgress = false;

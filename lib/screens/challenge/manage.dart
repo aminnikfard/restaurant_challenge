@@ -703,6 +703,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           users.add(user);
         }
       }
+      users.sort((b, a) => a.score.compareTo(b.score));
       Provider.of<Notifier>(context, listen: false).changeUsersList(users);
       Provider.of<Notifier>(context, listen: false)
           .changeRestaurantList(restaurants);

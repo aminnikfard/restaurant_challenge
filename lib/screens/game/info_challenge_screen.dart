@@ -10,6 +10,8 @@ import 'package:restaurant_challenge_app/screens/game/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/list_restaurant_screen.dart';
 import 'package:restaurant_challenge_app/screens/login_to_challenge_room.dart';
 
+import '../../static_methods.dart';
+
 class InfoChallenge extends StatefulWidget {
   static String id = 'info_challenge_screen';
 
@@ -286,6 +288,11 @@ class _InfoChallengeState extends State<InfoChallenge> {
                                   listen: false)
                                   .isSelected) {
                                 insertToDb();
+                              }else{
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  StaticMethods.mySnackBar(
+                                      'No Select Restaurant', MediaQuery.of(context).size, kDialogErrorColor),
+                                );
                               }
                             },
                             child: Container(
