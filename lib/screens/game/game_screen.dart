@@ -155,8 +155,8 @@ class _GameState extends State<Game> {
                           isTimerTextShown: true,
                           autoStart: true,
                           onComplete: () {
-                              insertScore();
-                              end = true;
+                            insertScore();
+                            end = true;
                           },
                         )
                             : Expanded(child: SizedBox()),
