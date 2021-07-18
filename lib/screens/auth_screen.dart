@@ -25,15 +25,13 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 20.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Image(
                   image: AssetImage("assets/images/intro.png"),
                   height: 340.0,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -42,18 +40,23 @@ class _AuthScreenState extends State<AuthScreen> {
                             MaterialPageRoute(
                                 builder: (context) => LoginChallengeRoom()));
                       },
-                      child: Card(
-                        elevation: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.all(26.0),
-                          child: Column(
-                            children: [
-                              Icon(Icons.psychology,size: 50,),
-                              SizedBox(height: 20,),
-                              Text('Login To Game',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                      child: Container(
+                        width: 150.0,
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 2.0))
+                            ]),
+                        child: Center(
+                          child: Text(
+                            "Login To Game",
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -65,27 +68,31 @@ class _AuthScreenState extends State<AuthScreen> {
                             MaterialPageRoute(
                                 builder: (context) => ChallengeScreen()));
                       },
-                      child: Card(
-                        elevation: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Column(
-                            children: [
-                              Icon(Icons.add_business_rounded,size: 50,),
-                              SizedBox(height: 20,),
-                              Text(
-                                "Create Game",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                      child: Container(
+                        width: 150.0,
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 2.0))
+                            ]),
+                        child: Center(
+                          child: Text(
+                            "Create Game",
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                     ),
                   ],),
-                SizedBox(height: 10.0,),
+                SizedBox(height: 30.0,),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -100,21 +107,23 @@ class _AuthScreenState extends State<AuthScreen> {
                               return ListChallenge();
                             });
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 30.0),
-                        child: Card(
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              children: [
-                                Icon(Icons.emoji_events,size: 50,),
-                                SizedBox(height: 20,),
-                                Text('Dashboard Game',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
+                      child: Container(
+                        width: 150.0,
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 2.0))
+                            ]),
+                        child: Center(
+                          child: Text(
+                            "Dashboard Game",
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -125,19 +134,23 @@ class _AuthScreenState extends State<AuthScreen> {
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             LoginScreen.id, (Route<dynamic> route) => false);
                       },
-                      child: Card(
-                        elevation: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.all(27.0),
-                          child: Column(
-                            children: [
-                              Icon(Icons.logout,size: 50,),
-                              SizedBox(height: 20,),
-                              Text(
-                                "Logout",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                      child: Container(
+                        width: 150.0,
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 2.0))
+                            ]),
+                        child: Center(
+                          child: Text(
+                            "Logout",
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),

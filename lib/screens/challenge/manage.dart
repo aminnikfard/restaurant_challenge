@@ -19,7 +19,7 @@ class ChallengeManagement extends StatefulWidget {
 
 class _ChallengeManagementState extends State<ChallengeManagement> {
   final DatabaseReference dbRef =
-      FirebaseDatabase.instance.reference().child('challenges');
+  FirebaseDatabase.instance.reference().child('challenges');
 
   // final _auth = FirebaseAuth.instance;
 
@@ -47,28 +47,28 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
     args = ModalRoute.of(context).settings.arguments;
     date = args['date'].substring(0, 10);
     String isStartPlay =
-        Provider.of<Notifier>(context, listen: true).isStartPlay == true
-            ? 'Yes'
-            : 'No';
+    Provider.of<Notifier>(context, listen: true).isStartPlay == true
+        ? 'Yes'
+        : 'No';
     String isEndPlay =
-        Provider.of<Notifier>(context, listen: true).isEndPlay == true
-            ? 'Yes'
-            : 'No';
+    Provider.of<Notifier>(context, listen: true).isEndPlay == true
+        ? 'Yes'
+        : 'No';
     return Scaffold(
       floatingActionButton: Provider.of<Notifier>(context, listen: true)
-              .isActive
+          .isActive
           ? FloatingActionButton(
-              child: Icon(
-                Icons.stop_circle_outlined,
-                color: kPrimaryColor,
-                size: 45,
-              ),
-              backgroundColor: kColorWhite,
-              onPressed: () {
-                changeStatus(context,
-                    !Provider.of<Notifier>(context, listen: false).isActive);
-              },
-            )
+        child: Icon(
+          Icons.stop_circle_outlined,
+          color: kPrimaryColor,
+          size: 45,
+        ),
+        backgroundColor: kColorWhite,
+        onPressed: () {
+          changeStatus(context,
+              !Provider.of<Notifier>(context, listen: false).isActive);
+        },
+      )
           : SizedBox(),
       appBar: AppBar(
         title: Text('Challenge'),
@@ -163,7 +163,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                       '${args['city']}',
                                       'Users',
                                       Provider.of<Notifier>(context,
-                                              listen: true)
+                                          listen: true)
                                           .users
                                           .length
                                           .toString()),
@@ -200,8 +200,8 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                   backgroundColor: kColorWhite,
                                   backgroundImage:
                                   Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg == ''
-                                  ? AssetImage('assets/icons/pizza1.png')
-                                  : NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
+                                      ? AssetImage('assets/icons/pizza1.png')
+                                      : NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
                                 ),
                               ),
                               SizedBox(
@@ -264,8 +264,8 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                   children: [
                                     Icon(Icons.visibility),
                                     Provider.of<Notifier>(context, listen: true).winnerReview == null
-                                    ? Text('unknown')
-                                    : Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
+                                        ? Text('unknown')
+                                        : Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
                                   ],
                                 ),
                               ),
@@ -288,7 +288,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                     .referral
                                     .toString(),
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                    fontSize: 17, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -315,9 +315,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                         context: context,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        )),
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            )),
                         builder: (context) {
                           return UserScore();
                         });
@@ -329,9 +329,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                         context: context,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        )),
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            )),
                         builder: (context) {
                           return RestaurantList();
                         });
@@ -349,7 +349,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
     print('kkkk');
     try {
       DatabaseReference databaseRef =
-          dbRef.child(Provider.of<Notifier>(context, listen: false).referral);
+      dbRef.child(Provider.of<Notifier>(context, listen: false).referral);
 
       await databaseRef.update({
         'isActive': isActive,
@@ -358,34 +358,34 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       Provider.of<Notifier>(context, listen: false).changeIsActive(isActive);
       List<int> scoreRestaurant = [];
       for (int i = 0;
-          i <
-              Provider.of<Notifier>(context, listen: false)
-                  .uniqueRestaurantList
-                  .length;
-          i++) {
+      i <
+          Provider.of<Notifier>(context, listen: false)
+              .uniqueRestaurantList
+              .length;
+      i++) {
         scoreRestaurant.add(1);
         for (int j = 0;
-            j <
-                Provider.of<Notifier>(context, listen: false)
-                    .restaurantList
-                    .length;
-            j++) {
+        j <
+            Provider.of<Notifier>(context, listen: false)
+                .restaurantList
+                .length;
+        j++) {
           if (Provider.of<Notifier>(context, listen: false)
-                  .uniqueRestaurantList
-                  .elementAt(i)
-                  .restaurantId ==
+              .uniqueRestaurantList
+              .elementAt(i)
+              .restaurantId ==
               Provider.of<Notifier>(context, listen: false)
                   .users
                   .elementAt(j)
                   .restaurant
                   .restaurantId) {
             scoreRestaurant[i] += Provider.of<Notifier>(context, listen: false)
-                    .users
-                    .elementAt(j)
-                    .score *
+                .users
+                .elementAt(j)
+                .score *
                 (Provider.of<Notifier>(context, listen: false)
-                        .countRestaurantList
-                        .elementAt(i) *
+                    .countRestaurantList
+                    .elementAt(i) *
                     Provider.of<Notifier>(context, listen: false)
                         .countRestaurantList
                         .elementAt(i));
@@ -449,9 +449,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
             .winnerRestaurant
             .restaurantId,
         'restaurantScore':
-            Provider.of<Notifier>(context, listen: false).winnerRestaurantScore,
+        Provider.of<Notifier>(context, listen: false).winnerRestaurantScore,
         'restaurantReview':
-            Provider.of<Notifier>(context, listen: false).winnerReview
+        Provider.of<Notifier>(context, listen: false).winnerReview
       });
       print('eeeeeeeeee');
     } catch (e) {
@@ -543,7 +543,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5.0),
+            const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5.0),
             child: Row(
               children: [
                 Container(
@@ -607,8 +607,8 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
               Text(
                 firstTitle,
                 style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16
+                    color: Colors.grey,
+                    fontSize: 16
                 ),
               ),
               Padding(
@@ -616,8 +616,8 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                 child: Text(
                   firstDesc,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18
+                      color: Colors.black,
+                      fontSize: 18
                   ),
                 ),
               )
@@ -632,8 +632,8 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
               Text(
                 secondTitle,
                 style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16
+                    color: Colors.grey,
+                    fontSize: 16
                 ),
               ),
               Padding(
@@ -641,8 +641,8 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                 child: Text(
                   secondDesc,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18
+                      color: Colors.black,
+                      fontSize: 18
                   ),
                 ),
               )
@@ -680,7 +680,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
         Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(map['winner']['restaurantScore']);
         Provider.of<Notifier>(context, listen: false).changeWinnerReview(map['winner']['restaurantReview']);
       }else{
-        Restaurant winnerRestaurant=Restaurant(restaurantName: 'Restaurant name unknown',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address unknown');
+        Restaurant winnerRestaurant=Restaurant(restaurantName: 'restaurant winner not decided',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address unknown');
         Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(winnerRestaurant);
         Provider.of<Notifier>(context, listen: false).changeWinnerReview(null);
       }
@@ -710,11 +710,11 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       List<Restaurant> uniqueRestaurant = [];
       List<int> countRestaurant = [];
       for (int i = 0;
-          i <
-              Provider.of<Notifier>(context, listen: false)
-                  .restaurantList
-                  .length;
-          i++) {
+      i <
+          Provider.of<Notifier>(context, listen: false)
+              .restaurantList
+              .length;
+      i++) {
         bool check = false;
 
         for (int j = 0; j < uniqueRestaurant.length; j++) {
@@ -738,11 +738,11 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       for (int i = 0; i < uniqueRestaurant.length; i++) {
         countRestaurant.add(0);
         for (int j = 0;
-            j <
-                Provider.of<Notifier>(context, listen: false)
-                    .restaurantList
-                    .length;
-            j++) {
+        j <
+            Provider.of<Notifier>(context, listen: false)
+                .restaurantList
+                .length;
+        j++) {
           if (uniqueRestaurant.elementAt(i).restaurantId ==
               Provider.of<Notifier>(context, listen: false)
                   .restaurantList
