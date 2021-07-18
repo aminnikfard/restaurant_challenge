@@ -3,6 +3,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
@@ -42,19 +43,32 @@ class _GameState extends State<Game> {
   bool end = false;
   double sum = 0;
   bool startTimer = false;
-
+  final player = AudioPlayer();
 
 
   @override
   void initState() {
     super.initState();
+    _init();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FeatureDiscovery.discoverFeatures(context,
           <String>[
             'feature1',
+            'feature2',
+            'feature3',
           ]
       );
     });
+  }
+
+  void _init() async {
+    var duration = await player.setAsset('assets/audio.mp3');
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override
@@ -86,8 +100,22 @@ class _GameState extends State<Game> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child: SizedBox()),
-                          if (startTimer == true) ...[
-                            CircularCountDownTimer(
+                          DescribedFeatureOverlay(
+                            featureId: 'feature2',
+                            targetColor: Colors.white,
+                            textColor: Colors.white,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            contentLocation: ContentLocation.trivial,
+                            title: Text(
+                              'On Tap Here',
+                              style: TextStyle(fontSize: 30.0),
+                            ),
+                            pulseDuration: Duration(seconds: 2),
+                            enablePulsingAnimation: true,
+                            overflowMode: OverflowMode.extendBackground,
+                            openDuration: Duration(seconds: 2),
+                            description: Text('Tap here repeatedly to earn points and move the food up to the plates'),
+                            tapTarget: CircularCountDownTimer(
                               duration: 30,
                               initialDuration: 0,
                               controller: CountDownController(),
@@ -102,7 +130,26 @@ class _GameState extends State<Game> {
                               strokeWidth: 8.0,
                               strokeCap: StrokeCap.round,
                               textStyle: TextStyle(
-                                  fontSize: 15.0,
+                                  fontSize: 17.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            child: CircularCountDownTimer(
+                              duration: 30,
+                              initialDuration: 0,
+                              controller: CountDownController(),
+                              width: MediaQuery.of(context).size.width / 7,
+                              height: MediaQuery.of(context).size.height / 7,
+                              ringColor: Colors.grey[300],
+                              ringGradient: null,
+                              fillColor: Color.fromRGBO(242,223,55, 0.90),
+                              fillGradient: null,
+                              backgroundColor: Color.fromRGBO(232,52,70, 0.90),
+                              backgroundGradient: null,
+                              strokeWidth: 8.0,
+                              strokeCap: StrokeCap.round,
+                              textStyle: TextStyle(
+                                  fontSize: 17.0,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                               textFormat: CountdownTextFormat.S,
@@ -111,16 +158,16 @@ class _GameState extends State<Game> {
                               isTimerTextShown: true,
                               autoStart: true,
                               onComplete: () {
-                                insertScore();
-                                end = true;
+                                if (startTimer == true) {
+                                  insertScore();
+                                  end = true;
+                                }else {
+                                  //pass,
+                                }
                               },
                             ),
-                          ] else ...[
-                            //pass,
-                          ],
+                          ),
                           Expanded(child: SizedBox()),
-                          // Expanded(child: SizedBox()),
-                          // Expanded(child: SizedBox()),
                           Container(
                               margin: EdgeInsets.only(
                                 top: (size.height / 2) - sum,
@@ -132,13 +179,38 @@ class _GameState extends State<Game> {
                             margin: EdgeInsets.only(
                               top: 25,
                             ),
-                            child: CircleAvatar(
-                              radius: 40.0,
-                              backgroundColor: Color.fromRGBO(37,100,138, 0.90),
-                              child: Text(
-                                dSum.toString(),
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
+                            child: DescribedFeatureOverlay(
+                              featureId: 'feature3',
+                              targetColor: Colors.white,
+                              textColor: Colors.white,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              contentLocation: ContentLocation.trivial,
+                              title: Text(
+                                'On Tap Here',
+                                style: TextStyle(fontSize: 30.0),
+                              ),
+                              pulseDuration: Duration(seconds: 2),
+                              enablePulsingAnimation: true,
+                              overflowMode: OverflowMode.extendBackground,
+                              openDuration: Duration(seconds: 2),
+                              description: Text('Tap here repeatedly to earn points and move the food up to the plates'),
+                              tapTarget: CircleAvatar(
+                                radius: 40.0,
+                                backgroundColor: Color.fromRGBO(37,100,138, 0.90),
+                                child: Text(
+                                  dSum.toString(),
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: 40.0,
+                                backgroundColor: Color.fromRGBO(37,100,138, 0.90),
+                                child: Text(
+                                  dSum.toString(),
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
@@ -162,7 +234,7 @@ class _GameState extends State<Game> {
                     enablePulsingAnimation: true,
                     overflowMode: OverflowMode.extendBackground,
                     openDuration: Duration(seconds: 2),
-                    description: Text('Earn Points With Each Tap'),
+                    description: Text('Tap here repeatedly to earn points and move the food up to the plates'),
                     tapTarget: Container(
                       child: Lottie.asset(
                           'assets/19611-ration-food-transition.json',
@@ -173,6 +245,7 @@ class _GameState extends State<Game> {
                       radius: 50,
                       child: InkWell(
                         onTap: () {
+                          player.play();
                           startTimer = true;
                           if (!end) {
                             dSum += 2;
@@ -211,6 +284,7 @@ class _GameState extends State<Game> {
         'isPlay': true,
         'score': dSum,
       });
+      player.stop();
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => ResultGama()));
     } catch (e) {
