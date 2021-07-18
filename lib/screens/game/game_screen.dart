@@ -43,7 +43,7 @@ class _GameState extends State<Game> {
   double sum = 0;
   bool startTimer = false;
 
-  GlobalKey _one = GlobalKey();
+
 
   @override
   void initState() {
@@ -110,7 +110,6 @@ class _GameState extends State<Game> {
                               isReverseAnimation: false,
                               isTimerTextShown: true,
                               autoStart: true,
-                              onStart: () {},
                               onComplete: () {
                                 insertScore();
                                 end = true;
@@ -212,10 +211,10 @@ class _GameState extends State<Game> {
         'isPlay': true,
         'score': dSum,
       });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ResultGama()));
     } catch (e) {
       print(e);
     }
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ResultGama()));
   }
 }

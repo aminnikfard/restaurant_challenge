@@ -64,23 +64,8 @@ class _InfoChallengeState extends State<InfoChallenge> {
                     children: <Widget>[
                       Column(
                         children: [
-                          Container(
-                            width: 150.0,
-                            height: 25.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30.0),
-                              border:
-                              Border.all(width: 1.0, color: Colors.green),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Recreational Class',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            ),
-                          ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 25.0),
+                            padding: const EdgeInsets.only(top: 17.0),
                             child: Text(
                               'Invitation Ticket',
                               style: TextStyle(
@@ -95,8 +80,8 @@ class _InfoChallengeState extends State<InfoChallenge> {
                         constraints: BoxConstraints(
                           minWidth: 50,
                           minHeight: 50,
-                          maxWidth: 70,
-                          maxHeight: 70,
+                          maxWidth: 50,
+                          maxHeight: 50,
                         ),
                         child: Image.asset("assets/icons/fastfood.png",
                             fit: BoxFit.cover),
