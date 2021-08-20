@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/info_restaurant.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
+import 'package:shimmer/shimmer.dart';
 import 'dart:convert' as convert;
 import '../../constants.dart';
 
@@ -39,7 +40,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
                 Uri.parse('$mainUrl' + 'search?location='+'${Provider.of<Notifier>(context, listen: false).location}'),
                 headers: {
                   "Authorization":
-                      "Bearer Z9D7xTUxtz5u3gMnzLQ-5BjgyQF0dJVQ_jz3kYQkwqjH3DnmcvtRDycgDJ19IUKnvQF3Dy7ZNBnuNgXuTWvXkFaHFNaK8-vPGN3PcKzrIXgDKGrYyJ4gRTdl8jTFYHYx",
+                      "Bearer hytQphtTOwd7xAj3i8by1nuzi0px6W17cTIQUL6jcv9nwFMVzhRIiNO43tYV_euGT_du-AFsA58gDybdo3d0S_YRX2TjeWbLClmzOzS5sThudtTSa47rYIlT6M0TYXYx",
                 },
               ),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -54,22 +55,22 @@ class _ListRestaurantState extends State<ListRestaurant> {
                         .map<Businesses>((json) => Businesses.fromJson(json))
                         .toList();
                     return ListView.builder(
-                      itemCount: businesses.length,
-                      itemBuilder: (context, index) {
-                        return cardListRestaurantWidget(
-                            businesses[index].imageUrl,
-                            businesses[index].name,
-                            businesses[index].rating.round(),
-                            businesses[index].location.address1 +
-                                " | " +
-                                businesses[index].location.city +
-                                " | " +
-                                businesses[index].location.state +
-                                " | " +
-                                businesses[index].location.zipCode,
-                            businesses[index].reviewCount,businesses[index].id);
-                      },
-                    );
+                        itemCount: businesses.length,
+                        itemBuilder: (context, index) {
+                          return cardListRestaurantWidget(
+                              businesses[index].imageUrl,
+                              businesses[index].name,
+                              businesses[index].rating.round(),
+                              businesses[index].location.address1 +
+                                  " | " +
+                                  businesses[index].location.city +
+                                  " | " +
+                                  businesses[index].location.state +
+                                  " | " +
+                                  businesses[index].location.zipCode,
+                              businesses[index].reviewCount,businesses[index].id);
+                        },
+                      );
                     // }
                   } else {
                     return Center(
@@ -82,9 +83,22 @@ class _ListRestaurantState extends State<ListRestaurant> {
                       ),
                     );
                   }
-                  return SizedBox();
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return Shimmer.fromColors(
+                    // enabled: true,
+                    baseColor: Colors.grey[400],
+                    highlightColor: Colors.grey[100],
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: 7,
+                      itemBuilder: (_, __) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: placeHolderRow(),
+                      ),
+                      separatorBuilder: (_, __) => const SizedBox(height: 2),
+                    ),
+                  );
                 }
               },
             ),
@@ -93,6 +107,79 @@ class _ListRestaurantState extends State<ListRestaurant> {
       ),
     );
   }
+
+  Widget placeHolderRow() =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5.0),
+        child: Row(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 8.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      for (var i = 0; i < 5; i++)
+                        Icon(
+                          Icons.star_rate_rounded,
+                          size: 20,
+                          color: Colors.orange,
+                        ),
+                      for (var i = 5; i > 5; i--)
+                        Icon(
+                          Icons.star_border_rounded,
+                          size: 20,
+                          color: Colors.orange,
+                        ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 8.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Icon(Icons.visibility),
+                  Text('000'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
 
   Container locationRestaurantWidget(String location) {
     return Container(

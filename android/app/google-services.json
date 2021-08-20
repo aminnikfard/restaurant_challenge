@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:995389161922:android:d04fd6388237b59fd2d65b",
         "android_client_info": {
-          "package_name": "com.example.restaurant_challenge_app"
+          "package_name": "com.restaurant.challenge.app"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "995389161922-hheat6l1tgh81k5h40vd5fvqd0gh90tt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.restaurant_challenge_app",
+            "package_name": "com.restaurant.challenge.app",
             "certificate_hash": "c723da87608db1e31fd625c1c407ec5cd70988ce"
           }
         },

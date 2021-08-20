@@ -6,7 +6,11 @@ class Notifier extends ChangeNotifier {
   bool isStartPlay = false;
   bool isEndPlay = false;
   bool isActive = false;
+  bool isPlayAd = false;
   int indexUser = 0;
+  int visitAd = 0;
+  String descriptionAd;
+  String imgAd;
   String location;
   String img;
   String name = '';
@@ -36,6 +40,11 @@ class Notifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  changeIsPlayAd(bool isPlayAd) {
+    this.isPlayAd = isPlayAd;
+    notifyListeners();
+  }
+
   changeRestaurantReview(int review) {
     this.review = review;
     notifyListeners();
@@ -53,6 +62,21 @@ class Notifier extends ChangeNotifier {
 
   changeIndexUser(int indexUser) {
     this.indexUser = indexUser;
+    notifyListeners();
+  }
+
+  changeVisitAd(int visitAd) {
+    this.visitAd = visitAd;
+    notifyListeners();
+  }
+
+  changeDescriptionAd(String descriptionAd) {
+    this.descriptionAd = descriptionAd;
+    notifyListeners();
+  }
+
+  changeImgAd(String imgAd) {
+    this.imgAd = imgAd;
     notifyListeners();
   }
 

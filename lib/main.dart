@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:restaurant_challenge_app/constants.dart';
+import 'package:restaurant_challenge_app/screens/Dashbord_Admin/admin_screen.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
 import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
         ResultGama.id: (context) => ResultGama(),
         ResetPasswordEmailScreen.id: (context) => ResetPasswordEmailScreen(),
         ResetPasswordPhoneScreen.id: (context) => ResetPasswordPhoneScreen(),
+        DashboardAdmin.id: (context) => DashboardAdmin(),
       },
     );
   }

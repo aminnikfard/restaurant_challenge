@@ -6,6 +6,7 @@ import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/challenge/create_challenge.dart';
 import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ListChallenge extends StatefulWidget {
   const ListChallenge({Key key}) : super(key: key);
@@ -75,22 +76,37 @@ class _ListChallengeState extends State<ListChallenge> {
             child: FutureBuilder(
               future: getDataAdminGame(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if ( snapshot.data == null ) {
+                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                  if (!snapshot.hasData) {
                     return Center(
                       child: Text(
                         'No challenge found for you',
-                        style: TextStyle(color: kColorWhite, fontSize: 18),
+                        style: TextStyle(color: kColorWhite, fontSize: 20),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        'can not connected',
+                        style: TextStyle(color: kColorWhite, fontSize: 20),
+                      ),
+                    );
+                  }
+                  if (snapshot.data == null) {
+                    return Center(
+                      child: Text(
+                        'No challenge found for you',
+                        style: TextStyle(color: kColorWhite, fontSize: 20),
                       ),
                     );
                   }
                   Map data = snapshot.data;
-                  if (data.length < 0 ) {
+                  if (data.length < 0) {
                     return Center(
                       child: Text(
                         'No challenge found for you',
-                        style: TextStyle(color: kColorWhite, fontSize: 18),
+                        style: TextStyle(color: kColorWhite, fontSize: 20),
                       ),
                     );
                   }
@@ -114,20 +130,132 @@ class _ListChallengeState extends State<ListChallenge> {
                     },
                   );
                 }
-                if (snapshot.hasError) {
+                if (!snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                   return Center(
-                    child: Text('can not connected'),
+                    child: Text(
+                      'No challenge found for you',
+                      style: TextStyle(color: kColorWhite, fontSize: 20),
+                    ),
                   );
                 }
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Color(0xFFFF5715), width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Shimmer.fromColors(
+                      enabled: true,
+                      baseColor: Colors.grey[400],
+                      highlightColor: Colors.grey[100],
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        itemCount: 7,
+                        itemBuilder: (_, __) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: placeHolderRow(),
+                        ),
+                        separatorBuilder: (_, __) => const SizedBox(height: 2),
+                      ),
+                    ),
+                  );
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget placeHolderRow() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 10.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'City',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          Container(
+                            width: 100.0,
+                            height: 10.0,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 7,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            'Date',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          Container(
+                            width: 100.0,
+                            height: 10.0,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 7,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            'Time',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          Container(
+                            width: 100.0,
+                            height: 10.0,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Icon(Icons.timelapse_rounded),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
   }
 
   InkWell cardListRestaurantWidget(String name, String city, String date,

@@ -25,6 +25,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
   Size size;
   Map args;
   FirebaseAuth auth = FirebaseAuth.instance;
+  final DatabaseReference dbRef = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +34,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
     String date = args['date'].substring(0, 10);
     int rate = Provider.of<Notifier>(context, listen: true).rate;
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          iconSize: 20.0,
-          icon: Icon(Icons.arrow_back_ios),
-          color: kColorWhite,
-          onPressed: () {
-            Navigator.pushNamed(context, LoginChallengeRoom.id);
-          },
-        ),
-      ),
+
       backgroundColor: kPrimaryColor,
       body: SafeArea(
         child: Center(
@@ -62,6 +51,14 @@ class _InfoChallengeState extends State<InfoChallenge> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      IconButton(
+                        iconSize: 20.0,
+                        icon: Icon(Icons.arrow_back_ios),
+                        color: Colors.black,
+                        onPressed: () {
+                          Navigator.pushNamed(context, LoginChallengeRoom.id);
+                        },
+                      ),
                       Column(
                         children: [
                           Padding(
@@ -96,7 +93,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
                         Padding(
                           padding: const EdgeInsets.only(right: 40.0),
                           child: ticketDetailsWidget(
-                              'Game Manufacturer Name', 'Ilona', '', ''),
+                              'Game Participant Name', '${auth.currentUser.displayName}', '', ''),
                         ),
                         Padding(
                           padding:
@@ -323,13 +320,10 @@ class _InfoChallengeState extends State<InfoChallenge> {
   }
 
   insertToDb() {
-    final DatabaseReference dbRef = FirebaseDatabase.instance
-        .reference()
-        .child('challenges')
+    dbRef.child('challenges')
         .child(args['referralCode'])
         .child('users')
-        .child(auth.currentUser.uid);
-    dbRef.update({
+        .child(auth.currentUser.uid).update({
       'name': auth.currentUser.displayName,
       'id': auth.currentUser.uid,
       'score': 0,
@@ -344,11 +338,9 @@ class _InfoChallengeState extends State<InfoChallenge> {
       }
     });
 
-    final DatabaseReference dbRef1 = FirebaseDatabase.instance
-        .reference()
-        .child('restaurant')
-        .child( Provider.of<Notifier>(context, listen: false).id);
-    dbRef1.update({
+    dbRef.child('restaurant')
+        .child( Provider.of<Notifier>(context, listen: false).id)
+        .update({
       'restaurantName': Provider.of<Notifier>(context, listen: false).name,
       'restaurantImg': Provider.of<Notifier>(context, listen: false).img,
       'restaurantRate': Provider.of<Notifier>(context, listen: false).rate,
@@ -358,6 +350,19 @@ class _InfoChallengeState extends State<InfoChallenge> {
       'restaurantReview': Provider.of<Notifier>(context, listen: false).review+1,
 
     });
+
+    dbRef.child('Advertising').once().then((DataSnapshot snapshot) {
+      Map map=snapshot.value;
+      Provider.of<Notifier>(context, listen: false).changeIsPlayAd(
+          map['isEnable']);
+      Provider.of<Notifier>(context, listen: false).changeDescriptionAd(
+          map['description']);
+      Provider.of<Notifier>(context, listen: false).changeImgAd(
+          map['img']);
+      Provider.of<Notifier>(context, listen: false).changeVisitAd(
+          map['visit']);
+    });
+
     Provider.of<Notifier>(context, listen: false).changeRole('user');
     Navigator.pushNamed(context, GameScreen.id);
   }

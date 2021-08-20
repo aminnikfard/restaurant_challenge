@@ -40,19 +40,6 @@ class _ResultGamaState extends State<ResultGama> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          iconSize: 20.0,
-          icon: Icon(Icons.arrow_back_ios),
-          color: kColorWhite,
-          onPressed: () {
-            Navigator.pushNamed(context, LoginChallengeRoom.id);
-          },
-        ),
-      ),
       backgroundColor: kPrimaryColor,
       body: SafeArea(
         child: Center(
@@ -105,6 +92,14 @@ class _ResultGamaState extends State<ResultGama> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
+                                IconButton(
+                                  iconSize: 20.0,
+                                  icon: Icon(Icons.arrow_back_ios),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, LoginChallengeRoom.id);
+                                  },
+                                ),
                                 Column(
                                   children: [
                                     Padding(

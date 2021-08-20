@@ -47,20 +47,6 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   Widget build(BuildContext context) {
     Size size= MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Create Game'),
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          iconSize: 20.0,
-          icon: Icon(Icons.arrow_back_ios),
-          color: kColorWhite,
-          onPressed: () {
-            Navigator.pushNamed(context, AuthScreen.id);
-          },
-        ),
-      ),
       backgroundColor: kPrimaryColor,
       body: SafeArea(
         child: Center(
@@ -76,6 +62,14 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      IconButton(
+                        iconSize: 20.0,
+                        icon: Icon(Icons.arrow_back_ios),
+                        color: Colors.black,
+                        onPressed: () {
+                          Navigator.pushNamed(context, AuthScreen.id);
+                        },
+                      ),
                       Column(
                         children: [
                           Padding(

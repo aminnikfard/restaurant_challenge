@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
@@ -19,17 +20,11 @@ class ChallengeManagement extends StatefulWidget {
 
 class _ChallengeManagementState extends State<ChallengeManagement> {
   final DatabaseReference dbRef =
-  FirebaseDatabase.instance.reference().child('challenges');
-
-  // final _auth = FirebaseAuth.instance;
-
+      FirebaseDatabase.instance.reference().child('challenges');
   final double rate = 6;
   int winnerRestaurant;
-
   String referral;
-
   Map args;
-
   String date;
 
   @override
@@ -42,33 +37,35 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
   @override
   Widget build(BuildContext context) {
     referral = Provider.of<Notifier>(context, listen: false).referral;
-    winnerRestaurant=Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantRate;
+    winnerRestaurant = Provider.of<Notifier>(context, listen: true)
+        .winnerRestaurant
+        .restaurantRate;
     Size size = MediaQuery.of(context).size;
     args = ModalRoute.of(context).settings.arguments;
     date = args['date'].substring(0, 10);
     String isStartPlay =
-    Provider.of<Notifier>(context, listen: true).isStartPlay == true
-        ? 'Yes'
-        : 'No';
+        Provider.of<Notifier>(context, listen: true).isStartPlay == true
+            ? 'Yes'
+            : 'No';
     String isEndPlay =
-    Provider.of<Notifier>(context, listen: true).isEndPlay == true
-        ? 'Yes'
-        : 'No';
+        Provider.of<Notifier>(context, listen: true).isEndPlay == true
+            ? 'Yes'
+            : 'No';
     return Scaffold(
       floatingActionButton: Provider.of<Notifier>(context, listen: true)
-          .isActive
+              .isActive
           ? FloatingActionButton(
-        child: Icon(
-          Icons.stop_circle_outlined,
-          color: kPrimaryColor,
-          size: 45,
-        ),
-        backgroundColor: kColorWhite,
-        onPressed: () {
-          changeStatus(context,
-              !Provider.of<Notifier>(context, listen: false).isActive);
-        },
-      )
+              child: Icon(
+                Icons.stop_circle_outlined,
+                color: kPrimaryColor,
+                size: 45,
+              ),
+              backgroundColor: kColorWhite,
+              onPressed: () {
+                changeStatus(context,
+                    !Provider.of<Notifier>(context, listen: false).isActive);
+              },
+            )
           : SizedBox(),
       appBar: AppBar(
         title: Text('Challenge'),
@@ -163,7 +160,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                       '${args['city']}',
                                       'Users',
                                       Provider.of<Notifier>(context,
-                                          listen: true)
+                                              listen: true)
                                           .users
                                           .length
                                           .toString()),
@@ -179,7 +176,10 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                           )
                         ],
                       ),
-                      Expanded(child: SizedBox(height: size.height / 1,)),
+                      Expanded(
+                          child: SizedBox(
+                        height: size.height / 1,
+                      )),
                       Card(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
@@ -198,10 +198,18 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 width: 50,
                                 child: CircleAvatar(
                                   backgroundColor: kColorWhite,
-                                  backgroundImage:
-                                  Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg == ''
+                                  backgroundImage: Provider.of<Notifier>(
+                                                  context,
+                                                  listen: true)
+                                              .winnerRestaurant
+                                              .restaurantImg ==
+                                          ''
                                       ? AssetImage('assets/icons/pizza1.png')
-                                      : NetworkImage( Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantImg),
+                                      : NetworkImage(Provider.of<Notifier>(
+                                              context,
+                                              listen: true)
+                                          .winnerRestaurant
+                                          .restaurantImg),
                                 ),
                               ),
                               SizedBox(
@@ -215,7 +223,10 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                       height: 5,
                                     ),
                                     Text(
-                                      Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantName,
+                                      Provider.of<Notifier>(context,
+                                              listen: true)
+                                          .winnerRestaurant
+                                          .restaurantName,
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600),
@@ -225,7 +236,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                     ),
                                     Row(
                                       children: [
-                                        for (var i = 1; i < rate; i++)...{
+                                        for (var i = 1; i < rate; i++) ...{
                                           if (i <= winnerRestaurant) ...{
                                             Icon(
                                               Icons.star_rate_sharp,
@@ -247,7 +258,10 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                       height: 5,
                                     ),
                                     Text(
-                                      Provider.of<Notifier>(context, listen: true).winnerRestaurant.restaurantAddress,
+                                      Provider.of<Notifier>(context,
+                                              listen: true)
+                                          .winnerRestaurant
+                                          .restaurantAddress,
                                       style: TextStyle(fontSize: 10),
                                     ),
                                     SizedBox(
@@ -263,9 +277,14 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                                 child: Column(
                                   children: [
                                     Icon(Icons.visibility),
-                                    Provider.of<Notifier>(context, listen: true).winnerReview == null
+                                    Provider.of<Notifier>(context, listen: true)
+                                                .winnerReview ==
+                                            null
                                         ? Text('unknown')
-                                        : Text(Provider.of<Notifier>(context, listen: true).winnerReview.toString()),
+                                        : Text(Provider.of<Notifier>(context,
+                                                listen: true)
+                                            .winnerReview
+                                            .toString()),
                                   ],
                                 ),
                               ),
@@ -273,7 +292,10 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                           ),
                         ),
                       ),
-                      Expanded(child: SizedBox(height: size.height / 1,)),
+                      Expanded(
+                          child: SizedBox(
+                        height: size.height / 1,
+                      )),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -304,7 +326,10 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                               Colors.blueAccent, "twitter"),
                         ],
                       ),
-                      Expanded(child: SizedBox(height: size.height / 1,)),
+                      Expanded(
+                          child: SizedBox(
+                        height: size.height / 1,
+                      )),
                     ],
                   ),
                 ),
@@ -315,9 +340,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                         context: context,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            )),
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        )),
                         builder: (context) {
                           return UserScore();
                         });
@@ -329,9 +354,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                         context: context,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            )),
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        )),
                         builder: (context) {
                           return RestaurantList();
                         });
@@ -349,7 +374,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
     print('kkkk');
     try {
       DatabaseReference databaseRef =
-      dbRef.child(Provider.of<Notifier>(context, listen: false).referral);
+          dbRef.child(Provider.of<Notifier>(context, listen: false).referral);
 
       await databaseRef.update({
         'isActive': isActive,
@@ -358,34 +383,34 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       Provider.of<Notifier>(context, listen: false).changeIsActive(isActive);
       List<int> scoreRestaurant = [];
       for (int i = 0;
-      i <
-          Provider.of<Notifier>(context, listen: false)
-              .uniqueRestaurantList
-              .length;
-      i++) {
+          i <
+              Provider.of<Notifier>(context, listen: false)
+                  .uniqueRestaurantList
+                  .length;
+          i++) {
         scoreRestaurant.add(1);
         for (int j = 0;
-        j <
-            Provider.of<Notifier>(context, listen: false)
-                .restaurantList
-                .length;
-        j++) {
+            j <
+                Provider.of<Notifier>(context, listen: false)
+                    .restaurantList
+                    .length;
+            j++) {
           if (Provider.of<Notifier>(context, listen: false)
-              .uniqueRestaurantList
-              .elementAt(i)
-              .restaurantId ==
+                  .uniqueRestaurantList
+                  .elementAt(i)
+                  .restaurantId ==
               Provider.of<Notifier>(context, listen: false)
                   .users
                   .elementAt(j)
                   .restaurant
                   .restaurantId) {
             scoreRestaurant[i] += Provider.of<Notifier>(context, listen: false)
-                .users
-                .elementAt(j)
-                .score *
+                    .users
+                    .elementAt(j)
+                    .score *
                 (Provider.of<Notifier>(context, listen: false)
-                    .countRestaurantList
-                    .elementAt(i) *
+                        .countRestaurantList
+                        .elementAt(i) *
                     Provider.of<Notifier>(context, listen: false)
                         .countRestaurantList
                         .elementAt(i));
@@ -449,9 +474,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
             .winnerRestaurant
             .restaurantId,
         'restaurantScore':
-        Provider.of<Notifier>(context, listen: false).winnerRestaurantScore,
+            Provider.of<Notifier>(context, listen: false).winnerRestaurantScore,
         'restaurantReview':
-        Provider.of<Notifier>(context, listen: false).winnerReview
+            Provider.of<Notifier>(context, listen: false).winnerReview
       });
       print('eeeeeeeeee');
     } catch (e) {
@@ -471,7 +496,13 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           SocialShare.copyToClipboard(
             massage,
           ).then((data) {
-            print(data);
+            Fluttertoast.showToast(
+                msg: 'Copied to clipboard',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.black87,
+                textColor: Colors.white
+            );
           });
         } else if (nameIcon == "sms") {
           SocialShare.shareSms(
@@ -543,7 +574,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           ),
           Padding(
             padding:
-            const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5.0),
+                const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5.0),
             child: Row(
               children: [
                 Container(
@@ -606,19 +637,13 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
             children: <Widget>[
               Text(
                 firstTitle,
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 6.0),
                 child: Text(
                   firstDesc,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18
-                  ),
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               )
             ],
@@ -631,19 +656,13 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
             children: <Widget>[
               Text(
                 secondTitle,
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 6.0),
                 child: Text(
                   secondDesc,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18
-                  ),
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               )
             ],
@@ -669,19 +688,28 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
 
       Provider.of<Notifier>(context, listen: false)
           .changeIsEndPlay(map['isEndPlay']);
-      if(map['winner']!=null){
+      if (map['winner'] != null) {
         Restaurant restaurant = Restaurant(
             restaurantAddress: map['winner']['restaurantAddress'],
             restaurantImg: map['winner']['restaurantImg'],
             restaurantName: map['winner']['restaurantName'],
             restaurantRate: map['winner']['restaurantRate'],
             restaurantId: map['winner']['restaurantId']);
-        Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(restaurant);
-        Provider.of<Notifier>(context, listen: false).changeWinnerRestaurantScore(map['winner']['restaurantScore']);
-        Provider.of<Notifier>(context, listen: false).changeWinnerReview(map['winner']['restaurantReview']);
-      }else{
-        Restaurant winnerRestaurant=Restaurant(restaurantName: 'restaurant winner not decided',restaurantId: '',restaurantRate: 0,restaurantImg: '',restaurantAddress: 'Restaurant address unknown');
-        Provider.of<Notifier>(context, listen: false).changeWinnerRestaurant(winnerRestaurant);
+        Provider.of<Notifier>(context, listen: false)
+            .changeWinnerRestaurant(restaurant);
+        Provider.of<Notifier>(context, listen: false)
+            .changeWinnerRestaurantScore(map['winner']['restaurantScore']);
+        Provider.of<Notifier>(context, listen: false)
+            .changeWinnerReview(map['winner']['restaurantReview']);
+      } else {
+        Restaurant winnerRestaurant = Restaurant(
+            restaurantName: 'restaurant winner not decided',
+            restaurantId: '',
+            restaurantRate: 0,
+            restaurantImg: '',
+            restaurantAddress: 'Restaurant address unknown');
+        Provider.of<Notifier>(context, listen: false)
+            .changeWinnerRestaurant(winnerRestaurant);
         Provider.of<Notifier>(context, listen: false).changeWinnerReview(null);
       }
       if (map['users'] != null) {
@@ -710,11 +738,11 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       List<Restaurant> uniqueRestaurant = [];
       List<int> countRestaurant = [];
       for (int i = 0;
-      i <
-          Provider.of<Notifier>(context, listen: false)
-              .restaurantList
-              .length;
-      i++) {
+          i <
+              Provider.of<Notifier>(context, listen: false)
+                  .restaurantList
+                  .length;
+          i++) {
         bool check = false;
 
         for (int j = 0; j < uniqueRestaurant.length; j++) {
@@ -738,11 +766,11 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       for (int i = 0; i < uniqueRestaurant.length; i++) {
         countRestaurant.add(0);
         for (int j = 0;
-        j <
-            Provider.of<Notifier>(context, listen: false)
-                .restaurantList
-                .length;
-        j++) {
+            j <
+                Provider.of<Notifier>(context, listen: false)
+                    .restaurantList
+                    .length;
+            j++) {
           if (uniqueRestaurant.elementAt(i).restaurantId ==
               Provider.of<Notifier>(context, listen: false)
                   .restaurantList
