@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:restaurant_challenge_app/screens/login_screen.dart';
 import 'package:restaurant_challenge_app/screens/reset_password_phone_screen.dart';
 import '../constants.dart';
 import '../static_methods.dart';
@@ -67,11 +68,18 @@ class _ResetPasswordEmailScreenState extends State<ResetPasswordEmailScreen> {
                       child: Image(
                         image: AssetImage("assets/images/logo.png"),
                       ),
-                    )
+                    ),
+                    IconButton(
+                      iconSize: 20.0,
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: () {
+                        Navigator.pushNamed(context, LoginScreen.id);
+                      },
+                    ),
                   ],
                 ),
                 SizedBox(
-                  height: size.height * 0.03,
+                  height: size.height * 0.06,
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -94,7 +102,7 @@ class _ResetPasswordEmailScreenState extends State<ResetPasswordEmailScreen> {
                       Text(
                         "Reset Password Using Email",
                         style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                            fontSize: 18.0, fontWeight: FontWeight.bold,color: Colors.black87),
                       ),
                       SizedBox(
                         height: size.height * 0.02,
@@ -153,12 +161,6 @@ class _ResetPasswordEmailScreenState extends State<ResetPasswordEmailScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
                       Padding(
                           padding: EdgeInsets.only(top: 12.0),
                           child: Container(
@@ -167,7 +169,7 @@ class _ResetPasswordEmailScreenState extends State<ResetPasswordEmailScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text("Or Reset Password using",
-                                    style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,)),
+                                    style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,)),
                                 SizedBox(width: 5.0),
                                 GestureDetector(
                                   onTap: () {

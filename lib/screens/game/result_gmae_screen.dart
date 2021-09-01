@@ -134,7 +134,7 @@ class _ResultGamaState extends State<ResultGama> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 40.0),
                                     child: ticketDetailsWidget(
-                                        'Game Participant Name', '$name', '', ''),
+                                        'Game Participant Name', '${auth.currentUser.email}', '', ''),
                                   ),
                                   Padding(
                                     padding:
@@ -158,7 +158,7 @@ class _ResultGamaState extends State<ResultGama> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 40.0,bottom: 20.0),
+                              padding: const EdgeInsets.only(top: 40.0,bottom: 40.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   boxShadow: [

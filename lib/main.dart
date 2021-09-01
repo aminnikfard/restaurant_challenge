@@ -18,6 +18,7 @@ import 'package:restaurant_challenge_app/screens/register_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/register_phone_screen.dart';
 import 'package:restaurant_challenge_app/screens/reset_password_email_screen.dart';
 import 'package:restaurant_challenge_app/screens/reset_password_phone_screen.dart';
+import 'package:restaurant_challenge_app/screens/splash_screen.dart';
 
 import 'model/field_notifier.dart';
 import 'model/notifier.dart';
@@ -59,22 +60,23 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: LoginScreen.id,
+      initialRoute: Splash.id,
       routes: {
+        Splash.id: (context) => Splash(),
+        LoginScreen.id: (context) => LoginScreen(),
         RegisterEmailScreen.id: (context) => RegisterEmailScreen(),
+        RegisterPhoneScreen.id: (context) => RegisterPhoneScreen(),
+        ResetPasswordEmailScreen.id: (context) => ResetPasswordEmailScreen(),
+        ResetPasswordPhoneScreen.id: (context) => ResetPasswordPhoneScreen(),
         AuthScreen.id: (context) => AuthScreen(),
         ChallengeScreen.id: (context) => ChallengeScreen(),
-        RegisterPhoneScreen.id: (context) => RegisterPhoneScreen(),
         LoginChallengeRoom.id: (context) => LoginChallengeRoom(),
         GameScreen.id: (context) => GameScreen(),
         ChallengeManagement.id: (context) => ChallengeManagement(),
         InfoChallenge.id: (context) => InfoChallenge(),
         UserScore.id: (context) => UserScore(),
-        LoginScreen.id: (context) => LoginScreen(),
         RestaurantList.id: (context) => RestaurantList(),
         ResultGama.id: (context) => ResultGama(),
-        ResetPasswordEmailScreen.id: (context) => ResetPasswordEmailScreen(),
-        ResetPasswordPhoneScreen.id: (context) => ResetPasswordPhoneScreen(),
         DashboardAdmin.id: (context) => DashboardAdmin(),
       },
     );

@@ -93,7 +93,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
                         Padding(
                           padding: const EdgeInsets.only(right: 40.0),
                           child: ticketDetailsWidget(
-                              'Game Participant Name', '${auth.currentUser.displayName}', '', ''),
+                              'Game Participant Name', '${auth.currentUser.email}', '', ''),
                         ),
                         Padding(
                           padding:
@@ -117,7 +117,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0,bottom: 30.0),
+                    padding: const EdgeInsets.only(top: 40.0,bottom: 60.0),
                     child: Container(
                       decoration: BoxDecoration(
                         boxShadow: [

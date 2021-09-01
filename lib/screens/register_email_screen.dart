@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -22,7 +21,6 @@ class RegisterEmailScreen extends StatefulWidget {
 class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
 
   TextEditingController emailController,fullNameController, passwordController, rePasswordController;
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
   String fullName, email, password, rePassword;
   bool showLoadingProgress = false;
   bool _hidePassword = true;
@@ -116,7 +114,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: size.height * 0.03,
+                    height: size.height * 0.06,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -360,11 +358,6 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
       Navigator.of(context).pushNamedAndRemoveUntil(
           AuthScreen.id, (Route<dynamic> route) => false);
       showLoadingProgress = false;
-      return fireStore.collection('Users Email Register').add({
-        'full-name' : fullName,
-        'email': user.email,
-        'uid': user.uid,
-      });
     }
     catch(e){
       showLoadingProgress = false;

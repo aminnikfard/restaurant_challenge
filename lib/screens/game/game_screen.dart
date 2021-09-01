@@ -11,17 +11,12 @@ import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
 
-class GameScreen extends StatefulWidget {
+class GameScreen extends StatelessWidget {
   static String id = 'game_screen';
-
-  @override
-  _GameScreenState createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       body: SafeArea(
         child: FeatureDiscovery.withProvider(
           persistenceProvider: NoPersistenceProvider(),

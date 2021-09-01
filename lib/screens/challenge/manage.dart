@@ -1,19 +1,22 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_challenge_app/componnent/help_dialog.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/model/users.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
 import 'package:restaurant_challenge_app/screens/challenge/userScore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_share/social_share.dart';
 import '../../constants.dart';
 
 class ChallengeManagement extends StatefulWidget {
-  static String id = 'ChallengeManagement';
-
+  static String id = 'challengeManagement_screen';
   @override
   _ChallengeManagementState createState() => _ChallengeManagementState();
 }
@@ -29,9 +32,19 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
 
   @override
   void initState() {
-    // TODO: implement initState
+      Timer(Duration(milliseconds: 200), () {
+        if (args['show'] == true) {
+          showHelpDialog(context);
+          setShow(true);
+        }
+      });
     stream(context);
     super.initState();
+  }
+
+  Future<void> setShow(bool isShow) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('show', isShow);
   }
 
   @override
@@ -55,42 +68,53 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       floatingActionButton: Provider.of<Notifier>(context, listen: true)
               .isActive
           ? FloatingActionButton(
-              child: Icon(
-                Icons.stop_circle_outlined,
-                color: kPrimaryColor,
-                size: 45,
-              ),
-              backgroundColor: kColorWhite,
-              onPressed: () {
-                changeStatus(context,
-                    !Provider.of<Notifier>(context, listen: false).isActive);
-              },
-            )
+        child: Icon(
+          Icons.stop_circle_outlined,
+          color: kPrimaryColor,
+          size: 45,
+        ),
+        backgroundColor: kColorWhite,
+        onPressed: () {
+          changeStatus(context,
+              !Provider.of<Notifier>(context, listen: false).isActive);
+          Fluttertoast.showToast(
+              msg: 'Your game has stopped',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.black87,
+              textColor: Colors.white);
+        },
+      )
           : SizedBox(),
       appBar: AppBar(
         title: Text('Challenge'),
         centerTitle: true,
         elevation: 0,
         actions: [
-          if (Provider.of<Notifier>(context, listen: true).isActive) ...{
-            IconButton(
-              iconSize: 20.0,
-              icon: Icon(
-                Icons.stop_circle_outlined,
-              ),
-              onPressed: () {
-                changeStatus(context,
-                    !Provider.of<Notifier>(context, listen: false).isActive);
-                // Navigator.pushNamed(context, LoginScreen.id);
-              },
-            ),
-          },
           IconButton(
-            iconSize: 20.0,
-            icon: Icon(Icons.add_alert),
-            onPressed: () {
-              // Navigator.pushNamed(context, LoginScreen.id);
-            },
+            iconSize: 25.0,
+            icon: Icon(Icons.info_rounded),
+            onPressed: ()=> showHelpDialog(context),
+          ),
+          IconButton(
+            iconSize: 25.0,
+            icon: Icon(Icons.delete_rounded),
+            onPressed: ()=> showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text('Do you want to delete this game?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () =>  onPressChallengeDelete(referral),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
         leading: IconButton(
@@ -491,7 +515,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
     return GestureDetector(
       onTap: () async {
         String massage =
-            "You have been invited to the challenge ${args['challengeName']} this is a challenge between my friends during the day $date and at the hour ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
+            "You have been invited to the ${args['challengeName']} challenge. This is a challenge between my friends on $date at ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
         if (nameIcon == "copy") {
           SocialShare.copyToClipboard(
             massage,
@@ -787,4 +811,11 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           .changeCountRestaurantList(countRestaurant);
     });
   }
+
+  onPressChallengeDelete(String idChallenge) async{
+    await dbRef.child(idChallenge).remove();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        AuthScreen.id, (Route<dynamic> route) => false);
+  }
 }
+

@@ -1,8 +1,9 @@
 import 'dart:math';
-
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/componnent/base_ticket_widget.dart';
 import 'package:restaurant_challenge_app/constants.dart';
@@ -28,9 +29,13 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   TextEditingController textEditingController,challengeNameController;
   StepperType stepperType = StepperType.vertical;
   Random random = Random();
-  String name,date,time,referral,city;
+  String name,date,time,referral,city,date2,time2;
+  bool showLoadingProgress = false;
+
   @override
   void initState() {
+    Provider.of<FieldNotifier>(context,listen: false).changeDate(null);
+    Provider.of<FieldNotifier>(context,listen: false).changeTime(null);
     textEditingController = TextEditingController();
     challengeNameController = TextEditingController();
     super.initState();
@@ -48,124 +53,181 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     Size size= MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: kPrimaryColor,
-      body: SafeArea(
-        child: Center(
-          child: BaseTicketWidget(
-            width: size.width / 1.15,
-            height: size.height / 1.28,
-            isCornerRounded: true,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      IconButton(
-                        iconSize: 20.0,
-                        icon: Icon(Icons.arrow_back_ios),
-                        color: Colors.black,
-                        onPressed: () {
-                          Navigator.pushNamed(context, AuthScreen.id);
-                        },
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              'Create Invitation',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold),
+      body: ModalProgressHUD(
+        inAsyncCall: showLoadingProgress,
+        progressIndicator: kCustomProgressIndicator,
+        child: SafeArea(
+          child: Center(
+            child: BaseTicketWidget(
+              width: size.width / 1.15,
+              height: size.height / 1.20,
+              isCornerRounded: true,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        IconButton(
+                          iconSize: 20.0,
+                          icon: Icon(Icons.arrow_back_ios),
+                          color: Colors.black,
+                          onPressed: () {
+                            Navigator.pushNamed(context, AuthScreen.id);
+                          },
+                        ),
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                'Create Invitation',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minWidth: 44,
-                          minHeight: 44,
-                          maxWidth: 64,
-                          maxHeight: 64,
+                          ],
                         ),
-                        child: Image.asset("assets/icons/fastfood.png",
-                            fit: BoxFit.cover),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Stepper(
-                      type: stepperType,
-                      physics: ScrollPhysics(),
-                      currentStep: _currentStep,
-                      onStepTapped: (step) => tapped(step),
-                      onStepContinue: continued,
-                      onStepCancel: cancel,
-                      steps: <Step>[
-                        Step(
-                          title: Text('Game Name'),
-                          content: Column(
-                            children: <Widget>[
-
-                              TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: 'Game Name'),
-                                controller: challengeNameController,
-                              ),
-                            ],
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: 44,
+                            minHeight: 44,
+                            maxWidth: 64,
+                            maxHeight: 64,
                           ),
-                          isActive: _currentStep >= 0,
-                          state: _currentStep >= 0
-                              ? StepState.complete
-                              : StepState.disabled,
-                        ),
-                        Step(
-                          title: Text('Date You Want To Go To The Restaurant'),
-                          content: Column(
-                            children: <Widget>[
-                              DatePickerWidget(),
-                            ],
-                          ),
-                          isActive: _currentStep >= 0,
-                          state: _currentStep >= 1
-                              ? StepState.complete
-                              : StepState.disabled,
-                        ),
-                        Step(
-                          title: Text('Time You Want To Go To The Restaurant'),
-                          content: Column(
-                            children: <Widget>[
-                              TimePickerWidget(),
-                            ],
-                          ),
-                          isActive: _currentStep >= 0,
-                          state: _currentStep >= 2
-                              ? StepState.complete
-                              : StepState.disabled,
-                        ),
-                        Step(
-                          title: Text('City Name'),
-                          content: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: 'City Name'),
-                                controller: textEditingController,
-                              ),
-                            ],
-                          ),
-                          isActive: _currentStep >= 0,
-                          state: _currentStep >= 3
-                              ? StepState.complete
-                              : StepState.disabled,
+                          child: Image.asset("assets/icons/fastfood.png",
+                              fit: BoxFit.cover),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Stepper(
+                        type: stepperType,
+                        physics: ScrollPhysics(),
+                        currentStep: _currentStep,
+                        onStepTapped: (step) => tapped(step),
+                        onStepContinue: continued,
+                        onStepCancel: cancel,
+                        steps: <Step>[
+                          Step(
+                            title: Text('Game Name'),
+                            content: Column(
+                              children: <Widget>[
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Game Name'),
+                                  controller: challengeNameController,
+                                ),
+                              ],
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: _currentStep >= 0
+                                ? StepState.complete
+                                : StepState.disabled,
+                          ),
+                          Step(
+                            title: Text('Date You Want To Go To The Restaurant'),
+                            content: Column(
+                              children: <Widget>[
+                                DatePickerWidget(),
+                              ],
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: _currentStep >= 1
+                                ? StepState.complete
+                                : StepState.disabled,
+                          ),
+                          Step(
+                            title: Text('Time You Want To Go To The Restaurant'),
+                            content: Column(
+                              children: <Widget>[
+                                TimePickerWidget(),
+                              ],
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: _currentStep >= 2
+                                ? StepState.complete
+                                : StepState.disabled,
+                          ),
+                          Step(
+                            title: Text('City Name'),
+                            content: Column(
+                              children: <Widget>[
+                                TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: 'City Name'),
+                                  controller: textEditingController,
+                                ),
+                              ],
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: _currentStep >= 3
+                                ? StepState.complete
+                                : StepState.disabled,
+                          ),
+                          Step(
+                            title: Text('Final confirmation of information'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    TextButton.icon(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.edit_rounded,),
+                                      label:Text('Game Name:',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
+                                    ),
+                                    Text('${challengeNameController.text}',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    TextButton.icon(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.date_range,),
+                                      label:Text('Date: ',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
+                                    ),
+                                    Text('$date',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    TextButton.icon(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.timer,),
+                                      label:Text('Time: ',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
+                                    ),
+                                    Text('$time',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    TextButton.icon(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.location_city,),
+                                      label:Text('City: ',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
+                                    ),
+                                    Text('${textEditingController.text}',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            isActive: _currentStep >= 0,
+                            state: _currentStep >= 4
+                                ? StepState.complete
+                                : StepState.disabled,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -179,8 +241,8 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   }
 
   continued() async{
-    if (_currentStep >= 3) {
-      if(challengeNameController.text.length < 0){
+    if (_currentStep == 0) {
+      if(challengeNameController.text.length == 0){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
               'Enter your Game Name', MediaQuery.of(context).size,kDialogErrorColor),
@@ -194,47 +256,65 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
         );
         return false;
       }
-      if(Provider.of<FieldNotifier>(context,listen: false).date == null){
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    }
+    if (_currentStep == 1) {
+      print(Provider.of<FieldNotifier>(context, listen: false).date);
+      if (Provider.of<FieldNotifier>(context, listen: false).date == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          StaticMethods.mySnackBar(
-              'Specify the date of the game', MediaQuery.of(context).size, kDialogErrorColor),
+          StaticMethods.mySnackBar('Specify the date of the game', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
       }
-      if(Provider.of<FieldNotifier>(context,listen: false).time == null){
+    }
+    if (_currentStep == 2) {
+      if (Provider.of<FieldNotifier>(context, listen: false).time == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          StaticMethods.mySnackBar(
-              'Specify the game time', MediaQuery.of(context).size, kDialogErrorColor),
+          StaticMethods.mySnackBar('Specify the game time', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
       }
+    }
+    if (_currentStep == 3) {
       if(textEditingController.text.length < 2){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
               'Enter the name of the city', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
-      }else{
-        bool check=await createChallenge();
-        if(check){
-          Provider.of<Notifier>(context, listen: false).changeReferral(referral);
-          Provider.of<Notifier>(context, listen: false).changeIsStartPlay(false);
-          Provider.of<Notifier>(context, listen: false).changeIsEndPlay(false);
-          Navigator.popAndPushNamed(
-            context,
-            ChallengeManagement.id,
-            arguments: {
-              'challengeName': challengeNameController.text,
-              'city': textEditingController.text,
-              'time': time,
-              'date': date,
-            },
-          );
-        }
+      }
+      date=dateChallenge();
+      time=timeChallenge();
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
       }
     }
-    else {
-      _currentStep < 3
+    if(_currentStep == 4){
+      bool check=await createChallenge();
+      if(check){
+        Provider.of<Notifier>(context, listen: false).changeReferral(referral);
+        Provider.of<Notifier>(context, listen: false).changeIsStartPlay(false);
+        Provider.of<Notifier>(context, listen: false).changeIsEndPlay(false);
+        showLoadingProgress = false;
+        Navigator.popAndPushNamed(
+          context,
+          ChallengeManagement.id,
+          arguments: {
+            'challengeName': challengeNameController.text,
+            'city': textEditingController.text,
+            'time': time,
+            'date': date,
+          },
+        );
+      }else{
+        showLoadingProgress = false;
+      }
+    } else {
+      _currentStep < 4
           ? setState(() => _currentStep += 1)
           : setState(() => null);
     }
@@ -244,15 +324,24 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : setState(() => null);
   }
 
-  Future<bool>createChallenge() async {
-    bool check=true;
-    int id=random.nextInt(9000000) + 1000000;
+  String dateChallenge(){
     date=Provider.of<FieldNotifier>(context, listen: false).date.toString();
+    date=date.substring(0,10);
+    return date;
+  }
+
+  String timeChallenge(){
     String hour=Provider.of<FieldNotifier>(context, listen: false).time.hour.toString();
     String minute=Provider.of<FieldNotifier>(context, listen: false).time.minute.toString();
     hour.length == 1 ? hour="0"+hour : hour=hour ;
     minute.length == 1 ? minute="0"+minute : minute=minute ;
-    time="$hour:$minute";
+    return time="$hour:$minute";
+  }
+
+  Future<bool>createChallenge() async {
+    showLoadingProgress = true;
+    bool check=true;
+    int id=random.nextInt(9000000) + 1000000;
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .reference()
         .child('challenges').child(id.toString());
@@ -271,6 +360,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
         }
     ).onError((error, stackTrace) {
       check=false;
+      showLoadingProgress = false;
     });
     referral=id.toString();
     return check;

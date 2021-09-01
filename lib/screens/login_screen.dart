@@ -26,34 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController, passwordController;
   Size size;
   FocusNode node;
-
   DatabaseReference dbRef =
       FirebaseDatabase.instance.reference().child('Users');
-
   String email, password;
-
   bool showLoadingProgress = false;
-
-  getUser() {
-    User user = auth.currentUser;
-    if (user != null) {
-      getUserInfoFromDatabase(user);
-    } else {
-      // pass
-    }
-  }
 
   @override
   void initState() {
     emailController = TextEditingController();
     passwordController = TextEditingController();
-
-    Future.delayed(
-      Duration(microseconds: 200),
-      () {
-        getUser();
-      },
-    );
     super.initState();
   }
 
@@ -90,6 +71,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         )
                       ],
                     ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top:25.0,left: 25.0),
+                        child: Text(
+                          "MyHungryGame",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
                     Positioned(
                       width: size.width / 1,
                       height: size.width / 1.2,
@@ -100,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 SizedBox(
-                  height: size.height * 0.03,
+                  height: size.height * 0.06,
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -120,6 +115,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
                   child: Column(
                     children: [
+                      // Text(
+                      //   "MyHungryGame",
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 30,
+                      //     color: Theme.of(context).primaryColor,
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: size.height * 0.02,
+                      // ),
                       Text(
                         "Login Account",
                         style: TextStyle(
@@ -203,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: size.height * 0.02,
+                        height: size.height * 0.01,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -218,14 +224,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               'Forgot Password?',
                               style: TextStyle(
-                               fontSize: 14.0,
+                                decoration: TextDecoration.underline,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           )
                         ],
                       ),
                       SizedBox(
-                        height: size.height * 0.02,
+                        height: size.height * 0.005,
                       ),
                       Divider(
                         thickness: 0.8,
@@ -272,6 +280,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  onLoginPressed() {
+    if (isValid()) {
+      uploadInfo();
+    } else {}
+  }
+
   bool isValid() {
     email = emailController.text;
     password = passwordController.text;
@@ -296,7 +310,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return false;
     }
-
     return true;
   }
 
@@ -307,6 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
       UserCredential userCredential = await auth
           .signInWithEmailAndPassword(email: email, password: password)
           .onError((error, stackTrace) => error);
+
       showLoadingProgress = false;
       setState(() {});
       if (userCredential != null) {
@@ -327,12 +341,6 @@ class _LoginScreenState extends State<LoginScreen> {
       showLoadingProgress = false;
       setState(() {});
     }
-  }
-
-  onLoginPressed() {
-    if (isValid()) {
-      uploadInfo();
-    } else {}
   }
 
   getUserInfoFromDatabase(User user) async {

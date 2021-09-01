@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
@@ -23,7 +23,7 @@ class RegisterPhoneScreen extends StatefulWidget {
 
 class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
   final _auth = FirebaseAuth.instance;
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  // FirebaseFirestore fireStore = FirebaseFirestore.instance;
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
@@ -123,7 +123,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
           ],
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.03,
+          height: MediaQuery.of(context).size.height * 0.06,
         ),
         Container(
           decoration: BoxDecoration(
@@ -360,8 +360,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                       verificationId: verificationId,
                       smsCode: otpController.text);
                   signInWithPhoneAuthCredential(phoneAuthCredential);
-                  uploadToDatabase(phoneController.text, fullNameController.text);
-
+                  // uploadToDatabase(phoneController.text, fullNameController.text);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -421,25 +420,6 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
       return false;
     }
     return true;
-  }
-
-
-  uploadToDatabase(String phoneNumber, String fullName) async {
-    try{
-      setState(() {});
-      showLoading = false;
-      return fireStore.collection('Users Phone Register').add({
-        'full-name' : fullName,
-        'phone-number': phoneNumber,
-
-      });
-    }
-    catch(e){
-      showLoading = false;
-      setState(() {});
-      StaticMethods.showErrorDialog(context: context, text: 'sth went wrong');
-      print(e);
-    }
   }
 
 

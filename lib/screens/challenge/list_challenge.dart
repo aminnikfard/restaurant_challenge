@@ -6,6 +6,7 @@ import 'package:restaurant_challenge_app/constants.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/challenge/create_challenge.dart';
 import 'package:restaurant_challenge_app/screens/challenge/manage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ListChallenge extends StatefulWidget {
@@ -258,10 +259,17 @@ class _ListChallengeState extends State<ListChallenge> {
       );
   }
 
+  Future<bool> checkedShow() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('show') ?? false;
+  }
+
   InkWell cardListRestaurantWidget(String name, String city, String date,
       String time, bool active, bool startPlay, bool endPlay, int id) {
     return InkWell(
-      onTap: () {
+      onTap: () async{
+        bool isCheck=await checkedShow();
+        print(isCheck);
         Provider.of<Notifier>(context, listen: false)
             .changeReferral(id.toString());
         Provider.of<Notifier>(context, listen: false)
@@ -275,6 +283,7 @@ class _ListChallengeState extends State<ListChallenge> {
             'city': city,
             'time': time,
             'date': date,
+            'show': isCheck,
           },
         );
         // Navigator.push(context,

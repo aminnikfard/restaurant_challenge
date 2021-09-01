@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_challenge_app/screens/login_screen.dart';
@@ -23,7 +22,6 @@ class ResetPasswordPhoneScreen extends StatefulWidget {
 
 class _ResetPasswordPhoneScreenState extends State<ResetPasswordPhoneScreen> {
   final _auth = FirebaseAuth.instance;
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
@@ -123,7 +121,7 @@ class _ResetPasswordPhoneScreenState extends State<ResetPasswordPhoneScreen> {
           ],
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.03,
+          height: MediaQuery.of(context).size.height * 0.06,
         ),
         Container(
           decoration: BoxDecoration(
@@ -239,7 +237,7 @@ class _ResetPasswordPhoneScreenState extends State<ResetPasswordPhoneScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text("Or Reset Password using",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
                         SizedBox(width: 5.0),
                         GestureDetector(
                           onTap: () {

@@ -32,7 +32,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Image(
                       image: AssetImage("assets/images/intro.png"),
                     ),
-                    if(user.email=='admindavid@gmail.com')...[
+                    if(user.email=='mohsen@gmail.com')...[
                       Align(
                         alignment: AlignmentDirectional.bottomStart,
                         child: Container(
@@ -66,7 +66,21 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                       ),
-                    ]
+                    ],
+                    Align(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text(
+                          "MyHungryGame",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
