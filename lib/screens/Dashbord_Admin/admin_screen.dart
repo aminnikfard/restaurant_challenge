@@ -102,8 +102,9 @@ class _DashboardAdminState extends State<DashboardAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: kPrimaryColor,
       appBar: AppBar(
+        backgroundColor: kPrimaryColor,
         title: const Text('Ad Management '),
         elevation: 0,
         actions: [
@@ -378,7 +379,7 @@ class CustomAvatar extends StatelessWidget {
                   width: double.infinity,
                   color: Colors.white,
                   child: Center(
-                    child: Image(image:FileImage(imageFile),height: 450,),
+                    child: Image(image:FileImage(imageFile),height: MediaQuery.of(context).size.height < 790 ? 370 :450,),
                   ),
                 ),
               ),
@@ -398,7 +399,9 @@ class CustomAvatar extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(top: 390.0, left: 5.0,bottom: 5.0),
+          padding: MediaQuery.of(context).size.height < 790
+            ? EdgeInsets.only(top: 290.0, left: 5.0,bottom: 5.0)
+            : EdgeInsets.only(top: 390.0, left: 5.0,bottom: 5.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[

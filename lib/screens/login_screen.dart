@@ -115,17 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       EdgeInsets.symmetric(horizontal: 15.0, vertical: 25.0),
                   child: Column(
                     children: [
-                      // Text(
-                      //   "MyHungryGame",
-                      //   style: TextStyle(
-                      //     fontWeight: FontWeight.bold,
-                      //     fontSize: 30,
-                      //     color: Theme.of(context).primaryColor,
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: size.height * 0.02,
-                      // ),
                       Text(
                         "Login Account",
                         style: TextStyle(
@@ -325,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {});
       if (userCredential != null) {
         print('user is: ${userCredential.user}');
-        getUserInfoFromDatabase(userCredential.user);
+        getUserInfoFromDatabase();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar('This User does not exist',
@@ -343,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  getUserInfoFromDatabase(User user) async {
+  getUserInfoFromDatabase() async {
     showLoadingProgress = true;
     setState(() {});
     try {

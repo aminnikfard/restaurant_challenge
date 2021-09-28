@@ -16,4 +16,16 @@ class FieldNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  String nameRestaurantSearch;
+  changeNameRestaurantSearch(String name){
+    this.nameRestaurantSearch = name;
+    notifyListeners();
+  }
+
+  String categoriesRestaurantSearch;
+  changeCategoriesRestaurantSearch(String categories){
+    this.categoriesRestaurantSearch = categories;
+    notifyListeners();
+  }
+
 }

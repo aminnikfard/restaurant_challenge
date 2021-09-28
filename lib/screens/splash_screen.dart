@@ -18,7 +18,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin{
   bool _visible = true;
   Animation<double> _animation;
   AnimationController _controller;
-  getUser() {
+  getUser() async{
     User user = auth.currentUser;
     if (user != null) {
       Navigator.popAndPushNamed(
@@ -36,7 +36,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin{
   @override
   void initState() {
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 3000),
+      duration: const Duration(milliseconds: 3050),
       vsync: this,
     )..repeat();
     _animation = CurvedAnimation(
@@ -59,8 +59,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin{
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

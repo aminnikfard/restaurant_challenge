@@ -58,31 +58,7 @@ class InfoAd extends StatelessWidget {
                   Icon(Icons.alternate_email_rounded),
                   SizedBox(width: 10,),
                   Text(
-                    'Email@domin.com',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 5,),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(15.0),
-              decoration: BoxDecoration(
-                color: kColorWhite,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.phone),
-                  SizedBox(width: 10,),
-                  Text(
-                    '+1 123456789',
+                    'Fitz@tbonestitch.com',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,

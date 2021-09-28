@@ -82,7 +82,7 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
                         iconSize: 20.0,
                         icon: Icon(Icons.arrow_back_ios),
                         onPressed: () {
-                          Navigator.pushNamed(context, AuthScreen.id);
+                          Navigator.pop(context);
                         },
                       ),
                     ],
@@ -213,24 +213,22 @@ class _LoginChallengeRoomState extends State<LoginChallengeRoom> {
     return true;
   }
 
-  Future<bool> checkReferralCode() async{
-        DataSnapshot snapshot = await dbRef.child(code).once();
-    if( snapshot.value == null ){
+  Future<bool> checkReferralCode() async {
+    DataSnapshot snapshot = await dbRef.child(code).once();
+    if (snapshot.value == null) {
       return false;
-    }else{
+    } else {
       return true;
     }
-
   }
 
-  Future<bool> checkIsActiveReferralCode() async{
+  Future<bool> checkIsActiveReferralCode() async {
     DataSnapshot snapshot = await dbRef.child(code).once();
-    if( snapshot.value == null ){
+    if (snapshot.value == null) {
       return false;
-    }else{
+    } else {
       return true;
     }
-
   }
 
   Future<bool> checkIsPlayGame() async{

@@ -217,6 +217,7 @@ class _RegisterPhoneScreenState extends State<RegisterPhoneScreen> {
                       },
                       codeAutoRetrievalTimeout: (verificationId) async {},
                     );
+                    _auth.currentUser.updateDisplayName(fullNameController.text);
                   }
                 },
                 child: Container(

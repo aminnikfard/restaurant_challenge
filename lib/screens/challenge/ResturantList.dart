@@ -136,6 +136,10 @@ class RestaurantList extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              width: 10,
+            ),
+            Image.asset('assets/images/yelp.png',width: 45,height: 30,),
           ],
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_challenge_app/componnent/ticket_widget.dart';
 import 'package:restaurant_challenge_app/constants.dart';
+import 'package:restaurant_challenge_app/model/field_notifier.dart';
 import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/screens/game/game_screen.dart';
 import 'package:restaurant_challenge_app/screens/game/list_restaurant_screen.dart';
@@ -39,8 +40,8 @@ class _InfoChallengeState extends State<InfoChallenge> {
       body: SafeArea(
         child: Center(
           child: FlutterTicketWidget(
-            width: size.width / 1.15,
-            height: size.height / 1.37,
+            width: size.width / 1.15 ,
+            height: size.height < 850 ? size.height / 1.17 : size.height / 1.37,
             isCornerRounded: true,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -93,7 +94,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
                         Padding(
                           padding: const EdgeInsets.only(right: 40.0),
                           child: ticketDetailsWidget(
-                              'Game Participant Name', '${auth.currentUser.email}', '', ''),
+                              'Game Participant Name', '${auth.currentUser.displayName}', '', ''),
                         ),
                         Padding(
                           padding:
@@ -117,7 +118,9 @@ class _InfoChallengeState extends State<InfoChallenge> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0,bottom: 60.0),
+                      padding: size.height < 850
+                        ? const EdgeInsets.only(top: 50.0,bottom: 50.0)
+                        : const EdgeInsets.only(top: 60.0,bottom: 60.0),
                     child: Container(
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -137,6 +140,8 @@ class _InfoChallengeState extends State<InfoChallenge> {
                               ),
                               child: ListTile(
                                 onTap: () {
+                                  Provider.of<FieldNotifier>(context, listen: false).changeCategoriesRestaurantSearch(null);
+                                  Provider.of<FieldNotifier>(context, listen: false).changeNameRestaurantSearch(null);
                                   showModalBottomSheet(
                                       context: context,
                                       shape: RoundedRectangleBorder(
@@ -149,7 +154,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
                                       });
                                 },
                                 contentPadding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 10),
+                                    vertical: 10, horizontal: 10),
                                 title: Text(
                                   'No Select Restaurant',
                                   style: TextStyle(
@@ -171,6 +176,8 @@ class _InfoChallengeState extends State<InfoChallenge> {
                               ),
                               child: InkWell(
                                 onTap: () {
+                                  Provider.of<FieldNotifier>(context, listen: false).changeCategoriesRestaurantSearch(null);
+                                  Provider.of<FieldNotifier>(context, listen: false).changeNameRestaurantSearch(null);
                                   showModalBottomSheet(
                                       context: context,
                                       shape: RoundedRectangleBorder(
@@ -244,6 +251,16 @@ class _InfoChallengeState extends State<InfoChallenge> {
                                           ],
                                         ),
                                       ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Container(
+                                        child: Column(
+                                          children: [
+                                            Image.asset('assets/images/yelp.png',width: 45,height: 30,),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -265,11 +282,22 @@ class _InfoChallengeState extends State<InfoChallenge> {
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async{
                               if (Provider.of<Notifier>(context,
                                   listen: false)
                                   .isSelected) {
-                                insertToDb();
+                                bool isPlayAd=await getAdvertising();
+                                print(isPlayAd);
+                                await insertToDb();
+                                if(isPlayAd != null){
+                                  Navigator.popAndPushNamed(
+                                    context,
+                                    GameScreen.id,
+                                    arguments: {
+                                      'isPlayAd': isPlayAd,
+                                    },
+                                  );
+                                }
                               }else{
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   StaticMethods.mySnackBar(
@@ -319,6 +347,23 @@ class _InfoChallengeState extends State<InfoChallenge> {
     );
   }
 
+  Future<bool> getAdvertising() async {
+    bool isEnable;
+    await dbRef.child('Advertising').once().then((DataSnapshot snapshot) {
+      Map map=snapshot.value;
+      isEnable=map['isEnable'];
+      Provider.of<Notifier>(context, listen: false).changeIsPlayAd(
+          map['isEnable']);
+      Provider.of<Notifier>(context, listen: false).changeDescriptionAd(
+          map['description']);
+      Provider.of<Notifier>(context, listen: false).changeImgAd(
+          map['img']);
+      Provider.of<Notifier>(context, listen: false).changeVisitAd(
+          map['visit']);
+    });
+    return isEnable;
+  }
+
   insertToDb() {
     dbRef.child('challenges')
         .child(args['referralCode'])
@@ -351,20 +396,7 @@ class _InfoChallengeState extends State<InfoChallenge> {
 
     });
 
-    dbRef.child('Advertising').once().then((DataSnapshot snapshot) {
-      Map map=snapshot.value;
-      Provider.of<Notifier>(context, listen: false).changeIsPlayAd(
-          map['isEnable']);
-      Provider.of<Notifier>(context, listen: false).changeDescriptionAd(
-          map['description']);
-      Provider.of<Notifier>(context, listen: false).changeImgAd(
-          map['img']);
-      Provider.of<Notifier>(context, listen: false).changeVisitAd(
-          map['visit']);
-    });
-
     Provider.of<Notifier>(context, listen: false).changeRole('user');
-    Navigator.pushNamed(context, GameScreen.id);
   }
 
   Widget ticketDetailsWidget(String firstTitle, String firstDesc,

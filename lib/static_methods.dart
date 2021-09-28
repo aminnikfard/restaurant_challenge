@@ -157,7 +157,7 @@ class StaticMethods {
         title.toString(),
         style: TextStyle(
             color: kColorWhite,
-            fontSize: 16,
+            fontSize: 17,
             fontWeight: FontWeight.bold),
       ),
       backgroundColor: color,
@@ -165,7 +165,7 @@ class StaticMethods {
       width: size.width * 0.9,
       padding: const EdgeInsets.symmetric(
         horizontal: 14.0,
-        vertical: 5.0,
+        vertical: 20.0,
       ),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(

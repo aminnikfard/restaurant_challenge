@@ -13,14 +13,17 @@ import 'package:restaurant_challenge_app/screens/game/result_gmae_screen.dart';
 
 class GameScreen extends StatelessWidget {
   static String id = 'game_screen';
+  static Map args;
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context).settings.arguments;
+    bool isCheck=args['isPlayAd'];
     return Scaffold(
-      backgroundColor: kPrimaryColor,
+      backgroundColor: Color(0xFFEE9E01),
       body: SafeArea(
         child: FeatureDiscovery.withProvider(
           persistenceProvider: NoPersistenceProvider(),
-          child: Game(),
+          child: Game(isCheck: isCheck,),
         ),
       ),
     );
@@ -28,6 +31,8 @@ class GameScreen extends StatelessWidget {
 }
 
 class Game extends StatefulWidget {
+  final bool isCheck;
+  Game({this.isCheck});
   @override
   _GameState createState() => _GameState();
 }
@@ -35,8 +40,7 @@ class Game extends StatefulWidget {
 class _GameState extends State<Game> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  final DatabaseReference dbRef =
-  FirebaseDatabase.instance.reference();
+  final DatabaseReference dbRef = FirebaseDatabase.instance.reference();
   Size size;
   int dSum = 0;
   bool end = false;
@@ -44,14 +48,14 @@ class _GameState extends State<Game> {
   bool startTimer = false;
   final player = AudioPlayer();
 
-
   @override
   void initState() {
     super.initState();
+    print(widget.isCheck);
     Future.delayed(
       Duration(milliseconds: 500),
           () {
-        if(Provider.of<Notifier>(context, listen: false).isPlayAd==true) {
+        if(widget.isCheck==true) {
           showOfferDialog(context, Provider.of<Notifier>(context, listen: false).descriptionAd, Provider.of<Notifier>(context, listen: false).imgAd);
           onUpdateVisit();
         }
@@ -307,8 +311,10 @@ class _GameState extends State<Game> {
         'score': dSum,
       });
       player.stop();
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ResultGama()));
+      Navigator.popAndPushNamed(
+        context,
+        ResultGama.id,
+      );
     } catch (e) {
       print(e);
     }

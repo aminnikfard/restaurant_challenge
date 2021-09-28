@@ -269,7 +269,6 @@ class _ListChallengeState extends State<ListChallenge> {
     return InkWell(
       onTap: () async{
         bool isCheck=await checkedShow();
-        print(isCheck);
         Provider.of<Notifier>(context, listen: false)
             .changeReferral(id.toString());
         Provider.of<Notifier>(context, listen: false)

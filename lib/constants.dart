@@ -6,7 +6,7 @@ const kPrimaryColor = Color(0xFFFF5715);
 const kDialogErrorColor = Color(0xFFF44336);
 const kDialogSuccessColor = Color(0xFF4caf50);
 
-final String mainUrl = 'https://api.yelp.com/v3/transactions/delivery/';
+final String infoUrl = 'https://api.yelp.com/v3/businesses/';
 
 final kOutLineInputBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10),

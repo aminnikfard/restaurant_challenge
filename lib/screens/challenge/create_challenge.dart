@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,7 @@ class ChallengeScreen extends StatefulWidget {
 class _ChallengeScreenState extends State<ChallengeScreen> {
   final _auth = FirebaseAuth.instance;
   int _currentStep = 0;
-  TextEditingController textEditingController,challengeNameController;
+  TextEditingController cityEditingController,stateEditingController,challengeNameController;
   StepperType stepperType = StepperType.vertical;
   Random random = Random();
   String name,date,time,referral,city,date2,time2;
@@ -36,14 +35,16 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   void initState() {
     Provider.of<FieldNotifier>(context,listen: false).changeDate(null);
     Provider.of<FieldNotifier>(context,listen: false).changeTime(null);
-    textEditingController = TextEditingController();
+    cityEditingController = TextEditingController();
+    stateEditingController = TextEditingController();
     challengeNameController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    textEditingController.dispose();
+    cityEditingController.dispose();
+    stateEditingController.dispose();
     challengeNameController.dispose();
     super.dispose();
   }
@@ -75,7 +76,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                           icon: Icon(Icons.arrow_back_ios),
                           color: Colors.black,
                           onPressed: () {
-                            Navigator.pushNamed(context, AuthScreen.id);
+                            Navigator.pop(context);
                           },
                         ),
                         Column(
@@ -159,8 +160,13 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                               children: <Widget>[
                                 TextFormField(
                                   decoration: InputDecoration(
+                                      labelText: 'State Name'),
+                                  controller: stateEditingController,
+                                ),
+                                TextFormField(
+                                  decoration: InputDecoration(
                                       labelText: 'City Name'),
-                                  controller: textEditingController,
+                                  controller: cityEditingController,
                                 ),
                               ],
                             ),
@@ -176,16 +182,12 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Row(
-                                  children: [
-                                    TextButton.icon(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.edit_rounded,),
-                                      label:Text('Game Name:',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
-                                    ),
-                                    Text('${challengeNameController.text}',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
-                                  ],
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.edit_rounded,),
+                                  label:Text('Game Name:',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
                                 ),
+                                Text('${challengeNameController.text}',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                                 Row(
                                   children: [
                                     TextButton.icon(
@@ -206,16 +208,12 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                                     Text('$time',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    TextButton.icon(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.location_city,),
-                                      label:Text('City: ',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
-                                    ),
-                                    Text('${textEditingController.text}',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
-                                  ],
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.location_city,),
+                                  label:Text('City, State: ',style: TextStyle(fontSize: 16.0,color:Colors.blueAccent,fontWeight: FontWeight.bold),),
                                 ),
+                                Text('${cityEditingController.text}, ${stateEditingController.text.toUpperCase()}',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                               ],
                             ),
                             isActive: _currentStep >= 0,
@@ -279,10 +277,17 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
     }
     if (_currentStep == 3) {
-      if(textEditingController.text.length < 2){
+      if(cityEditingController.text.length < 2){
         ScaffoldMessenger.of(context).showSnackBar(
           StaticMethods.mySnackBar(
-              'Enter the name of the city', MediaQuery.of(context).size, kDialogErrorColor),
+              'Enter the name of the City', MediaQuery.of(context).size, kDialogErrorColor),
+        );
+        return false;
+      }
+      if(stateEditingController.text.length < 1){
+        ScaffoldMessenger.of(context).showSnackBar(
+          StaticMethods.mySnackBar(
+              'Enter the name of the State', MediaQuery.of(context).size, kDialogErrorColor),
         );
         return false;
       }
@@ -294,20 +299,23 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
     }
     if(_currentStep == 4){
+      showLoadingProgress = true;
       bool check=await createChallenge();
       if(check){
         Provider.of<Notifier>(context, listen: false).changeReferral(referral);
         Provider.of<Notifier>(context, listen: false).changeIsStartPlay(false);
         Provider.of<Notifier>(context, listen: false).changeIsEndPlay(false);
+        String _city="${cityEditingController.text}, ${stateEditingController.text.toUpperCase()}";
         showLoadingProgress = false;
         Navigator.popAndPushNamed(
           context,
           ChallengeManagement.id,
           arguments: {
             'challengeName': challengeNameController.text,
-            'city': textEditingController.text,
+            'city': _city,
             'time': time,
             'date': date,
+            'show': false,
           },
         );
       }else{
@@ -339,9 +347,9 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   }
 
   Future<bool>createChallenge() async {
-    showLoadingProgress = true;
     bool check=true;
     int id=random.nextInt(9000000) + 1000000;
+    String _city="${cityEditingController.text}, ${stateEditingController.text.toUpperCase()}";
     final DatabaseReference dbRef = FirebaseDatabase.instance
         .reference()
         .child('challenges').child(id.toString());
@@ -353,7 +361,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
           'isActive': true,
           'isStartPlay': false,
           'isEndPlay': false,
-          'city': textEditingController.text,
+          'city': _city,
           'referralCode': id,
           'creatorId': _auth.currentUser.uid,
           'filter': '${_auth.currentUser.uid}_true',

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -10,9 +12,12 @@ import 'package:restaurant_challenge_app/model/notifier.dart';
 import 'package:restaurant_challenge_app/model/users.dart';
 import 'package:restaurant_challenge_app/screens/auth_screen.dart';
 import 'package:restaurant_challenge_app/screens/challenge/ResturantList.dart';
+import 'package:restaurant_challenge_app/screens/challenge/info_restaurant.dart';
 import 'package:restaurant_challenge_app/screens/challenge/userScore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_share/social_share.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart';
+
 import '../../constants.dart';
 
 class ChallengeManagement extends StatefulWidget {
@@ -26,14 +31,14 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       FirebaseDatabase.instance.reference().child('challenges');
   final double rate = 6;
   int winnerRestaurant;
-  String referral;
+  String referral,idRestaurant,massage;
   Map args;
   String date;
 
   @override
   void initState() {
       Timer(Duration(milliseconds: 200), () {
-        if (args['show'] == true) {
+        if (args['show'] == false) {
           showHelpDialog(context);
           setShow(true);
         }
@@ -64,6 +69,9 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
         Provider.of<Notifier>(context, listen: true).isEndPlay == true
             ? 'Yes'
             : 'No';
+    massage =
+        "You have been invited to the ${args['challengeName']} challenge. This is a challenge between my friends on $date at ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
+
     return Scaffold(
       floatingActionButton: Provider.of<Notifier>(context, listen: true)
               .isActive
@@ -87,6 +95,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       )
           : SizedBox(),
       appBar: AppBar(
+        backgroundColor: kPrimaryColor,
         title: Text('Challenge'),
         centerTitle: true,
         elevation: 0,
@@ -121,7 +130,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
           iconSize: 20.0,
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.popAndPushNamed(context, AuthScreen.id);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -135,7 +144,7 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                   horizontal: 5.0,
                   vertical: 5.0 / 2,
                 ),
-                height: size.height / 1.99,
+                height: size.height < 790 ? size.height / 1.80 : size.height / 1.99,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(22),
                 ),
@@ -212,107 +221,130 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                           ),
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 50,
-                                child: CircleAvatar(
-                                  backgroundColor: kColorWhite,
-                                  backgroundImage: Provider.of<Notifier>(
-                                                  context,
-                                                  listen: true)
-                                              .winnerRestaurant
-                                              .restaurantImg ==
-                                          ''
-                                      ? AssetImage('assets/icons/pizza1.png')
-                                      : NetworkImage(Provider.of<Notifier>(
-                                              context,
-                                              listen: true)
-                                          .winnerRestaurant
-                                          .restaurantImg),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      Provider.of<Notifier>(context,
-                                              listen: true)
-                                          .winnerRestaurant
-                                          .restaurantName,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        for (var i = 1; i < rate; i++) ...{
-                                          if (i <= winnerRestaurant) ...{
-                                            Icon(
-                                              Icons.star_rate_sharp,
-                                              size: 18,
-                                              color: Colors.orange,
-                                            ),
-                                          },
-                                          if (i > winnerRestaurant) ...{
-                                            Icon(
-                                              Icons.star_border_rounded,
-                                              size: 18,
-                                              color: Colors.orange,
-                                            ),
-                                          }
-                                        }
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      Provider.of<Notifier>(context,
-                                              listen: true)
-                                          .winnerRestaurant
-                                          .restaurantAddress,
-                                      style: TextStyle(fontSize: 10),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.visibility),
-                                    Provider.of<Notifier>(context, listen: true)
-                                                .winnerReview ==
-                                            null
-                                        ? Text('unknown')
-                                        : Text(Provider.of<Notifier>(context,
+                        child: InkWell(
+                          onTap: (){
+                            if (Provider
+                                .of<Notifier>(context, listen: false)
+                                .winnerRestaurant
+                                .restaurantId != '') {
+                              showModalBottomSheet(
+                                  context: context,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      )),
+                                  builder: (context) {
+                                    return InfoRestaurant(idRestaurant:Provider
+                                        .of<Notifier>(context, listen: false)
+                                        .winnerRestaurant
+                                        .restaurantId,);
+                                  });
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 5.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  child: CircleAvatar(
+                                    backgroundColor: kColorWhite,
+                                    backgroundImage: Provider.of<Notifier>(
+                                                    context,
+                                                    listen: true)
+                                                .winnerRestaurant
+                                                .restaurantImg ==
+                                            ''
+                                        ? AssetImage('assets/icons/pizza1.png')
+                                        : NetworkImage(Provider.of<Notifier>(
+                                                context,
                                                 listen: true)
-                                            .winnerReview
-                                            .toString()),
-                                  ],
+                                            .winnerRestaurant
+                                            .restaurantImg),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        Provider.of<Notifier>(context,
+                                                listen: true)
+                                            .winnerRestaurant
+                                            .restaurantName,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        children: [
+                                          for (var i = 1; i < rate; i++) ...{
+                                            if (i <= winnerRestaurant) ...{
+                                              Icon(
+                                                Icons.star_rate_sharp,
+                                                size: 18,
+                                                color: Colors.orange,
+                                              ),
+                                            },
+                                            if (i > winnerRestaurant) ...{
+                                              Icon(
+                                                Icons.star_border_rounded,
+                                                size: 18,
+                                                color: Colors.orange,
+                                              ),
+                                            }
+                                          }
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        Provider.of<Notifier>(context,
+                                                listen: true)
+                                            .winnerRestaurant
+                                            .restaurantAddress,
+                                        style: TextStyle(fontSize: 10),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  child: Column(
+                                    children: [
+                                      Image.asset('assets/images/yelp.png',width: 45,height: 30,),
+                                      Icon(Icons.visibility),
+                                      Provider.of<Notifier>(context, listen: true)
+                                                  .winnerReview ==
+                                              null
+                                          ? Text('unknown')
+                                          : Text(Provider.of<Notifier>(context,
+                                                  listen: true)
+                                              .winnerReview
+                                              .toString()),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -327,14 +359,14 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                             children: [
                               Text(
                                 'Referral Code:',
-                                style: TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 13),
                               ),
                               Text(
                                 Provider.of<Notifier>(context, listen: true)
                                     .referral
                                     .toString(),
                                 style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -342,12 +374,22 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
                               context, Icons.copy, Colors.black45, "copy"),
                           socialIcon(context, FontAwesomeIcons.sms,
                               Colors.black87, "sms"),
-                          socialIcon(context, FontAwesomeIcons.telegram,
-                              Colors.blueAccent, "telegram"),
-                          socialIcon(context, FontAwesomeIcons.whatsapp,
-                              Colors.green, "whatsapp"),
-                          socialIcon(context, FontAwesomeIcons.twitter,
-                              Colors.blueAccent, "twitter"),
+                          SizedBox(width: 15.0,),
+                          TextButton.icon(
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kPrimaryColor)),
+                            onPressed: () {
+                              Share.share(massage,subject: 'Hungry Game');
+                            },
+                            icon: Icon(Icons.share_rounded,color: kColorWhite,),
+                            label: Text(
+                              'Share In',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: kColorWhite,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       Expanded(
@@ -514,48 +556,20 @@ class _ChallengeManagementState extends State<ChallengeManagement> {
       BuildContext context, IconData iconSrc, Color color, String nameIcon) {
     return GestureDetector(
       onTap: () async {
-        String massage =
-            "You have been invited to the ${args['challengeName']} challenge. This is a challenge between my friends on $date at ${args['time']} and you can participate in this challenge through the following code.\nYour invitation code: $referral";
         if (nameIcon == "copy") {
-          SocialShare.copyToClipboard(
-            massage,
-          ).then((data) {
-            Fluttertoast.showToast(
-                msg: 'Copied to clipboard',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                backgroundColor: Colors.black87,
-                textColor: Colors.white
-            );
-          });
+          Clipboard.setData(ClipboardData(text: "$referral"));
+          Fluttertoast.showToast(
+              msg: 'Copied to clipboard',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.black87,
+              textColor: Colors.white);
         } else if (nameIcon == "sms") {
-          SocialShare.shareSms(
-            massage,
-          ).then((data) {
-            print(data);
-          });
-        } else if (nameIcon == "telegram") {
-          SocialShare.shareTelegram(
-            massage,
-          ).then((data) {
-            print(data);
-          });
-        } else if (nameIcon == "whatsapp") {
-          SocialShare.shareWhatsapp(
-            massage,
-          ).then((data) {
-            print(data);
-          });
-        } else if (nameIcon == "twitter") {
-          SocialShare.shareTwitter(
-            massage,
-          ).then((data) {
-            print(data);
-          });
+          launch('sms:?body=$massage');
         }
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        margin: EdgeInsets.symmetric(horizontal: 15.0),
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
           shape: BoxShape.circle,

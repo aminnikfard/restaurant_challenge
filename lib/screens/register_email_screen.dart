@@ -329,8 +329,9 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (userCredential != null) {
-        print('user is: ${userCredential.user}');
-        uploadToDatabase(userCredential.user, fullNameController.text);
+        userCredential.user.updateDisplayName(fullNameController.text);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            AuthScreen.id, (Route<dynamic> route) => false);
       } else {
         print('user is null');
       }
@@ -352,7 +353,7 @@ class _RegisterEmailScreenState extends State<RegisterEmailScreen> {
     }
   }
 
-  uploadToDatabase(User user, String fullName) async {
+  uploadToDatabase() async {
     try{
       setState(() {});
       Navigator.of(context).pushNamedAndRemoveUntil(

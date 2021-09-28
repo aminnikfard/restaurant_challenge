@@ -6,45 +6,18 @@ showHelpDialog(BuildContext context) {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return Help();
-      });
-}
-
-class Help extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: SizedBox(
-          child: Column(
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Text(
-                      'Page guide',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.cancel, color: Colors.black87, size: 25),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              Expanded(child: TestPage()),
-            ],
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-      ),
-    );
-  }
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              child: TestPage(),
+            ),
+          ),
+        );
+      });
 }
 
 class TestPage extends StatefulWidget {
@@ -59,9 +32,6 @@ class _TestPageState extends State<TestPage> {
   var swipeLeft = false;
 
   var data = [
-    [
-      'assets/images/1.png',
-    ],
     [
       'assets/images/2.png',
     ],
@@ -79,6 +49,9 @@ class _TestPageState extends State<TestPage> {
     ],
     [
       'assets/images/7.png',
+    ],
+    [
+      'assets/images/1.png',
     ],
   ];
 
@@ -117,8 +90,28 @@ class _TestPageState extends State<TestPage> {
           },
         child: Column(
           children: [
-            Image.asset(
-              data[pageIndex][0],
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Text(
+                    'Page guide',
+                    style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.cancel, color: Colors.black87, size: 25),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Image.asset(
+                data[pageIndex][0],
+              ),
             ),
             Align(
               alignment: Alignment.center,
@@ -131,6 +124,7 @@ class _TestPageState extends State<TestPage> {
                         color: Colors.black87, size: 40),
                     onPressed: () => handleClick(-1),
                   ),
+                  Text('Swipe',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                   IconButton(
                     icon: Icon(Icons.chevron_right_rounded,
                         color: Colors.black87, size: 40),
@@ -138,7 +132,7 @@ class _TestPageState extends State<TestPage> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
